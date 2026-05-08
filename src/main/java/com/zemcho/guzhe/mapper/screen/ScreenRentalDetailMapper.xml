@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.screen.ScreenRentalDetailMapper">
+    <insert id="insertBatch">
+        INSERT INTO `screen_rental_detail`
+        (
+            order_id,
+            equipment_id,
+            shop_id,
+            business_circle_id,
+            rental_year,
+            rental_month,
+            slot_count,
+            status,
+            create_time,
+            update_time
+        )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+                #{item.orderId},
+                #{item.equipmentId},
+                #{item.shopId},
+                #{item.businessCircleId},
+                #{item.rentalYear},
+                #{item.rentalMonth},
+                #{item.slotCount},
+                #{item.status},
+                #{item.createTime},
+                #{item.updateTime}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectActiveByBusinessCircleIdAndMonthKeys" resultType="com.zemcho.guzhe.entity.screen.ScreenRentalDetail">
+        SELECT *
+        FROM `screen_rental_detail`
+        WHERE business_circle_id = #{businessCircleId}
+          AND status IN (0, 1, 2)
+          AND CONCAT(rental_year, '-', LPAD(rental_month, 2, '0')) IN
+        <foreach collection="monthKeys" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectActiveByEquipmentAndMonthKeys" resultType="com.zemcho.guzhe.entity.screen.ScreenRentalDetail">
+        SELECT *
+        FROM `screen_rental_detail`
+        WHERE equipment_id = #{equipmentId}
+          AND status IN (0, 1, 2)
+          AND CONCAT(rental_year, '-', LPAD(rental_month, 2, '0')) IN
+        <foreach collection="monthKeys" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

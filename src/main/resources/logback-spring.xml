@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration  scan="true" scanPeriod="60 seconds" debug="false">
+    <contextName>logback</contextName>
+
+    <!--日志存储文件路径：如果上级目录不存在会自动创建-->
+    <property name="logFilePath" value="/home/logs/guzhe" />
+
+    <!-- 日志文件保留天数 （maxHistory是和配置的fileNamePattern日期的最小粒度单位保持一致） -->
+    <!-- 这里单位是“天” -->
+    <property name="maxHistory" value="90" />
+
+    <!--单个文件大小-->
+    <property name="maxFileSize" value="50MB" />
+
+    <!--用来指定日志文件的上限大小，到了这个值就会删除旧日志-->
+    <property name="totalSizeCap" value="5GB" />
+
+    <!--输出到控制台-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>-- [%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5level --%logger --%line %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 运行日志 -->
+    <appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logFilePath}/info/log_info.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logFilePath}/info/log_info_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--单个文件大小-->
+            <maxFileSize>${maxFileSize}</maxFileSize>
+            <!--日志文件保留天数-->
+            <maxHistory>${maxHistory}</maxHistory>
+            <!--用来指定日志文件的上限大小，到了这个值就会删除旧日志-->
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>-- [%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5level --%logger --%line %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 错误日志 -->
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <file>${logFilePath}/error/log_error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logFilePath}/error/log_error_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--单个文件大小-->
+            <maxFileSize>${maxFileSize}</maxFileSize>
+            <!--日志文件保留天数-->
+            <maxHistory>${maxHistory}</maxHistory>
+            <!--用来指定日志文件的上限大小，到了这个值就会删除旧日志-->
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>-- [%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5level --%logger --%line %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="console" />
+        <appender-ref ref="INFO" />
+        <appender-ref ref="ERROR" />
+    </root>
+
+</configuration>

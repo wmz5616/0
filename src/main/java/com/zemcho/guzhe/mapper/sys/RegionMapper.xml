@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.sys.RegionMapper">
+
+    <select id="selectRegionParent" resultType="com.zemcho.guzhe.entity.sys.Region"
+            parameterType="java.lang.Integer">
+        select *
+        from zc_region
+        where id = (select pid from zc_region where id = #{id})
+    </select>
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.appVersion.AppVersionMapper">
+
+    <insert id="insert">
+        insert into app_version(serial_number,name, file_url, `release`, is_publish, remark,create_time)
+        values (#{data.serialNumber}, #{data.name},#{data.fileUrl}, #{data.release}, #{data.isPublish},#{data.remark},
+                now())
+    </insert>
+
+    <update id="update">
+        update app_version
+        <set>
+            <if test="data.serialNumber != null">
+                serial_number = #{data.serialNumber},
+            </if>
+            <if test="data.fileUrl != null">
+                file_url = #{data.fileUrl},
+            </if>
+            <if test="data.release != null">
+                `release` = #{data.release},
+            </if>
+            <if test="data.isPublish != null">
+                is_publish = #{data.isPublish},
+            </if>
+            <if test="data.name != null">
+                name = #{data.name},
+            </if>
+            <if test="data.remark != null">
+                remark = #{data.remark},
+            </if>
+        </set>
+        where id = #{data.id}
+    </update>
+
+    <select id="select" resultType="com.zemcho.guzhe.entity.app.AppVersion">
+        select * from app_version
+        <where>
+            <if test="true">
+                delete_time is null
+            </if>
+        </where>
+        order by `release` desc
+    </select>
+
+    <update id="delete">
+        update app_version
+        set delete_time = now()
+        where id = #{id}
+    </update>
+
+    <select id="selectLatestVersion" resultType="com.zemcho.guzhe.entity.app.AppVersion">
+        select * from `app_version`
+        where `is_publish` = 0
+          and `release` > #{nowRelease}
+          and delete_time is null
+        order by `release` desc
+            limit 1
+    </select>
+</mapper>

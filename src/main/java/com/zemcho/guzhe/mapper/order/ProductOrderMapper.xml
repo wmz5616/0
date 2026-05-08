@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.order.ProductOrderMapper">
+    <sql id="field">
+        order_no,
+        user_id,
+        phone,
+        nick_name,
+        equipment_id,
+        serial_number,
+        shop_id,
+        shop_name,
+        product_id,
+        product_no,
+        cover_image,
+        product_name,
+        specification,
+        unit,
+        is_virtual,
+        deadline,
+        remark,
+        price,
+        num,
+        amount,
+        status,
+        express_status,
+        pay_time,
+        create_time
+    </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `product_order`(
+        <include refid="field"></include>
+        )VALUES (
+        #{data.orderNo},
+        #{data.userId},
+        #{data.phone},
+        #{data.nickName},
+        #{data.equipmentId},
+        #{data.serialNumber},
+        #{data.shopId},
+        #{data.shopName},
+        #{data.productId},
+        #{data.productNo},
+        #{data.coverImage},
+        #{data.productName},
+        #{data.specification},
+        #{data.unit},
+        #{data.isVirtual},
+        #{data.deadline},
+        #{data.remark},
+        #{data.price},
+        #{data.num},
+        #{data.amount},
+        #{data.status},
+        #{data.expressStatus},
+        #{data.payTime},
+        #{data.createTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `product_order`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.status != null">status = #{data.status},</if>
+            <if test="data.payTime != null">pay_time = #{data.payTime},</if>
+            <if test="data.upOrderNo != null">up_order_no = #{data.upOrderNo},</if>
+            <if test="data.expressCompanyName != null">express_company_name = #{data.expressCompanyName},</if>
+            <if test="data.expressCompanyCode != null">express_company_code = #{data.expressCompanyCode},</if>
+            <if test="data.expressNo != null">express_no = #{data.expressNo},</if>
+            <if test="data.expressStatus != null">express_status = #{data.expressStatus},</if>
+            <if test="data.refundAmount !=null">refund_amount = #{data.refundAmount},</if>
+            <if test="data.refundTime !=null">refund_time = #{data.refundTime},</if>
+            <if test="data.refundRemark !=null">refund_remark = #{data.refundRemark},</if>
+            <if test="data.remark !=null">remark = #{data.remark},</if>
+            <if test="data.divideStatus != null">divide_status = #{data.divideStatus},</if>
+            <if test="data.divideAmount != null">divide_amount = #{data.divideAmount},</if>
+            <if test="data.divideTime != null">divide_time = #{data.divideTime},</if>
+        </trim>
+        WHERE id = #{data.id}
+    </update>
+
+    <select id="selectById" resultType="com.zemcho.guzhe.entity.order.ProductOrder">
+        SELECT *
+        FROM `product_order`
+        WHERE `id` = #{id}
+    </select>
+
+    <select id="selectByOrderNo" resultType="com.zemcho.guzhe.entity.order.ProductOrder">
+        SELECT *
+        FROM `product_order`
+        <where>
+            <if test="orderNo != null and orderNo != ''">
+                and order_no = #{orderNo}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectLists" resultType="com.zemcho.guzhe.entity.order.ProductOrder">
+        SELECT *
+        FROM `product_order`
+        <where>
+            <if test="param.searchField1 != null">AND user_id = #{param.searchField1}</if>
+            <if test="param.searchField2 != null">AND product_id = #{param.searchField2}</if>
+            <if test="param.searchStatusList != null and param.searchStatusList.size() > 0">
+                AND `status` IN
+                <foreach collection="param.searchStatusList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.searchIntStatus != null">AND `status` = #{param.searchIntStatus}</if>
+            <if test="param.searchField3 != null">AND `express_status` = #{param.searchField3}</if>
+            <if test="param.searchField4 != null">AND `shop_id` = #{param.searchField4}</if>
+            <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+                AND `order_no` LIKE CONCAT('%', #{param.searchStrField1}, '%')
+            </if>
+            <if test="param.searchStrField2 != null and param.searchStrField2 != ''">
+                AND `product_name` LIKE CONCAT('%', #{param.searchStrField2}, '%')
+            </if>
+            <if test="param.searchStrField3 != null and param.searchStrField3 != ''">
+                AND `serial_number` LIKE CONCAT('%', #{param.searchStrField3}, '%')
+            </if>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND (phone LIKE CONCAT('%',#{param.keyword},'%') OR nick_name LIKE CONCAT('%',#{param.keyword},'%'))
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+        ORDER BY `id` desc
+    </select>
+
+    <select id="selectCount" resultType="com.zemcho.guzhe.controller.wechat.user.vo.ProductOrderCountVo">
+        SELECT count(1) AS order_num, sum(amount) AS total_amount, sum(refund_amount) AS total_refund_amount, sum(num) AS total_num
+        FROM `product_order`
+        <where>
+            <if test="param.searchField1 != null">AND user_id = #{param.searchField1}</if>
+            <if test="param.searchField2 != null">AND product_id = #{param.searchField2}</if>
+            <if test="param.searchStatusList != null and param.searchStatusList.size() > 0">
+                AND `status` IN
+                <foreach collection="param.searchStatusList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.searchIntStatus != null">AND `status` = #{param.searchIntStatus}</if>
+            <if test="param.searchField3 != null">AND `express_status` = #{param.searchField3}</if>
+            <if test="param.searchField4 != null">AND `shop_id` = #{param.searchField4}</if>
+            <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+                AND `order_no` LIKE CONCAT('%', #{param.searchStrField1}, '%')
+            </if>
+            <if test="param.searchStrField2 != null and param.searchStrField2 != ''">
+                AND `product_name` LIKE CONCAT('%', #{param.searchStrField2}, '%')
+            </if>
+            <if test="param.searchStrField3 != null and param.searchStrField3 != ''">
+                AND `serial_number` LIKE CONCAT('%', #{param.searchStrField3}, '%')
+            </if>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND (phone LIKE CONCAT('%',#{param.keyword},'%') OR nick_name LIKE CONCAT('%',#{param.keyword},'%'))
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+    </select>
+</mapper>

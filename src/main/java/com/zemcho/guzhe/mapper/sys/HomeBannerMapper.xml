@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.sys.HomeBannerMapper">
+
+    <insert id="insert" parameterType="com.zemcho.guzhe.controller.sys.param.HomeBannerParam">
+        insert into home_banner(ban_url,type,url,status,name,nick_name,sort_type,banner_type,create_time)
+        values (#{data.banUrl}, #{data.type}, #{data.url}, #{data.status}, #{data.name}
+               ,#{data.nickName}, #{data.sortType},#{data.bannerType},now())
+    </insert>
+
+    <update id="update" parameterType="com.zemcho.guzhe.controller.sys.param.HomeBannerParam">
+        update home_banner
+        <set>
+            <if test="data.banUrl != null and data.banUrl!=''">
+                ban_url = #{data.banUrl},
+            </if>
+            <if test="data.type != null">
+                type = #{data.type},
+            </if>
+            <if test="data.url != null and data.url != ''">
+                url = #{data.url},
+            </if>
+            <if test="data.status != null">
+                status = #{data.status},
+            </if>
+            <if test="data.name != null">
+                name = #{data.name},
+            </if>
+            <if test="data.nickName != null">
+                nick_name = #{data.nickName},
+            </if>
+            <if test="data.SortType != null">
+                sort_type = #{data.SortType},
+            </if>
+            <if test="data.sort != null">
+                sort = #{data.sort},
+            </if>
+            update_time = now(),
+        </set>
+        where id = #{data.id} AND banner_type = #{data.bannerType} AND delete_time is null
+    </update>
+
+    <update id="deleteByIds" parameterType="java.util.List">
+        UPDATE home_banner
+        SET delete_time = NOW()
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND banner_type = #{bannerType}
+    </update>
+
+    <update id="updateStatusByIds">
+        UPDATE `home_banner`
+        SET status = #{status}
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND delete_time is null AND banner_type = #{bannerType}
+    </update>
+
+    <select id="selectLists" resultType="com.zemcho.guzhe.entity.sys.HomeBanner">
+        SELECT id, ban_url, type, url, status, name, nick_name, sort_type, banner_type, sort, create_time, update_time
+        FROM home_banner
+        WHERE status = 1
+          AND delete_time IS NULL
+          AND sort_type = 0
+          AND banner_type = 0
+        ORDER BY banner_type ASC, sort ASC, id DESC
+    </select>
+
+    <select id="selectbanner" resultType="com.zemcho.guzhe.entity.sys.HomeBanner">
+        SELECT id, ban_url, type, url, status, name, nick_name, sort_type, banner_type, sort, create_time, update_time
+        FROM home_banner
+        WHERE status = 1
+          AND delete_time IS NULL
+          AND sort_type = 0
+          AND banner_type = 1
+        ORDER BY banner_type ASC, sort ASC, id DESC
+    </select>
+</mapper>

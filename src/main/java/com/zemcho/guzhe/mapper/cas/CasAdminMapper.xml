@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.cas.CasAdminMapper">
+    <sql id="field">
+        account,
+        password,
+        name,
+        status,
+        remark,
+        create_time
+    </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `cas_admin`(
+        <include refid="field"></include>
+        )VALUES (
+        #{data.account},
+        #{data.password},
+        #{data.name},
+        #{data.status},
+        #{data.remark},
+        #{data.createTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `cas_admin`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.account != null and data.account != ''">account = #{data.account},</if>
+            <if test="data.password != null and data.password != ''">password = #{data.password},</if>
+            <if test="data.name != null and data.name != ''">name = #{data.name},</if>
+            <if test="data.status != null">status = #{data.status},</if>
+            <if test="data.remark != null">remark = #{data.remark},</if>
+        </trim>
+        WHERE id = #{data.id}
+        AND delete_time is null
+    </update>
+
+    <select id="selectByAccount" resultType="com.zemcho.guzhe.entity.cas.CasAdmin">
+        SELECT *
+        FROM `cas_admin`
+        WHERE account = #{account}
+        AND delete_time IS NULL
+    </select>
+
+    <select id="existAccount" resultType="java.lang.Boolean">
+        SELECT COUNT(*)
+        FROM `cas_admin`
+        WHERE account = #{account}
+        AND delete_time is null
+        <if test="id != null">AND id != #{id}</if>
+    </select>
+
+    <select id="selectById" resultType="com.zemcho.guzhe.entity.cas.CasAdmin">
+        SELECT *
+        FROM `cas_admin`
+        WHERE id = #{id}
+          AND delete_time is null
+    </select>
+
+    <select id="selectAll" resultType="com.zemcho.guzhe.entity.cas.CasAdmin">
+        SELECT *
+        FROM `cas_admin`
+        WHERE delete_time is null
+        order by id desc
+    </select>
+
+    <select id="selectLists" resultType="com.zemcho.guzhe.controller.cas.vo.AdminListVO">
+        SELECT *
+        FROM `cas_admin`
+        WHERE delete_time is null
+        <if test="param.searchIds != null and param.searchIds.size() > 0">
+            AND `id` IN (
+                SELECT `admin_id` FROM `cas_admin_role` WHERE `role_id` IN
+                <foreach collection="param.searchIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            )
+        </if>
+        <if test="param.searchIntStatus != null">AND status = #{param.searchIntStatus}</if>
+        <if test="param.keyword != null and param.keyword != ''">
+          AND (account LIKE CONCAT('%',#{param.keyword},'%') OR name LIKE CONCAT('%',#{param.keyword},'%'))
+        </if>
+        <if test="param.startTime != null and param.endTime != null">
+            AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+        </if>
+        <if test="param.orderField != null and param.orderField != ''">
+            ORDER BY `${param.orderField}` ${param.orderType}
+        </if>
+    </select>
+
+    <update id="updateStatusByIds">
+        UPDATE `cas_admin`
+        SET status = #{status}
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND delete_time is null
+    </update>
+
+    <delete id="deleteByIds">
+        UPDATE `cas_admin`
+        SET delete_time = NOW()
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="selectCommonLists" resultType="com.zemcho.guzhe.controller.common.vo.AdminSelectVO">
+        SELECT *
+        FROM `cas_admin`
+        WHERE delete_time is null
+        <if test="param.searchIntList != null and param.searchIntList.size() > 0">
+            AND `id` IN
+            <foreach collection="param.searchIntList" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="param.searchIds != null and param.searchIds.size() > 0">
+            AND `id` IN (
+            SELECT `admin_id` FROM `cas_admin_role` WHERE `role_id` IN
+            <foreach collection="param.searchIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <if test="param.searchIntStatus != null">AND status = #{param.searchIntStatus}</if>
+        <if test="param.keyword != null and param.keyword != ''">
+            AND (account LIKE CONCAT('%',#{param.keyword},'%') OR name LIKE CONCAT('%',#{param.keyword},'%'))
+        </if>
+        order by id desc
+    </select>
+</mapper>

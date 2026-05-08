@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.screen.ScreenRentalOrderMapper">
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `screen_rental_order`
+        (
+            order_no,
+            equipment_id,
+            shop_id,
+            shop_name,
+            business_circle_id,
+            business_circle_name,
+            total_amount,
+            order_time,
+            user_id,
+            phone,
+            nick_name,
+            display_type,
+            display_target_id,
+            status,
+            remark,
+            create_time,
+            update_time
+        )
+        VALUES
+        (
+            #{data.orderNo},
+            #{data.equipmentId},
+            #{data.shopId},
+            #{data.shopName},
+            #{data.businessCircleId},
+            #{data.businessCircleName},
+            #{data.totalAmount},
+            #{data.orderTime},
+            #{data.userId},
+            #{data.phone},
+            #{data.nickName},
+            #{data.displayType},
+            #{data.displayTargetId},
+            #{data.status},
+            #{data.remark},
+            #{data.createTime},
+            #{data.updateTime}
+        )
+    </insert>
+
+    <select id="selectShopIdByEquipmentId" resultType="java.lang.Integer">
+        SELECT shop_id
+        FROM `screen_rental_order`
+        WHERE equipment_id = #{equipmentId}
+        AND status = 2
+    </select>
+</mapper>

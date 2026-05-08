@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.equipment.EquipmentMapper">
+
+        <insert id="insert" parameterType="com.zemcho.guzhe.controller.equipment.param.EquipmentParam">
+        insert into equipment(supermarket_id, serial_number, contact_phone, money, status, sort, remark,online_status, create_time, update_time)
+        values (#{data.supermarketId}, #{data.serialNumber}, #{data.contactPhone}, #{data.money},
+            #{data.status}, #{data.sort}, #{data.remark}, #{data.onlineStatus},now(), now())
+
+    </insert>
+
+    <update id="update" parameterType="com.zemcho.guzhe.controller.equipment.param.EquipmentParam">
+        update equipment
+        <set>
+            <if test="data.supermarketId != null">
+                supermarket_id = #{data.supermarketId},
+            </if>
+            <if test="data.serialNumber != null">
+                serial_number = #{data.serialNumber},
+            </if>
+            <if test="data.contactPhone != null">
+                contact_phone = #{data.contactPhone},
+            </if>
+            <if test="data.money != null">
+                money = #{data.money},
+            </if>
+            <if test="data.status != null">
+                status = #{data.status},
+            </if>
+            <if test="data.sort != null">
+                sort = #{data.sort},
+            </if>
+            <if test="data.remark != null">
+                remark = #{data.remark},
+            </if>
+            update_time = now(),
+        </set>
+        where id = #{data.id}
+    </update>
+
+    <select id="select" resultType="com.zemcho.guzhe.controller.equipment.vo.EquipmentVo"
+            parameterType="com.zemcho.guzhe.common.param.SearchParam">
+        select e.id,
+        e.supermarket_id,
+        e.serial_number,
+        e.contact_phone,
+        e.money,
+        e.status,
+        e.online_status,
+        e.sort,
+        e.remark,
+        e.create_time,
+        e.update_time,
+        s.name as supermarket_name,
+        s.address as supermarket_address
+        from equipment e left join supermarket_info s on e.supermarket_id = s.id
+        <where>
+            <if test="param.keyword != null and param.keyword != ''">
+                and e.serial_number like concat('%', #{param.keyword}, '%')
+            </if>
+            <if test="param.searchIntStatus != null">
+                and e.online_status = #{param.searchIntStatus}
+            </if>
+            <if test="param.searchType != null">
+                and e.supermarket_id = #{param.searchType}
+            </if>
+            <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+                and s.name like concat('%', #{param.searchStrField1}, '%')
+            </if>
+            <if test="param.searchField1 != null">
+                and e.status = #{param.searchField1}
+            </if>
+            <if test="param.startTime != null">
+                and e.create_time >= #{param.startTime}
+            </if>
+            <if test="param.endTime != null">
+                and #{param.endTime} >= e.create_time
+            </if>
+            and e.delete_time is null
+        </where>
+        order by e.sort desc, e.create_time desc
+    </select>
+
+
+    <update id="delete" parameterType="java.util.List">
+        update equipment
+        set delete_time = now()
+        where id in
+        <foreach item="item" collection="deleteIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectBySerialNumber" resultType="com.zemcho.guzhe.entity.equipment.Equipment">
+        SELECT *
+        FROM equipment
+        WHERE serial_number = #{serialNumber}
+          AND delete_time IS NULL
+    </select>
+
+    <select id="selectById" resultType="com.zemcho.guzhe.entity.equipment.Equipment">
+        SELECT *
+        FROM equipment
+        WHERE id = #{id}
+          AND delete_time IS NULL
+    </select>
+
+
+    <update id="updateStatusByIds">
+        UPDATE equipment
+        SET status = #{status}
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND delete_time is null
+    </update>
+
+    <select id="selectOffList" resultType="com.zemcho.guzhe.entity.equipment.Equipment">
+            SELECT *
+            FROM equipment
+            WHERE online_status = 0
+              AND app_require_time &lt;= #{checkTime}
+              AND delete_time IS NULL
+    </select>
+
+    <update id="updateEquipmentStatus" parameterType="com.zemcho.guzhe.entity.equipment.Equipment">
+        UPDATE equipment
+        SET online_status = #{onlineStatus},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+          AND delete_time IS NULL
+    </update>
+
+    <update id="updateByEquipment">
+        update equipment
+        <set>
+            <if test="data.supermarketId != null">
+                supermarket_id = #{data.supermarketId},
+            </if>
+            <if test="data.serialNumber != null">
+                serial_number = #{data.serialNumber},
+            </if>
+            <if test="data.contactPhone != null">
+                contact_phone = #{data.contactPhone},
+            </if>
+            <if test="data.money != null">
+                money = #{data.money},
+            </if>
+            <if test="data.status != null">
+                status = #{data.status},
+            </if>
+            <if test="data.onlineStatus != null">
+                online_status = #{data.onlineStatus},
+            </if>
+            <if test="data.sort != null">
+                sort = #{data.sort},
+            </if>
+            <if test="data.remark != null">
+                remark = #{data.remark},
+            </if>
+            <if test="data.versionId != null">
+                version_id = #{data.versionId},
+            </if>
+            <if test="data.versionSerialNumber != null">
+                version_serial_number = #{data.versionSerialNumber},
+            </if>
+            <if test="data.release != null">
+                `release` = #{data.release},
+            </if>
+            <if test="data.appRequireTime != null">
+                app_require_time = #{data.appRequireTime},
+            </if>
+        </set>
+        where id = #{data.id}
+    </update>
+</mapper>

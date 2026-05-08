@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.shop.QualificationCertMapper">
+
+    <sql id="field">
+        business_license,
+        other_file,
+        phone,
+        email,
+        submit_time,
+        cert_result,
+        reject_reason,
+        cert_user,
+        user_id,
+        shop_id,
+        cert_side,
+        update_time,
+        create_time
+    </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `qualification_cert`
+        (<include refid="field"/>)
+        VALUES
+        (
+        #{data.businessLicense},
+        #{data.otherFile},
+        #{data.phone},
+        #{data.email},
+        #{data.submitTime},
+        #{data.certResult},
+        #{data.rejectReason},
+        #{data.certUser},
+        #{data.userId},
+        #{data.shopId},
+        #{data.certSide},
+        #{data.updateTime},
+        #{data.createTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `qualification_cert`
+        <set>
+            <if test="data.businessLicense != null and data.businessLicense != ''">
+                business_license = #{data.businessLicense},
+            </if>
+            <if test="data.otherFile != null">
+                other_file = #{data.otherFile},
+            </if>
+            <if test="data.phone != null and data.phone != ''">
+                phone = #{data.phone},
+            </if>
+            <if test="data.email != null and data.email != ''">
+                email = #{data.email},
+            </if>
+            <if test="data.submitTime != null">
+                submit_time = #{data.submitTime},
+            </if>
+            <if test="data.certResult != null">
+                cert_result = #{data.certResult},
+            </if>
+            <if test="data.rejectReason != null">
+                reject_reason = #{data.rejectReason},
+            </if>
+            <if test="data.certUser != null">
+                cert_user = #{data.certUser},
+            </if>
+            <if test="data.shopId != null">
+                shop_id = #{data.shopId},
+            </if>
+        </set>
+        WHERE id = #{data.id}
+    </update>
+
+
+    <select id="selectById" resultType="com.zemcho.guzhe.entity.shop.QualificationCert">
+        SELECT *
+        FROM `qualification_cert`
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByShopId" resultType="com.zemcho.guzhe.entity.shop.QualificationCert">
+        SELECT *
+        FROM `qualification_cert`
+        WHERE shop_id = #{shopId}
+        ORDER BY update_time DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectExistByShopId" resultType="com.zemcho.guzhe.entity.shop.QualificationCert">
+        SELECT *
+        FROM `qualification_cert`
+        WHERE shop_id = #{shopId} AND cert_result IN (0,1)
+        ORDER BY create_time DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectExistByUserId" resultType="com.zemcho.guzhe.entity.shop.QualificationCert">
+        SELECT *
+        FROM `qualification_cert`
+        WHERE user_id = #{userId}
+          AND shop_id = 0
+          AND cert_result IN (0,1)
+        ORDER BY create_time DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectByShopAuditId" resultType="com.zemcho.guzhe.controller.shop.vo.QualificationCertVO">
+        SELECT
+            qc.*,
+            sa.name AS shopName
+        FROM `qualification_cert` qc
+                 LEFT JOIN `shop_audit` sa ON qc.shop_audit_id = sa.id
+        WHERE qc.shop_audit_id = #{searchId}
+    </select>
+</mapper>

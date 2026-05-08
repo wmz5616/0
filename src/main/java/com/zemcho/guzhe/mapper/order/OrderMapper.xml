@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.order.OrderMapper">
+    <sql id="field">
+        user_id,
+        phone,
+        nick_name,
+        shop_id,
+        order_type,
+        order_id,
+        order_no,
+        up_order_no,
+        price,
+        num,
+        amount,
+        status,
+        pay_time,
+        create_time
+    </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `order`(
+        <include refid="field"></include>
+        )VALUES (
+        #{data.userId},
+        #{data.phone},
+        #{data.nickName},
+        #{data.shopId},
+        #{data.orderType},
+        #{data.orderId},
+        #{data.orderNo},
+        #{data.upOrderNo},
+        #{data.price},
+        #{data.num},
+        #{data.amount},
+        #{data.status},
+        #{data.payTime},
+        #{data.createTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `order`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.status != null">status = #{data.status},</if>
+            <if test="data.refundAmount != null">refund_amount = #{data.refundAmount},</if>
+            <if test="data.refundTime != null">refund_time = #{data.refundTime},</if>
+            <if test="data.divideStatus != null">divide_status = #{data.divideStatus},</if>
+            <if test="data.divideAmount != null">divide_amount = #{data.divideAmount},</if>
+            <if test="data.divideTime != null">divide_time = #{data.divideTime},</if>
+        </trim>
+        WHERE id = #{data.id}
+    </update>
+
+    <update id="updateByOrderId">
+        UPDATE `order`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.status != null">status = #{data.status},</if>
+            <if test="data.refundAmount != null">refund_amount = #{data.refundAmount},</if>
+            <if test="data.refundTime != null">refund_time = #{data.refundTime},</if>
+        </trim>
+        WHERE order_type = #{data.orderType}
+        AND order_id = #{data.orderId}
+    </update>
+
+    <select id="selectByOrderId" resultType="com.zemcho.guzhe.entity.order.Order">
+        SELECT *
+        FROM `order`
+        WHERE order_type = #{orderType}
+        AND order_id = #{orderId}
+    </select>
+
+    <select id="selectBusinessData" resultType="com.zemcho.guzhe.controller.wechat.shop.vo.BusinessDataVO">
+        SELECT
+        COUNT(*) AS orderCount,
+        IFNULL(
+        (SELECT IFNULL(SUM(amount), 0) FROM `order` WHERE `shop_id` = #{param.searchField4} AND `status` = 1
+        <if test="param.startTime != null and param.endTime != null">
+            AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+        </if>
+        )
+        -
+        (SELECT IFNULL(SUM(refund_amount), 0) FROM `order` WHERE `shop_id` = #{param.searchField4} AND `status` = 2
+        <if test="param.startTime != null and param.endTime != null">
+            AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+        </if>
+        ),
+        0
+        ) AS revenue,
+        IFNULL(
+        (SELECT IFNULL(SUM(amount), 0) FROM `order` WHERE `shop_id` = #{param.searchField4} AND `divide_status` = 0),
+        0
+        ) AS pendingAmount
+        FROM `order`
+        WHERE `shop_id` = #{param.searchField4}
+        <if test="param.startTime != null and param.endTime != null">
+            AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+        </if>
+    </select>
+</mapper>

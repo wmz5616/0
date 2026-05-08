@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.order.ProductOrderAddressMapper">
+    <sql id="fields">
+        order_id,
+        address_id,
+        name,
+        phone,
+        region_id,
+        address,
+        location,
+        create_time
+    </sql>
+
+    <insert id="insert">
+        INSERT INTO `product_order_address`
+        (<include refid="fields"/>)
+        VALUES
+        (
+        #{data.orderId},
+        #{data.addressId},
+        #{data.name},
+        #{data.phone},
+        #{data.regionId},
+        #{data.address},
+        #{data.location},
+        #{data.createTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `product_order_address`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.addressId != null">address_id = #{data.addressId},</if>
+            <if test="data.name != null">name = #{data.name},</if>
+            <if test="data.phone != null">phone = #{data.phone},</if>
+            <if test="data.regionId != null">region_id = #{data.regionId},</if>
+            <if test="data.address != null">address = #{data.address},</if>
+            <if test="data.location != null">location = #{data.location},</if>
+        </trim>
+        WHERE id = #{data.id}
+    </update>
+
+    <select id="selectByOrderId" resultType="com.zemcho.guzhe.controller.wechat.user.vo.ProductOrderAddressVo">
+        SELECT *
+        FROM `product_order_address`
+        WHERE order_id = #{orderId}
+    </select>
+</mapper>

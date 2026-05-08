@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.sys.ArticleMapper">
+
+    <select id="selectMaxSort" resultType="java.lang.Integer">
+        SELECT MAX(sort)
+        FROM `sys_article`
+    </select>
+
+    <insert id="insert" parameterType="com.zemcho.guzhe.entity.sys.Article">
+        INSERT INTO `sys_article`(`status`,  `title`, `sort`,`content`, `create_time`, `update_time`)
+        VALUES ( #{data.status}, #{data.title}, #{data.sort},#{data.content}, #{data.createTime}, #{data.updateTime})
+    </insert>
+
+    <update id="update" parameterType="com.zemcho.guzhe.entity.sys.Article">
+        UPDATE `sys_article`
+        <set>
+            <if test="data.status != null">
+                `status` = #{data.status},
+            </if>
+            <if test="data.title != null">
+                `title` = #{data.title},
+            </if>
+            <if test="data.content != null">
+                `content` = #{data.content},
+            </if>
+            <if test="data.sort != null">sort = #{data.sort},</if>
+        </set>
+        WHERE `id` = #{data.id}
+    </update>
+
+    <delete id="delete" parameterType="java.util.List">
+        DELETE FROM `sys_article`
+        WHERE `id` IN
+        <foreach item="item" collection="deleteIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="selectWechatList" resultType="com.zemcho.guzhe.entity.sys.Article">
+        SELECT *
+        FROM `sys_article`
+        WHERE `status` = 0
+        ORDER BY sort asc, id desc
+    </select>
+</mapper>

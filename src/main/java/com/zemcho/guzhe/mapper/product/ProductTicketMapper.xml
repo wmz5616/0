@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.product.ProductTicketMapper">
+    <sql id="field">
+        product_id,
+        ticket,
+        sort,
+        status,
+        order_id,
+        create_time
+    </sql>
+
+    <select id="selectByProductId" resultType="com.zemcho.guzhe.entity.product.ProductTicket">
+        SELECT *
+        FROM product_ticket
+        <where>
+            <if test="productId != null">
+                AND product_id = #{productId}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <insert id="saveBatch">
+        INSERT INTO product_ticket (
+        <include refid="field"/>
+        ) VALUES
+        <foreach collection="ticketList" item="item" separator=",">
+            (
+            #{item.productId},
+            #{item.ticket},
+            #{item.sort},
+            #{item.status},
+            #{item.orderId},
+            #{item.createTime}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectByProductIdAndTicket" resultType="com.zemcho.guzhe.entity.product.ProductTicket">
+        SELECT *
+        FROM product_ticket
+        <where>
+            <if test="productId != null">
+                AND product_id = #{productId}
+            </if>
+            <if test="ticketList != null and ticketList.size() > 0">
+                AND `ticket` IN
+                <foreach collection="ticketList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateByProductIdAndTicket">
+        UPDATE `product_ticket`
+        SET
+        `status` = #{status},
+        `order_id` = #{orderId}
+        WHERE product_id = #{productId}
+        AND `ticket` IN
+        <foreach collection="ticketList" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectByOrderId" resultType="com.zemcho.guzhe.entity.product.ProductTicket">
+        SELECT *
+        FROM `product_ticket`
+        WHERE order_id = #{orderId}
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+    </select>
+
+    <select id="selectByTicket" resultType="com.zemcho.guzhe.entity.product.ProductTicket">
+        SELECT *
+        FROM `product_ticket`
+        WHERE ticket = #{ticket}
+    </select>
+
+    <update id="updateStatusById">
+        UPDATE `product_ticket`
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
+</mapper>

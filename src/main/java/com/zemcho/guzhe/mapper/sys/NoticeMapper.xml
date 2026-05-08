@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.sys.NoticeMapper">
+    <resultMap id="articleResult" type="com.zemcho.guzhe.entity.sys.Notice">
+        <id column="id" property="id" javaType="java.lang.Integer"/>
+        <result column="title" property="title" javaType="java.lang.String"/>
+        <result column="content" property="content" javaType="java.lang.String"/>
+        <result column="status" property="status" javaType="java.lang.Integer"/>
+        <result column="is_publish" property="isPublish" javaType="java.lang.Boolean"/>
+        <result column="publish_time" property="publishTime" javaType="java.time.LocalDateTime"/>
+        <result column="create_time" property="createTime" javaType="java.time.LocalDateTime"/>
+        <result column="update_time" property="updateTime" javaType="java.time.LocalDateTime"/>
+    </resultMap>
+
+    <sql id="field">
+        title,
+        content,
+        status,
+        is_publish,
+        publish_time,
+        create_time
+    </sql>
+
+    <insert id="insert" keyProperty="data.id" useGeneratedKeys="true">
+        INSERT INTO sys_notice
+        (<include refid="field"/>)
+        VALUES
+        (
+        #{data.title},
+        #{data.content},
+        #{data.status},
+        #{data.isPublish},
+        #{data.publishTime},
+        #{data.createTime}
+        )
+    </insert>
+
+    <select id="selectById" resultMap="articleResult">
+        SELECT * FROM sys_notice WHERE id = #{id}
+    </select>
+
+    <update id="update">
+        UPDATE sys_notice
+        <set>
+            <if test="data.title != null">
+                title = #{data.title},
+            </if>
+            <if test="data.content != null">
+                content = #{data.content},
+            </if>
+            <if test="data.status != null">
+                status = #{data.status},
+            </if>
+            <if test="data.isPublish != null">
+                is_publish = #{data.isPublish},
+            </if>
+            <if test="data.publishTime != null">
+                publish_time = #{data.publishTime},
+            </if>
+            <if test="data.deleteTime != null">
+                delete_time = #{data.deleteTime},
+            </if>
+        </set>
+        where id = #{data.id}
+    </update>
+
+    <delete id="deletes">
+        UPDATE sys_notice
+        SET delete_time = NOW()
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND delete_time IS NULL
+    </delete>
+
+    <select id="selectList" resultMap="articleResult">
+        SELECT * FROM sys_notice
+        <where>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND title LIKE CONCAT('%', #{param.keyword}, '%')
+            </if>
+            <if test="param.searchStatus != null">
+                AND is_publish = #{param.searchStatus}
+            </if>
+            <if test="param.searchIntStatus != null">
+                AND status = #{param.searchIntStatus}
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND publish_time BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+            <if test="param.startTime2 != null and param.endTime2 != null">
+                AND create_time BETWEEN #{param.startTime2} AND #{param.endTime2}
+            </if>
+                AND delete_time IS NULL
+        </where>
+        order by is_top desc, id desc
+    </select>
+
+    <update id="updateTopStatusByIds">
+        UPDATE `sys_notice`
+        SET is_top = #{isTop}
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectTopNotice" resultMap="articleResult">
+        SELECT * FROM sys_notice
+        WHERE is_top = 1
+          AND status = 2
+          AND delete_time IS NULL
+        ORDER BY id DESC
+    </select>
+</mapper>

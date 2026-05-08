@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.audit.SettlementApplicationMapper">
+
+    <insert id="insert">
+        INSERT INTO `settlement_application`
+        (`user_id`,`phone`,`submit_time`,`apply_result`,`reject_reason`,`audit_user`,
+        `audit_time`, `audit_phone`,`shop_id`,`shop_audit_id`)
+        VALUES
+            ( #{data.userId}, #{data.phone}, #{data.submitTime}, #{data.applyResult}, #{data.rejectReason}, #{data.auditUser},
+            #{data.auditTime}, #{data.auditPhone}, #{data.shopId} ,#{data.shopAuditId} )
+    </insert>
+
+    <update id="update">
+        UPDATE `settlement_application`
+        <set>
+            <if test="data.userId != null">
+                `user_id` = #{data.userId},
+            </if>
+            <if test="data.phone != null">
+                `phone` = #{data.phone},
+            </if>
+            <if test="data.submitTime != null">
+                `submit_time` = #{data.submitTime},
+            </if>
+            <if test="data.applyResult != null">
+                `apply_result` = #{data.applyResult},
+            </if>
+            <if test="data.rejectReason != null">
+                `reject_reason` = #{data.rejectReason},
+            </if>
+            <if test="data.auditUser != null">
+                `audit_user` = #{data.auditUser},
+            </if>
+            <if test="data.auditTime != null">
+                `audit_time` = #{data.auditTime},
+            </if>
+            <if test="data.auditPhone != null">
+                `audit_phone` = #{data.auditPhone},
+            </if>
+            <if test="data.shopId != null">
+                `shop_id` = #{data.shopId},
+            </if>
+            <if test="data.shopAuditId != null">
+                `shop_audit_id` = #{data.shopAuditId},
+            </if>
+        </set>
+        WHERE `id` = #{data.id}
+    </update>
+
+
+    <select id="selectList" resultType="com.zemcho.guzhe.controller.shop.vo.SettlementApplicationVO">
+        SELECT sa.*,
+        s.name,
+        s.cover_image_url,
+        u.name AS user_name
+        FROM `settlement_application` sa
+        LEFT JOIN `shop_audit` s ON sa.`shop_audit_id` = s.`id`
+        LEFT JOIN `cas_user` u ON sa.`user_id` = u.`id`
+        <where>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND s.`name` LIKE CONCAT('%', #{param.keyword}, '%')
+            </if>
+            <if test="param.searchId != null and param.searchField2 != 1">
+                AND sa.`user_id` = #{param.searchId}
+            </if>
+            <if test="param.searchType != null">
+                AND sa.`apply_result` = #{param.searchType}
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND sa.`submit_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+            <if test="param.startTime2!=null and param.endTime2!=null">
+                AND sa.`audit_time` BETWEEN #{param.startTime2} AND #{param.endTime2}
+            </if>
+            <if test="param.searchField1 != null">
+                AND sa.`user_id` = #{param.searchField1}
+            </if>
+        </where>
+        ORDER BY sa.`submit_time` DESC
+    </select>
+
+    <select id="selectById" resultType="com.zemcho.guzhe.entity.audit.SettlementApplication">
+        SELECT *
+        FROM `settlement_application`
+        WHERE `id` = #{id}
+    </select>
+
+
+    <select id="selectAll" resultType="com.zemcho.guzhe.controller.shop.vo.SettlementApplicationVO">
+            SELECT
+            sa.id AS id,
+            sa.apply_result,
+            sa.reject_reason,
+            sa.audit_user,
+            sa.audit_time,
+            sa.audit_phone,
+            s.id AS shop_id,
+            s.name,
+            s.cover_image_url,
+            s.submit_time,
+            s.user_name,
+            s.phone,
+            CONCAT(s.user_name, ' (', s.phone, ')') AS applicant_info,
+            CASE
+            WHEN a.name IS NOT NULL AND a.name != '' THEN CONCAT(a.name, ' (', sa.audit_phone, ')')
+            ELSE sa.audit_phone
+            END AS auditor_info
+            FROM `shop_audit` s
+            LEFT JOIN `settlement_application` sa ON s.`id` = sa.`shop_audit_id`
+            LEFT JOIN `cas_admin` a ON sa.`audit_user` = a.`id`
+            <where>
+                <!-- 商家名称模糊查询 -->
+                <if test="param.keyword != null and param.keyword != ''">
+                    AND s.`name` LIKE CONCAT('%', #{param.keyword}, '%')
+                </if>
+                <!-- 审核人员筛选 -->
+                <if test="param.searchField1 != null">
+                    AND sa.`audit_user` = #{param.searchField1}
+                </if>
+                <!-- 申请时间范围 -->
+                <if test="param.startTime != null and param.endTime != null">
+                    AND s.`submit_time` BETWEEN #{param.startTime} AND #{param.endTime}
+                </if>
+                <!-- 审核时间范围 -->
+                <if test="param.startTime2 != null and param.endTime2 != null">
+                    AND sa.`audit_time` BETWEEN #{param.startTime2} AND #{param.endTime2}
+                </if>
+            </where>
+            ORDER BY s.`submit_time` DESC
+        </select>
+
+    <select id="selectByShopAuditId" resultType="com.zemcho.guzhe.entity.audit.SettlementApplication">
+        SELECT *
+        FROM `settlement_application`
+        WHERE `shop_audit_id` = #{id}
+        LIMIT 1
+    </select>
+</mapper>
