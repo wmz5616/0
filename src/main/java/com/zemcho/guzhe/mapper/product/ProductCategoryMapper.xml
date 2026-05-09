@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.product.ProductCategoryMapper">
+
+    <select id="selectByProductIds" resultType="com.zemcho.guzhe.controller.product.vo.CategoryVo">
+        select
+        c.*,
+        pc.product_id
+        from product_category c
+        inner join product_category_relation pc on c.id = pc.category_id
+        <where>
+            <if test="productIds != null and productIds.size() > 0">
+                AND pc.product_id IN
+                <foreach collection="productIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `product_category` (
+        name,
+        `sort`,
+        shop_id,
+        create_time,
+        update_time
+        ) VALUES
+        <foreach collection="data" item="item" separator=",">
+            (
+            #{item.name},
+            #{item.sort},
+            #{item.shopId},
+            #{item.createTime},
+            #{item.updateTime}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateBatch">
+        <foreach collection="data" item="item" index="index" open="" close="" separator=";">
+            update product_category
+            SET
+            name = #{item.name},
+            `sort` = #{item.sort}
+            WHERE id = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="selectList" resultType="com.zemcho.guzhe.entity.product.ProductCategory">
+        SELECT *
+        FROM `product_category`
+        <where>
+            <if test="param.searchId != null">
+                AND id = #{param.searchId}
+            </if>
+            <if test="param.searchField4 != null">
+                AND shop_id = #{param.searchField4}
+            </if>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND `name` LIKE CONCAT('%',#{param.keyword},'%')
+            </if>
+        </where>
+        order by sort
+    </select>
+
+    <select id="selectById" resultType="com.zemcho.guzhe.entity.product.ProductCategory">
+        select *
+        from product_category
+        <where>
+            <if test="categoryId != null">
+                and id = #{categoryId}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateSortAfterDelete">
+        update product_category
+        set `sort` = `sort` - 1
+        where `sort` > #{deletedSort}
+    </update>
+</mapper>

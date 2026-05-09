@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zemcho.guzhe.mapper.sys.TransactionFlowMapper">
+
+    <!-- 基础关联 -->
+    <sql id="safeBaseJoins">
+        FROM sys_pay_log spl
+    LEFT JOIN `order` o ON spl.out_trade_no COLLATE utf8mb4_unicode_ci = o.order_no COLLATE utf8mb4_unicode_ci
+    LEFT JOIN product_order po ON spl.order_id = po.id AND spl.order_type = 1
+    LEFT JOIN screen_rental_order sro ON spl.order_id = sro.id AND spl.order_type = 2
+    </sql>
+
+    <!-- 统一查询过滤条件 -->
+    <sql id="queryConditions">
+        <where>
+            spl.status IN (1, 3)
+            <if test="data.orderNo != null and data.orderNo != ''">
+                AND (o.order_no COLLATE utf8mb4_unicode_ci LIKE CONCAT('%',#{data.orderNo},'%')
+                OR po.order_no COLLATE utf8mb4_unicode_ci LIKE CONCAT('%',#{data.orderNo},'%')
+                OR sro.order_no COLLATE utf8mb4_unicode_ci LIKE CONCAT('%',#{data.orderNo},'%')
+                OR spl.out_trade_no COLLATE utf8mb4_unicode_ci LIKE CONCAT('%',#{data.orderNo},'%'))
+            </if>
+            <if test="data.merchantOrderNo != null and data.merchantOrderNo != ''">
+                AND spl.wx_transaction_no LIKE CONCAT('%',#{data.merchantOrderNo},'%')
+            </if>
+            <if test="data.type != null">
+                AND spl.status = #{data.type}
+            </if>
+            <if test="data.startTime != null">
+                AND spl.created_at &gt;= #{data.startTime}
+            </if>
+            <if test="data.endTime != null">
+                AND spl.created_at &lt;= #{data.endTime}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 分页 COUNT 查询 -->
+    <select id="selectTransactionFlowList_COUNT" resultType="long">
+        SELECT COUNT(0)
+        <include refid="safeBaseJoins"/>
+        <include refid="queryConditions"/>
+    </select>
+
+    <!-- 列表查询 -->
+    <select id="selectTransactionFlowList" resultType="com.zemcho.guzhe.controller.sys.vo.TransactionFlowVo">
+        SELECT
+        spl.created_at as transactionTime,
+        COALESCE(o.order_no, po.order_no, sro.order_no, spl.out_trade_no, '') as orderNo,
+        CASE spl.status WHEN 1 THEN '收款' WHEN 3 THEN '退款' ELSE '其他' END as type,
+        -- 手续费
+        CAST(IFNULL(
+        CASE spl.order_type
+        WHEN 1 THEN po.divide_amount
+        WHEN 2 THEN 0 -- 店位订单暂无分账字段
+        ELSE o.divide_amount
+        END, 0) / 100.0 AS DECIMAL(10,2)) as serviceFee,
+        -- 收入/支出
+        CAST(IFNULL(CASE WHEN spl.status = 1 THEN (spl.total_fee / 100.0) ELSE 0 END, 0) AS DECIMAL(10,2)) as income,
+        CAST(IFNULL(CASE WHEN spl.status = 3 THEN (spl.refund_price / 100.0) ELSE 0 END, 0) AS DECIMAL(10,2)) as expense,
+        COALESCE(spl.wx_transaction_no, '') as merchantOrderNo,
+        CASE
+        -- 优先展示退款申请单中的信息 (主要针对商品订单退款)
+        WHEN por.reason IS NOT NULL OR por.audit_remark IS NOT NULL THEN
+        CONCAT('备注：',
+        IFNULL(por.reason, ''),
+        IF(por.reason IS NOT NULL AND por.audit_remark IS NOT NULL AND por.audit_remark != '', '；', ''),
+        IFNULL(por.audit_remark, '')
+        )
+        -- 正常订单备注/店位订单自带的驳回原因
+        ELSE
+        CONCAT('备注：', COALESCE(po.remark, sro.remark, '无'))
+        END as remark
+        <include refid="safeBaseJoins"/>
+        -- 获取商品订单退款原因
+        LEFT JOIN product_order_refund_apply por ON po.id = por.order_id
+        <include refid="queryConditions"/>
+        ORDER BY spl.created_at DESC
+    </select>
+
+    <!-- 汇总统计 -->
+    <select id="selectTransactionFlowSummary" resultType="com.zemcho.guzhe.controller.sys.vo.TransactionFlowSummaryVo">
+        SELECT
+        COUNT(spl.id) as totalCount,
+        IFNULL(SUM(CASE WHEN spl.status = 1 THEN 1 ELSE 0 END), 0) as incomeCount,
+        CAST(IFNULL(SUM(CASE WHEN spl.status = 1 THEN (spl.total_fee / 100.0) ELSE 0 END), 0) AS DECIMAL(10,2)) as incomeAmount,
+        IFNULL(SUM(CASE WHEN spl.status = 3 THEN 1 ELSE 0 END), 0) as expenseCount,
+        CAST(IFNULL(SUM(CASE WHEN spl.status = 3 THEN (spl.refund_price / 100.0) ELSE 0 END), 0) AS DECIMAL(10,2)) as expenseAmount,
+        -- 汇总手续费
+        CAST(IFNULL(SUM(
+        CASE spl.order_type
+        WHEN 1 THEN IFNULL(po.divide_amount, 0)
+        WHEN 2 THEN 0
+        ELSE IFNULL(o.divide_amount, 0)
+        END
+        ) / 100.0, 0) AS DECIMAL(10,2)) as totalServiceFee
+        <include refid="safeBaseJoins"/>
+        <include refid="queryConditions"/>
+    </select>
+
+</mapper>

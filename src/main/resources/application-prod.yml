@@ -1,0 +1,166 @@
+server:
+  port: 8098
+  servlet:
+    context-path: /guzhe
+
+logging:
+  level:
+    com:
+      zemcho:
+        guzhe:
+          mapper: debug
+    org.flyway: TRACE
+
+spring:
+  datasource:
+    common:
+      ip: 127.0.0.1
+      port: 3306
+      database: guzhe
+      mapperLocation: classpath:mapper/**/*Mapper.xml
+      url: jdbc:mysql://${spring.datasource.common.ip}:${spring.datasource.common.port}/${spring.datasource.common.database}?serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&characterEncoding=utf8&useSSL=false&useUnicode=true&allowMultiQueries=true&autoReconnect=true
+      username: root
+      password: DdQL25!1016!zc
+      initialSize: 10
+      minIdle: 5
+      maxActive: 300
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1
+      testWhileIdle: true
+      testOnBorrow: true
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 100
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+  flyway:
+    #    flyway 的 clean 命令会删除指定 schema 下的所有 table, 杀伤力太大了, 应该禁掉.
+    clean-disabled: true
+    #    禁用/启用flyway
+    enabled: true
+    #    设定 SQL 脚本的目录,多个路径使用逗号分隔, 比如取值为 classpath:db/migration,filesystem:/sql-migrations
+    locations: classpath:db/migration
+    #    如果指定 schema 包含了其他表,但没有 flyway schema history 表的话, 在执行 flyway migrate 命令之前, 必须先执行 flyway baseline 命令.
+    baseline-on-migrate: true
+    #    指定 baseline 的版本号,缺省值为 1, 低于该版本号的 SQL 文件, migrate 的时候被忽略.
+    baseline-version: 1
+    #    sql文件编码
+    encoding: UTF-8
+    #    设定 flyway 的 metadata 表名, 缺省为 flyway_schema_history
+    table: flyway_schema_history
+    #    开发环境最好开启 outOfOrder, 生产环境关闭 outOfOrder .
+    out-of-order: false
+
+  redis:
+    database: 3
+    host: 127.0.0.1
+    password: DdQL25!1016!zAt
+    port: 6379
+    expire: 43200
+    maxIdle: 100
+    minIdle: 10
+    maxTotal: 10000
+    maxWaitMills: 60000
+
+  sms:
+    accessKeyId:
+    secret:
+    signName:
+    codeTemplateId:
+
+  mail:
+    host: smtp.163.com
+    username:
+    password:
+    protocol: smtp
+    port: 465
+    defaultEncoding: UTF-8
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+      #阿里的要配下面，25端被禁了的
+      mail.smtp.ssl.enable: true
+      mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory
+      mail.smtp.socketFactory.port: 465
+    test-connection: true
+    subject:
+      code: 验证码
+
+file:
+  path: /home/guzhe
+  upload-path: /storage/upload
+
+auth-status: false
+
+other:
+  superAdminId: 1
+  isUpdateRule: true
+  appSignSecret: guzhe#rpelm[pkytdnl!]fgdratgjhjl,riwt
+  appSignExpires: 300
+  appAccessTokenRequireNumLimit: 100
+  appAccessTokenRequireTimeLimit: 24
+  appAccessTokenExpiresIn: 7200
+  divideTimeLimit: 7
+
+pool-config:
+  custom-async:
+    corePoolSize: 20
+    maxPoolSize: 30
+    keepAliveTime: 300
+    queueCapacity: 2000
+    threadNamePrefix: "custom-async-pool-"
+    awaitTerminationSeconds: 600
+
+miniapp:
+  appId: "wx2b2c5cb956d48434"
+  secret: "2704039d167d70e5c030d49db7aeccec"
+  codeQREnv: "release"
+  productOrderQRPage: "pages/lotteryDetail/lotteryDetail"
+  screenOrderQRPage: "pages/screenBoothRental/screenBoothRental"
+
+# 通莞支付商户相关配置
+merchant:
+  # 商户名
+  name: ""
+  # 主商户号
+  parentMerchantNo: ""
+  account: ""
+  key: ""
+  # 进件商户配置信息
+  loginAccount: ""
+  parentChannelMerchantKey: ""
+  parentChannelMerchantNo: ""
+  # 分账-平台收费商户号
+  ledgerNo: ""
+  # 分账-平台收费商户名称
+  ledgerName: ""
+  # 小程序appid
+  appId: ""
+  # 获取微信支付接口
+  wxJsPayURL: "https://tgpay.833006.net/tgPosp/services/payApi/wxJspay"
+  # 微信支付退款接口
+  wxJsRefundURL: "https://tgpay.833006.net/tgPosp/services/payApi/refund"
+  # 分账接口
+  payDivideURL: "https://tgpay.833006.net/tgPosp/commonDivide/divide"
+  # 文件上传接口
+  uploadFileUrl: "https://tg-merchant.833006.net/channelApi/v1/image/upload"
+  # 添加商户接口
+  addMerchantUrl: "https://tg-merchant.833006.net/channelApi/v1/addMerchantChannel"
+  # 查询商户接口
+  queryMerchantUrl: "https://tg-merchant.833006.net/channelApi/v1/queryMerchantChannel"
+  # 商品订单订单支付完的回调接口地址
+  productOrderCallBackUrl: "https://guzhe.api.dongqilai.cc/guzhe/wechat/product_order/pay/callBack"
+
+aliyun:
+  certification:
+    domain: "https://zid.market.alicloudapi.com/idcard/VerifyIdcardv2"
+    xatDomain: "https://lsidcheck.market.alicloudapi.com/getapilist/verify_id_name"
+    appKey: ""
+    appSecret: ""
+    appCode: ""
+
+express:
+  key: "YEjmRFGT3379"
+  subscribeCallback: "https://guzhe.api.dongqilai.cc/guzhe/open/express/subscribe/callback"

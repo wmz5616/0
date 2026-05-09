@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.shop.ShopPosterMapper">
+    <sql id="field">
+        shop_id,
+        url,
+        create_time
+    </sql>
+
+    <insert id="insertAll">
+        INSERT INTO `shop_poster`(
+        <include refid="field"></include>
+        )VALUES
+        <foreach collection="data" item="item" separator=",">
+            (
+            #{item.shopId},
+            #{item.url},
+            #{item.createTime}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByShopId">
+        DELETE FROM `shop_poster`
+        WHERE shop_id = #{shopId}
+    </delete>
+
+    <select id="selectByShopId" resultType="com.zemcho.guzhe.entity.shop.ShopPoster">
+        SELECT *
+        FROM `shop_poster`
+        WHERE shop_id = #{shopId}
+    </select>
+
+    <select id="selectById" resultType="com.zemcho.guzhe.entity.shop.ShopPoster">
+        SELECT *
+        FROM `shop_poster`
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByShopIds" resultType="com.zemcho.guzhe.entity.shop.ShopPoster">
+        SELECT *
+        FROM `shop_poster`
+        WHERE shop_id IN
+        <foreach item="item" collection="shopIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

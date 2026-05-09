@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.product.ProductMapper">
+    <sql id="field">
+        shop_id,
+        product_no,
+        cover_image,
+        gallery_images,
+        stock,
+        name,
+        specification,
+        unit,
+        price,
+        open_discount,
+        discount_num,
+        open_discount_time,
+        discount_time,
+        amount,
+        sort,
+        status,
+        scheduled_time,
+        is_virtual,
+        time_limit,
+        detail,
+        remark
+    </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `product`
+        (<include refid="field"/>, create_time, update_time)
+        VALUES
+        (
+        #{data.shopId},
+        #{data.productNo},
+        #{data.coverImage},
+        #{data.galleryImages},
+        #{data.stock},
+        #{data.name},
+        #{data.specification},
+        #{data.unit},
+        #{data.price},
+        #{data.openDiscount},
+        #{data.discountNum},
+        #{data.openDiscountTime},
+        #{data.discountTime},
+        #{data.amount},
+        #{data.sort},
+        #{data.status},
+        #{data.scheduledTime},
+        #{data.isVirtual},
+        #{data.timeLimit},
+        #{data.detail},
+        #{data.remark},
+        #{data.createTime},
+        #{data.updateTime}
+        )
+    </insert>
+
+    <select id="selectById" resultType="com.zemcho.guzhe.entity.product.Product">
+        SELECT *
+        FROM product
+        <where>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+        </where>
+        AND delete_time IS NULL
+    </select>
+
+    <update id="update">
+        UPDATE `product`
+        <set>
+            <if test="data.shopId != null">
+                shop_id = #{data.shopId},
+            </if>
+            <if test="data.productNo != null">
+                product_no = #{data.productNo},
+            </if>
+            <if test="data.coverImage != null">
+                cover_image = #{data.coverImage},
+            </if>
+            <if test="data.galleryImages != null">
+                gallery_images = #{data.galleryImages},
+            </if>
+            <if test="data.stock != null">
+                stock = #{data.stock},
+            </if>
+            <if test="data.name != null">
+                name = #{data.name},
+            </if>
+            <if test="data.specification != null">
+                specification = #{data.specification},
+            </if>
+            <if test="data.unit != null">
+                unit = #{data.unit},
+            </if>
+            <if test="data.price != null">
+                price = #{data.price},
+            </if>
+            <if test="data.openDiscount != null">
+                open_discount = #{data.openDiscount},
+            </if>
+            <if test="data.discountNum != null">
+                discount_num = #{data.discountNum},
+            </if>
+            <if test="data.openDiscountTime != null">
+                open_discount_time = #{data.openDiscountTime},
+            </if>
+            <if test="data.discountTime != null">
+                discount_time = #{data.discountTime},
+            </if>
+            <if test="data.amount != null">
+                amount = #{data.amount},
+            </if>
+            <if test="data.sort != null">
+                sort = #{data.sort},
+            </if>
+            <if test="data.status != null">
+                status = #{data.status},
+            </if>
+            <if test="data.scheduledTime != null">
+                scheduled_time = #{data.scheduledTime},
+            </if>
+            <if test="data.isVirtual != null">
+                is_virtual = #{data.isVirtual},
+            </if>
+            <if test="data.timeLimit != null">
+                time_limit = #{data.timeLimit},
+            </if>
+            <if test="data.detail != null">
+                detail = #{data.detail},
+            </if>
+            <if test="data.remark != null">
+                remark = #{data.remark},
+            </if>
+            update_time = NOW()
+        </set>
+        WHERE id = #{data.id} AND delete_time IS NULL
+    </update>
+
+    <select id="selectList" resultType="com.zemcho.guzhe.entity.product.Product">
+        SELECT p.*
+        FROM `product` p
+        <where>
+            p.delete_time IS NULL
+
+            <if test="param.shopId != null">
+                AND p.shop_id = #{param.shopId}
+            </if>
+            <if test="param.searchId != null">
+                AND p.id = #{param.searchId}
+            </if>
+            <if test="param.searchIds != null and !param.searchIds.isEmpty()">
+                AND p.id IN
+                <foreach item="item" collection="param.searchIds" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.productNo != null and param.productNo != ''">
+                AND p.product_no LIKE CONCAT('%', #{param.productNo}, '%')
+            </if>
+            <if test="param.name != null and param.name != ''">
+                AND p.name LIKE CONCAT('%', #{param.name}, '%')
+            </if>
+            <if test="param.stockStatus == 1">
+                AND p.stock > 0
+            </if>
+            <if test="param.stockStatus == 0">
+                AND p.stock = 0
+            </if>
+
+            <if test="param.categoryId != null">
+                AND EXISTS (
+                SELECT 1 FROM product_category_relation pcr
+                WHERE pcr.product_id = p.id AND pcr.category_id = #{param.categoryId}
+                )
+            </if>
+            <if test="param.searchStatusList != null and param.searchStatusList.size() > 0">
+                AND p.`status` IN
+                <foreach collection="param.searchStatusList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.status != null">
+                AND p.status = #{param.status}
+            </if>
+            <if test="param.isVirtual != null">
+                AND p.is_virtual = #{param.isVirtual}
+            </if>
+            <if test="param.limitTime != null">
+                AND p.scheduled_time &lt;= #{param.limitTime}
+            </if>
+            <if test="param.startTime != null">
+                AND p.create_time &gt;= #{param.startTime}
+            </if>
+            <if test="param.endTime != null">
+                AND p.create_time &lt;= #{param.endTime}
+            </if>
+            AND delete_time IS NULL
+        </where>
+        ORDER BY p.sort DESC, p.id DESC
+    </select>
+
+    <update id="deleteByIds">
+        UPDATE  product
+        SET delete_time = NOW()
+        WHERE id IN
+        <foreach item="item" collection="productIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="inc">
+        UPDATE `product`
+        SET `stock` = `stock` + #{stock}
+        WHERE `id` = #{id} AND delete_time IS NULL
+    </update>
+
+    <select id="ifExists" resultType="java.lang.Boolean">
+        SELECT COUNT(1)
+        FROM product a
+                 LEFT JOIN product_category_relation b ON a.id = b.product_id
+        WHERE b.category_id = #{categoryId} AND a.delete_time IS NULL
+    </select>
+
+    <update id="updateStockOrSaleNum">
+        UPDATE product
+        SET
+        <trim suffixOverrides=",">
+            <if test="stock != null">`stock` = `stock` + ${stock},</if>
+            <if test="saleNum != null">`sale_num` = `sale_num` + ${saleNum},</if>
+        </trim>
+        WHERE id = #{id} AND delete_time IS NULL
+    </update>
+
+    <select id="selectByCategoryId" resultType="com.zemcho.guzhe.entity.product.Product">
+        SELECT p.*
+        FROM `product` p
+        INNER JOIN `product_category_relation` r ON p.id = r.product_id
+        <where>
+            p.delete_time IS NULL
+            <if test="param.searchId != null">
+                AND p.shop_id = #{param.searchId}
+            </if>
+            <if test="param.searchIds != null and !param.searchIds.isEmpty()">
+                AND r.category_id IN
+                <foreach collection="param.searchIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            AND delete_time IS NULL
+        </where>
+        ORDER BY p.sort DESC, p.id DESC
+    </select>
+
+    <select id="ifExistsProduct" resultType="java.lang.Boolean">
+        select count(1) from product where id = #{deleteId} AND delete_time IS NULL
+    </select>
+
+    <update id="updateStatusByIds">
+        UPDATE product
+        SET status = #{status}
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND delete_time is null
+    </update>
+
+    <select id="selectListByApp" resultType="com.zemcho.guzhe.controller.app.vo.AppProductListVo">
+        SELECT p.id,p.shop_id,p.product_no,p.cover_image,p.gallery_images as gallery_images_str,p.stock,p.name,
+               p.specification,p.unit,p.price,p.open_discount,p.discount_num,p.open_discount_time,p.discount_time,
+               p.amount,p.sort,p.is_virtual,p.time_limit,p.sale_num
+        FROM `product` p
+        <where>
+            <if test="param.searchId != null">
+                AND p.shop_id = #{param.searchId}
+            </if>
+            <if test="param.searchField1 != null">
+                AND EXISTS (
+                SELECT 1 FROM product_category_relation pcr
+                WHERE pcr.product_id = p.id AND pcr.category_id = #{param.searchField1}
+                )
+            </if>
+            <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+                AND p.product_no LIKE CONCAT('%', #{param.searchStrField1}, '%')
+            </if>
+            <if test="param.searchStrField2 != null and param.searchStrField2 != ''">
+                AND p.name LIKE CONCAT('%', #{param.searchStrField2}, '%')
+            </if>
+            AND (p.status = 1 OR (p.status = 3 AND p.scheduled_time &lt;= NOW()))
+            AND p.delete_time IS NULL
+        </where>
+        ORDER BY p.sort DESC, p.id DESC
+    </select>
+</mapper>

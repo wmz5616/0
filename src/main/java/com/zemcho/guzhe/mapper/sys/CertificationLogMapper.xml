@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.sys.CertificationLogMapper">
+    <sql id="field">
+        card_num,
+        name,
+        birth_date,
+        area,
+        result,
+        create_time
+    </sql>
+
+    <insert id="insert">
+        INSERT INTO `certification_log`(
+        <include refid="field"></include>
+        )VALUES (
+        #{data.cardNum},
+        #{data.name},
+        #{data.birthDate},
+        #{data.area},
+        #{data.result},
+        #{data.createTime}
+        )
+    </insert>
+
+    <select id="selectByCardNum" resultType="com.zemcho.guzhe.entity.sys.CertificationLog">
+        SELECT *
+        FROM `certification_log`
+        WHERE `card_num` = #{cardNum}
+    </select>
+</mapper>

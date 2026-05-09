@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.screen.ScreenRentalOrderMapper">
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `screen_rental_order`
+        (
+            order_no,
+            equipment_id,
+            shop_id,
+            shop_name,
+            business_circle_id,
+            business_circle_name,
+            total_amount,
+            order_time,
+            user_id,
+            phone,
+            nick_name,
+            display_type,
+            status,
+            remark,
+            create_time,
+            update_time
+        )
+        VALUES
+        (
+            #{data.orderNo},
+            #{data.equipmentId},
+            #{data.shopId},
+            #{data.shopName},
+            #{data.businessCircleId},
+            #{data.businessCircleName},
+            #{data.totalAmount},
+            #{data.orderTime},
+            #{data.userId},
+            #{data.phone},
+            #{data.nickName},
+            #{data.displayType},
+            #{data.status},
+            #{data.remark},
+            #{data.createTime},
+            #{data.updateTime}
+        )
+    </insert>
+
+    <select id="selectById" resultType="com.zemcho.guzhe.entity.screen.ScreenRentalOrder">
+        SELECT *
+        FROM `screen_rental_order`
+        WHERE id = #{id}
+    </select>
+
+    <update id="update">
+        UPDATE `screen_rental_order`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.status != null">status = #{data.status},</if>
+            <if test="data.remark != null">remark = #{data.remark},</if>
+            update_time = NOW(),
+        </trim>
+        WHERE id = #{data.id}
+    </update>
+
+    <select id="selectShopIdByEquipmentId" resultType="java.lang.Integer">
+        SELECT shop_id
+        FROM `screen_rental_order`
+        WHERE equipment_id = #{equipmentId}
+        AND status = 2
+    </select>
+
+    <select id="selectWechatOrderSummary"
+            resultType="com.zemcho.guzhe.controller.wechat.screenOrder.vo.ScreenOrderSummaryVo">
+        SELECT COUNT(1)                     AS orderCount,
+               COALESCE(SUM(o.total_amount), 0) AS totalAmount
+        FROM `screen_rental_order` o
+                 LEFT JOIN `shop` s ON s.id = o.shop_id
+                 LEFT JOIN `equipment` e ON e.id = o.equipment_id
+        WHERE s.merchant_id = #{adminId}
+          AND o.order_time <![CDATA[ >= ]]> #{startTime}
+          AND o.order_time <![CDATA[ <= ]]> #{endTime}
+        <if test="param.status != null">
+            AND o.status = #{param.status}
+        </if>
+        <if test="param.businessCircleName != null and param.businessCircleName != ''">
+            AND o.business_circle_name LIKE CONCAT('%', #{param.businessCircleName}, '%')
+        </if>
+        <if test="param.serialNumber != null and param.serialNumber != ''">
+            AND e.serial_number LIKE CONCAT('%', #{param.serialNumber}, '%')
+        </if>
+    </select>
+
+    <select id="selectWechatOrderLists"
+            resultType="com.zemcho.guzhe.controller.wechat.screenOrder.vo.ScreenOrderListItemVo">
+        SELECT o.id                   AS orderId,
+               o.order_no             AS orderNo,
+               o.order_time           AS orderTime,
+               o.status               AS status,
+               o.equipment_id         AS equipmentId,
+               e.serial_number        AS serialNumber,
+               o.total_amount         AS totalAmount,
+               o.business_circle_id   AS businessCircleId,
+               o.business_circle_name AS businessCircleName,
+               o.shop_id              AS shopId,
+               o.shop_name            AS shopName,
+               d.rental_months        AS rentalMonths,
+               o.remark               AS remark
+        FROM `screen_rental_order` o
+                 LEFT JOIN `shop` s ON s.id = o.shop_id
+                 LEFT JOIN `equipment` e ON e.id = o.equipment_id
+                 LEFT JOIN (SELECT order_id,
+                                   GROUP_CONCAT(CONCAT(rental_year, '.', LPAD(rental_month, 2, '0'))
+                                                ORDER BY rental_year, rental_month SEPARATOR '、') AS rental_months
+                            FROM `screen_rental_detail`
+                            GROUP BY order_id) d ON d.order_id = o.id
+        WHERE s.merchant_id = #{adminId}
+          AND o.order_time <![CDATA[ >= ]]> #{startTime}
+          AND o.order_time <![CDATA[ <= ]]> #{endTime}
+        <if test="param.status != null">
+            AND o.status = #{param.status}
+        </if>
+        <if test="param.businessCircleName != null and param.businessCircleName != ''">
+            AND o.business_circle_name LIKE CONCAT('%', #{param.businessCircleName}, '%')
+        </if>
+        <if test="param.serialNumber != null and param.serialNumber != ''">
+            AND e.serial_number LIKE CONCAT('%', #{param.serialNumber}, '%')
+        </if>
+        ORDER BY o.order_time DESC, o.id DESC
+    </select>
+
+    <select id="selectWechatOrderInfo"
+            resultType="com.zemcho.guzhe.controller.wechat.screenOrder.vo.ScreenOrderInfoVo">
+        SELECT o.id                   AS orderId,
+               o.order_no             AS orderNo,
+               o.order_time           AS orderTime,
+               o.status               AS status,
+               o.equipment_id         AS equipmentId,
+               e.serial_number        AS serialNumber,
+               o.total_amount         AS totalAmount,
+               o.business_circle_id   AS businessCircleId,
+               o.business_circle_name AS businessCircleName,
+               sm.address             AS businessCircleAddress,
+               o.shop_id              AS shopId,
+               o.shop_name            AS shopName,
+               o.nick_name            AS nickName,
+               o.phone                AS phone,
+               o.display_type         AS displayType,
+               d.rental_months        AS rentalMonths,
+               o.remark               AS remark
+        FROM `screen_rental_order` o
+                 LEFT JOIN `shop` s ON s.id = o.shop_id
+                 LEFT JOIN `equipment` e ON e.id = o.equipment_id
+                 LEFT JOIN `supermarket_info` sm ON sm.id = o.business_circle_id
+                 LEFT JOIN (SELECT order_id,
+                                   GROUP_CONCAT(CONCAT(rental_year, '.', LPAD(rental_month, 2, '0'))
+                                                ORDER BY rental_year, rental_month SEPARATOR '、') AS rental_months
+                            FROM `screen_rental_detail`
+                            GROUP BY order_id) d ON d.order_id = o.id
+        WHERE o.id = #{orderId}
+          AND s.merchant_id = #{adminId}
+        LIMIT 1
+    </select>
+
+    <select id="selectAdminOrderSummary"
+            resultType="com.zemcho.guzhe.controller.screen_order.vo.ScreenOrderManageSummaryVo">
+        SELECT COUNT(1)                      AS orderCount,
+               COALESCE(SUM(o.total_amount), 0) AS totalAmount
+        FROM `screen_rental_order` o
+                 LEFT JOIN `equipment` e ON e.id = o.equipment_id
+                 LEFT JOIN `shop` s ON s.id = o.shop_id
+                 LEFT JOIN `merchant` m ON m.id = s.merchant_id
+        WHERE 1 = 1
+        <if test="param.startTime != null">
+            AND o.order_time <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime != null">
+            AND o.order_time <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        <if test="param.serialNumber != null and param.serialNumber != ''">
+            AND e.serial_number LIKE CONCAT('%', #{param.serialNumber}, '%')
+        </if>
+        <if test="param.businessCircleName != null and param.businessCircleName != ''">
+            AND o.business_circle_name LIKE CONCAT('%', #{param.businessCircleName}, '%')
+        </if>
+        <if test="param.merchantName != null and param.merchantName != ''">
+            AND COALESCE(m.merchant_name, o.shop_name) LIKE CONCAT('%', #{param.merchantName}, '%')
+        </if>
+        <if test="param.orderUserKeyword != null and param.orderUserKeyword != ''">
+            AND (o.nick_name LIKE CONCAT('%', #{param.orderUserKeyword}, '%')
+            OR o.phone LIKE CONCAT('%', #{param.orderUserKeyword}, '%'))
+        </if>
+        <if test="param.orderNo != null and param.orderNo != ''">
+            AND o.order_no LIKE CONCAT('%', #{param.orderNo}, '%')
+        </if>
+        <if test="param.status != null">
+            AND o.status = #{param.status}
+        </if>
+    </select>
+
+    <select id="selectAdminOrderLists"
+            resultType="com.zemcho.guzhe.controller.screen_order.vo.ScreenOrderManageItemVo">
+        SELECT o.id                                                   AS orderId,
+               o.order_time                                           AS orderTime,
+               e.serial_number                                        AS serialNumber,
+               o.business_circle_name                                 AS businessCircleName,
+               COALESCE(m.merchant_name, o.shop_name)                 AS merchantName,
+               o.total_amount                                         AS totalAmount,
+               d.rental_months                                        AS rentalMonths,
+               CASE
+                   WHEN o.nick_name IS NULL OR o.nick_name = '' THEN COALESCE(o.phone, '')
+                   WHEN o.phone IS NULL OR o.phone = '' THEN o.nick_name
+                   ELSE CONCAT(o.nick_name, ' ', o.phone)
+                   END                                                AS orderUserText,
+               o.order_no                                             AS orderNo,
+               o.status                                               AS status,
+               o.remark                                               AS remark
+        FROM `screen_rental_order` o
+                 LEFT JOIN `equipment` e ON e.id = o.equipment_id
+                 LEFT JOIN `shop` s ON s.id = o.shop_id
+                 LEFT JOIN `merchant` m ON m.id = s.merchant_id
+                 LEFT JOIN (SELECT order_id,
+                                   GROUP_CONCAT(CONCAT(rental_year, '.', LPAD(rental_month, 2, '0'))
+                                                ORDER BY rental_year, rental_month SEPARATOR '、') AS rental_months
+                            FROM `screen_rental_detail`
+                            GROUP BY order_id) d ON d.order_id = o.id
+        WHERE 1 = 1
+        <if test="param.startTime != null">
+            AND o.order_time <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime != null">
+            AND o.order_time <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        <if test="param.serialNumber != null and param.serialNumber != ''">
+            AND e.serial_number LIKE CONCAT('%', #{param.serialNumber}, '%')
+        </if>
+        <if test="param.businessCircleName != null and param.businessCircleName != ''">
+            AND o.business_circle_name LIKE CONCAT('%', #{param.businessCircleName}, '%')
+        </if>
+        <if test="param.merchantName != null and param.merchantName != ''">
+            AND COALESCE(m.merchant_name, o.shop_name) LIKE CONCAT('%', #{param.merchantName}, '%')
+        </if>
+        <if test="param.orderUserKeyword != null and param.orderUserKeyword != ''">
+            AND (o.nick_name LIKE CONCAT('%', #{param.orderUserKeyword}, '%')
+            OR o.phone LIKE CONCAT('%', #{param.orderUserKeyword}, '%'))
+        </if>
+        <if test="param.orderNo != null and param.orderNo != ''">
+            AND o.order_no LIKE CONCAT('%', #{param.orderNo}, '%')
+        </if>
+        <if test="param.status != null">
+            AND o.status = #{param.status}
+        </if>
+        ORDER BY o.order_time DESC, o.id DESC
+    </select>
+
+    <select id="selectAdminOrderInfo"
+            resultType="com.zemcho.guzhe.controller.screen_order.vo.ScreenOrderManageInfoVo">
+        SELECT o.id                                                   AS orderId,
+               o.order_no                                             AS orderNo,
+               o.order_time                                           AS orderTime,
+               o.status                                               AS status,
+               o.equipment_id                                         AS equipmentId,
+               e.serial_number                                        AS serialNumber,
+               o.total_amount                                         AS totalAmount,
+               o.business_circle_id                                   AS businessCircleId,
+               o.business_circle_name                                 AS businessCircleName,
+               sm.address                                             AS businessCircleAddress,
+               o.shop_id                                              AS shopId,
+               o.shop_name                                            AS shopName,
+               COALESCE(m.merchant_name, o.shop_name)                 AS merchantName,
+               o.nick_name                                            AS nickName,
+               o.phone                                                AS phone,
+               o.display_type                                         AS displayType,
+               d.rental_months                                        AS rentalMonths,
+               o.remark                                               AS remark
+        FROM `screen_rental_order` o
+                 LEFT JOIN `equipment` e ON e.id = o.equipment_id
+                 LEFT JOIN `shop` s ON s.id = o.shop_id
+                 LEFT JOIN `merchant` m ON m.id = s.merchant_id
+                 LEFT JOIN `supermarket_info` sm ON sm.id = o.business_circle_id
+                 LEFT JOIN (SELECT order_id,
+                                   GROUP_CONCAT(CONCAT(rental_year, '.', LPAD(rental_month, 2, '0'))
+                                                ORDER BY rental_year, rental_month SEPARATOR '、') AS rental_months
+                            FROM `screen_rental_detail`
+                            GROUP BY order_id) d ON d.order_id = o.id
+        WHERE o.id = #{orderId}
+        LIMIT 1
+    </select>
+
+</mapper>

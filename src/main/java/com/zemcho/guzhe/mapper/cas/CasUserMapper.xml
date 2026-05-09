@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.cas.CasUserMapper">
+    <sql id="field">
+        nickname,
+        phone,
+        avatar,
+        sex,
+        open_id,
+        union_id,
+        admin_id,
+        create_time
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO cas_user(
+        <include refid="field"></include>
+        )VALUES (
+        #{data.nickname},
+        #{data.phone},
+        #{data.avatar},
+        #{data.sex},
+        #{data.openId},
+        #{data.unionId},
+        #{data.adminId},
+        #{data.createTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE cas_user
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.phone != null and data.phone != ''">`phone` = #{data.phone},</if>
+            <if test="data.nickname != null and data.nickname != ''">`nickname` = #{data.nickname},</if>
+            <if test="data.avatar != null and data.avatar != ''">`avatar` = #{data.avatar},</if>
+            <if test="data.sex != null">`sex` = #{data.sex},</if>
+            <if test="data.adminId != null">`admin_id` = #{data.adminId},</if>
+            <if test="data.hasCertification != null">`has_certification` = #{data.hasCertification},</if>
+            <if test="data.cardNum != null">`card_num` = #{data.cardNum},</if>
+            <if test="data.name != null">`name` = #{data.name},</if>
+            <if test="data.birthDate != null">`birth_date` = #{data.birthDate},</if>
+            <if test="data.area != null">`area` = #{data.area},</if>
+<!--            <if test="data.goldCoin != null">`gold_coin` = #{data.goldCoin},</if>-->
+<!--            <if test="data.healthCoin != null">`health_coin` = #{data.healthCoin},</if>-->
+            <if test="data.lock != null">`lock` = #{data.lock},</if>
+<!--            <if test="data.lockExpiredAt != null">`lock_expired_at` = #{data.lockExpiredAt},</if>-->
+<!--            <if test="data.lockReason != null">`lock_reason` = #{data.lockReason},</if>-->
+            `lock_expired_at` = #{data.lockExpiredAt},
+            `lock_reason` = #{data.lockReason},
+            <if test="data.remark != null">`remark` = #{data.remark},</if>
+            <if test="data.createTime != null">`create_time` = #{data.createTime},</if>
+            <if test="data.updateTime != null">`update_time` = #{data.updateTime},</if>
+        </trim>
+        WHERE `id` = #{data.id}
+    </update>
+
+    <select id="selectByOpenId" resultType="com.zemcho.guzhe.entity.cas.CasUser">
+        SELECT *
+        FROM cas_user
+        WHERE open_id = #{openId}
+    </select>
+
+    <select id="selectById" resultType="com.zemcho.guzhe.entity.cas.CasUser">
+        SELECT *
+        FROM cas_user
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByPhone" resultType="com.zemcho.guzhe.entity.cas.CasUser">
+        SELECT *
+        FROM cas_user
+        WHERE phone = #{phone}
+    </select>
+
+    <select id="selectDetailById" resultType="com.zemcho.guzhe.controller.cas.vo.CasUserVo"
+            parameterType="java.lang.Integer">
+        SELECT u.id,
+               u.nickname,
+               u.phone,
+               u.avatar,
+               u.sex,
+               u.open_id,
+               u.union_id,
+               -- 聚合团队名称成列表（根据数据库选择函数）
+               GROUP_CONCAT(DISTINCT t.name) AS team_names,
+ <!--              SUM(tm.healthy_coin)          AS healthy_coin, -->
+               u.health_coin,
+               u.has_certification,
+               u.card_num,
+               u.name,
+               u.birth_date,
+               u.area,
+               u.gold_coin,
+               u.lock,
+               u.lock_expired_at,
+               u.lock_reason,
+               u.remark,
+               u.admin_id,
+               u.create_time,
+               u.update_time
+        FROM cas_user u
+                 LEFT JOIN team_user tm ON u.id = tm.user_id
+                 LEFT JOIN team t ON tm.team_id = t.id
+        WHERE u.id = #{id}
+        GROUP BY u.id
+    </select>
+
+    <select id="selectLists" resultType="com.zemcho.guzhe.controller.cas.vo.CasUserVo">
+        SELECT id,
+               avatar,
+               nickname,
+               phone,
+              `lock`,
+               create_time,
+               lock_reason,
+               lock_expired_at,
+               remark
+        FROM cas_user
+        <where>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND `nickname` LIKE CONCAT('%',#{param.keyword},'%')
+            </if>
+            <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+                AND `phone` LIKE CONCAT('%',#{param.searchStrField1},'%')
+            </if>
+            <if test="param.searchField1 != null and param.searchField1 != ''">
+                AND `lock` = #{param.searchField1}
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByIds" resultType="com.zemcho.guzhe.controller.cas.vo.CasUserVo"
+            parameterType="java.util.List">
+        SELECT u.id,
+        u.nickname,
+        u.phone,
+        u.avatar,
+        u.sex,
+        u.open_id,
+        u.union_id,
+        -- 聚合团队名称成列表（根据数据库选择函数）
+        GROUP_CONCAT(DISTINCT t.name) AS team_names,
+<!--              SUM(tm.healthy_coin)          AS healthy_coin, -->
+        u.health_coin,
+        u.has_certification,
+        u.card_num,
+        u.name,
+        u.birth_date,
+        u.area,
+        u.gold_coin,
+        u.lock,
+        u.lock_expired_at,
+        u.lock_reason,
+        u.remark,
+        u.admin_id,
+        u.create_time,
+        u.update_time
+        FROM cas_user u
+        LEFT JOIN team_user tm ON u.id = tm.user_id
+        LEFT JOIN team t ON tm.team_id = t.id
+        WHERE u.id IN
+        <foreach item="item" collection="ids" separator="," close=")" open="(" index="index">
+            #{item}
+        </foreach>
+        GROUP BY u.id
+        order by u.id DESC
+    </select>
+
+    <update id="incCoin">
+        UPDATE cas_user
+        SET
+        <trim suffixOverrides=",">
+            <if test="goldCoin != null and goldCoin > 0">`gold_coin` = `gold_coin` + ${goldCoin},</if>
+            <if test="healthCoin != null and healthCoin > 0">`health_coin` = `health_coin` + ${healthCoin},</if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+    <update id="decCoin">
+        UPDATE cas_user
+        SET
+        <trim suffixOverrides=",">
+            <if test="goldCoin != null and goldCoin > 0">`gold_coin` = `gold_coin` - ${goldCoin},</if>
+            <if test="healthCoin != null and healthCoin > 0">`health_coin` = `health_coin` - ${healthCoin},</if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectCommonLists" resultType="com.zemcho.guzhe.controller.common.vo.UserCommonVO">
+        SELECT *
+        FROM cas_user
+        <where>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND `nickname` LIKE CONCAT('%',#{param.keyword},'%')
+            </if>
+            <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+                AND `phone` LIKE CONCAT('%',#{param.searchStrField1},'%')
+            </if>
+            <if test="param.searchField1 != null and param.searchField1 != ''">
+                AND `lock` = #{param.searchField1}
+            </if>
+            <if test="param.searchField2 != null and param.searchField2 != ''">
+                AND `has_certification` = #{param.searchField2}
+            </if>
+        </where>
+        order by id DESC
+    </select>
+
+    <select id="countByTime" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM cas_user
+        <where>
+            <if test="timeLimit != null">
+                AND create_time &lt;= #{timeLimit}
+            </if>
+        </where>
+    </select>
+</mapper>

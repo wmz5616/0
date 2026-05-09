@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.equipment.EquipmentLogMapper">
+    <sql id="field">
+        equipment_id,
+        status,
+        created_time
+    </sql>
+
+    <insert id="insert">
+        INSERT INTO `equipment_log`(
+        <include refid="field"></include>
+        )VALUES (
+        #{data.equipmentId},
+        #{data.status},
+        #{data.createdTime}
+        )
+    </insert>
+
+    <insert id="insertAll">
+        INSERT INTO `equipment_log`(
+        <include refid="field"></include>
+        )VALUES
+        <foreach collection="data" item="item" separator=",">
+            (
+            #{item.equipmentId},
+            #{item.status},
+            #{item.createdTime}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectLists" resultType="com.zemcho.guzhe.entity.equipment.EquipmentLog">
+        SELECT *
+        FROM `equipment_log`
+        <where>
+            <if test="param.searchId != null">AND equipment_id = #{param.searchId}</if>
+            <if test="param.searchIntStatus != null">AND status = #{param.searchIntStatus}</if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `created_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+        ORDER BY `id` desc
+    </select>
+
+</mapper>

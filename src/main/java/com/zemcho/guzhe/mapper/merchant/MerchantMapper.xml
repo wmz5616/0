@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.merchant.MerchantMapper">
+
+    <insert id="insert" parameterType="com.zemcho.guzhe.entity.merchant.Merchant"  keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `merchant` (operation_type, merchant_name, contact_phone, email,
+                              card_name, card_no, card_mobile, card_begin_date, card_end_date,
+                              credentials_type, store_name, store_province, store_city, store_county, store_addr,
+                              business_name, business_no, main_type, legal_person,
+                              business_province, business_city, business_county, business_addr, business_begin_date,
+                              business_end_date,
+                              acc_type, acc_card_no, acc_mobile, acc_name, bank, bank_name, bank_link_no, bank_branch,
+                              province, city, parent_channel_merchant_no, legal_licence_front_url,
+                              legal_licence_front_url_local,
+                              legal_licence_back_url, legal_licence_back_url_local, licence_url,
+                              open_account_licence_url,
+                              open_account_licence_url_local, licence_url_local, settle_type, login_account,
+                              merchant_no,
+                              request_no, application_no, application_status, audit_opinion, sign_url, status,
+                              user_id, create_time, update_time, delete_time)
+        VALUES (#{data.operationType}, #{data.merchantName}, #{data.contactPhone}, #{data.email},
+                #{data.cardName}, #{data.cardNo}, #{data.cardMobile}, #{data.cardBeginDate}, #{data.cardEndDate},
+                #{data.credentialsType}, #{data.storeName}, #{data.storeProvince}, #{data.storeCity},
+                #{data.storeCounty}, #{data.storeAddr},
+                #{data.businessName}, #{data.businessNo}, #{data.mainType}, #{data.legalPerson},
+                #{data.businessProvince}, #{data.businessCity}, #{data.businessCounty}, #{data.businessAddr},
+                #{data.businessBeginDate}, #{data.businessEndDate},
+                #{data.accType}, #{data.accCardNo}, #{data.accMobile}, #{data.accName}, #{data.bank}, #{data.bankName},
+                #{data.bankLinkNo}, #{data.bankBranch},
+                #{data.province}, #{data.city}, #{data.parentChannelMerchantNo}, #{data.legalLicenceFrontUrl},
+                #{data.legalLicenceFrontUrlLocal},
+                #{data.legalLicenceBackUrl}, #{data.legalLicenceBackUrlLocal}, #{data.licenceUrl},
+                #{data.openAccountLicenceUrl},
+                #{data.openAccountLicenceUrlLocal}, #{data.licenceUrlLocal}, #{data.settleType}, #{data.loginAccount},
+                #{data.merchantNo},
+                #{data.requestNo}, #{data.applicationNo}, #{data.applicationStatus}, #{data.auditOpinion},
+                #{data.signUrl}, #{data.status}, #{data.userId},
+                #{data.createTime}, #{data.updateTime}, #{data.deleteTime})
+    </insert>
+
+    <update id="updateById" parameterType="com.zemcho.guzhe.entity.merchant.Merchant">
+        UPDATE `merchant`
+        <set>
+            <!-- 基本信息 -->
+            <if test="data.operationType != null and data.operationType != ''">operation_type = #{data.operationType},
+            </if>
+            <if test="data.merchantName != null and data.merchantName != ''">merchant_name = #{data.merchantName},</if>
+            <if test="data.contactPhone != null and data.contactPhone != ''">contact_phone = #{data.contactPhone},</if>
+            <if test="data.email != null and data.email != ''">email = #{data.email},</if>
+            <if test="data.cardName != null and data.cardName != ''">card_name = #{data.cardName},</if>
+            <if test="data.cardNo != null and data.cardNo != ''">card_no = #{data.cardNo},</if>
+            <if test="data.cardMobile != null and data.cardMobile != ''">card_mobile = #{data.cardMobile},</if>
+            <if test="data.cardBeginDate != null and data.cardBeginDate != ''">card_begin_date =
+                #{data.cardBeginDate},
+            </if>
+            <if test="data.cardEndDate != null and data.cardEndDate != ''">card_end_date = #{data.cardEndDate},</if>
+            <if test="data.credentialsType != null">credentials_type = #{data.credentialsType},</if>
+
+            <!-- 门店信息 -->
+            <if test="data.storeName != null and data.storeName != ''">store_name = #{data.storeName},</if>
+            <if test="data.storeProvince != null and data.storeProvince != ''">store_province = #{data.storeProvince},
+            </if>
+            <if test="data.storeCity != null and data.storeCity != ''">store_city = #{data.storeCity},</if>
+            <if test="data.storeCounty != null and data.storeCounty != ''">store_county = #{data.storeCounty},</if>
+            <if test="data.storeAddr != null and data.storeAddr != ''">store_addr = #{data.storeAddr},</if>
+
+            <!-- 营业执照信息 -->
+            <if test="data.businessName != null and data.businessName != ''">business_name = #{data.businessName},</if>
+            <if test="data.businessNo != null and data.businessNo != ''">business_no = #{data.businessNo},</if>
+            <if test="data.mainType != null">main_type = #{data.mainType},</if>
+            <if test="data.legalPerson != null and data.legalPerson != ''">legal_person = #{data.legalPerson},</if>
+            <if test="data.businessProvince != null and data.businessProvince != ''">business_province =
+                #{data.businessProvince},
+            </if>
+            <if test="data.businessCity != null and data.businessCity != ''">business_city = #{data.businessCity},</if>
+            <if test="data.businessCounty != null and data.businessCounty != ''">business_county =
+                #{data.businessCounty},
+            </if>
+            <if test="data.businessAddr != null and data.businessAddr != ''">business_addr = #{data.businessAddr},</if>
+            <if test="data.businessBeginDate != null and data.businessBeginDate != ''">business_begin_date =
+                #{data.businessBeginDate},
+            </if>
+            <if test="data.businessEndDate != null and data.businessEndDate != ''">business_end_date =
+                #{data.businessEndDate},
+            </if>
+
+            <!-- 银行账户信息 -->
+            <if test="data.accType != null">acc_type = #{data.accType},</if>
+            <if test="data.accCardNo != null and data.accCardNo != ''">acc_card_no = #{data.accCardNo},</if>
+            <if test="data.accMobile != null and data.accMobile != ''">acc_mobile = #{data.accMobile},</if>
+            <if test="data.accName != null and data.accName != ''">acc_name = #{data.accName},</if>
+            <if test="data.bank != null and data.bank != ''">bank = #{data.bank},</if>
+            <if test="data.bankName != null and data.bankName != ''">bank_name = #{data.bankName},</if>
+            <if test="data.bankLinkNo != null and data.bankLinkNo != ''">bank_link_no = #{data.bankLinkNo},</if>
+            <if test="data.bankBranch != null and data.bankBranch != ''">bank_branch = #{data.bankBranch},</if>
+            <if test="data.province != null and data.province != ''">province = #{data.province},</if>
+            <if test="data.city != null and data.city != ''">city = #{data.city},</if>
+            <if test="data.parentChannelMerchantNo != null and data.parentChannelMerchantNo != ''">
+                parent_channel_merchant_no = #{data.parentChannelMerchantNo},
+            </if>
+
+            <!-- 证件照片 -->
+            <if test="data.legalLicenceFrontUrl != null and data.legalLicenceFrontUrl != ''">legal_licence_front_url =
+                #{data.legalLicenceFrontUrl},
+            </if>
+            <if test="data.legalLicenceFrontUrlLocal != null and data.legalLicenceFrontUrlLocal != ''">
+                legal_licence_front_url_local = #{data.legalLicenceFrontUrlLocal},
+            </if>
+            <if test="data.legalLicenceBackUrl != null and data.legalLicenceBackUrl != ''">legal_licence_back_url =
+                #{data.legalLicenceBackUrl},
+            </if>
+            <if test="data.legalLicenceBackUrlLocal != null and data.legalLicenceBackUrlLocal != ''">
+                legal_licence_back_url_local = #{data.legalLicenceBackUrlLocal},
+            </if>
+            <if test="data.licenceUrl != null and data.licenceUrl != ''">licence_url = #{data.licenceUrl},</if>
+            <if test="data.openAccountLicenceUrl != null and data.openAccountLicenceUrl != ''">open_account_licence_url
+                = #{data.openAccountLicenceUrl},
+            </if>
+            <if test="data.openAccountLicenceUrlLocal != null and data.openAccountLicenceUrlLocal != ''">
+                open_account_licence_url_local = #{data.openAccountLicenceUrlLocal},
+            </if>
+            <if test="data.licenceUrlLocal != null and data.licenceUrlLocal != ''">licence_url_local =
+                #{data.licenceUrlLocal},
+            </if>
+
+            <!-- 其他信息 -->
+            <if test="data.settleType != null and data.settleType != ''">settle_type = #{data.settleType},</if>
+            <if test="data.loginAccount != null and data.loginAccount != ''">login_account = #{data.loginAccount},</if>
+            <if test="data.merchantNo != null and data.merchantNo != ''">merchant_no = #{data.merchantNo},</if>
+            <if test="data.requestNo != null and data.requestNo != ''">request_no = #{data.requestNo},</if>
+            <if test="data.applicationNo != null and data.applicationNo != ''">application_no = #{data.applicationNo},
+            </if>
+            <if test="data.applicationStatus != null and data.applicationStatus != ''">application_status =
+                #{data.applicationStatus},
+            </if>
+            <if test="data.auditOpinion != null and data.auditOpinion != ''">audit_opinion = #{data.auditOpinion},</if>
+            <if test="data.signUrl != null and data.signUrl != ''">sign_url = #{data.signUrl},</if>
+            <if test="data.status != null">status = #{data.status},</if>
+            <if test="data.updateTime != null">update_time = #{data.updateTime},</if>
+            <if test="data.deleteTime != null">delete_time = #{data.deleteTime},</if>
+        </set>
+        WHERE id = #{data.id}
+    </update>
+
+    <update id="updateByMerchantNo" parameterType="com.zemcho.guzhe.entity.merchant.Merchant">
+        UPDATE `merchant`
+        <set>
+            <!-- 基本信息 -->
+            <if test="data.operationType != null and data.operationType != ''">operation_type = #{data.operationType},
+            </if>
+            <if test="data.merchantName != null and data.merchantName != ''">merchant_name = #{data.merchantName},</if>
+            <if test="data.contactPhone != null and data.contactPhone != ''">contact_phone = #{data.contactPhone},</if>
+            <if test="data.email != null and data.email != ''">email = #{data.email},</if>
+            <if test="data.cardName != null and data.cardName != ''">card_name = #{data.cardName},</if>
+            <if test="data.cardNo != null and data.cardNo != ''">card_no = #{data.cardNo},</if>
+            <if test="data.cardMobile != null and data.cardMobile != ''">card_mobile = #{data.cardMobile},</if>
+            <if test="data.cardBeginDate != null and data.cardBeginDate != ''">card_begin_date =
+                #{data.cardBeginDate},
+            </if>
+            <if test="data.cardEndDate != null and data.cardEndDate != ''">card_end_date = #{data.cardEndDate},</if>
+            <if test="data.credentialsType != null">credentials_type = #{data.credentialsType},</if>
+
+            <!-- 门店信息 -->
+            <if test="data.storeName != null and data.storeName != ''">store_name = #{data.storeName},</if>
+            <if test="data.storeProvince != null and data.storeProvince != ''">store_province = #{data.storeProvince},
+            </if>
+            <if test="data.storeCity != null and data.storeCity != ''">store_city = #{data.storeCity},</if>
+            <if test="data.storeCounty != null and data.storeCounty != ''">store_county = #{data.storeCounty},</if>
+            <if test="data.storeAddr != null and data.storeAddr != ''">store_addr = #{data.storeAddr},</if>
+
+            <!-- 营业执照信息 -->
+            <if test="data.businessName != null and data.businessName != ''">business_name = #{data.businessName},</if>
+            <if test="data.businessNo != null and data.businessNo != ''">business_no = #{data.businessNo},</if>
+            <if test="data.mainType != null">main_type = #{data.mainType},</if>
+            <if test="data.legalPerson != null and data.legalPerson != ''">legal_person = #{data.legalPerson},</if>
+            <if test="data.businessProvince != null and data.businessProvince != ''">business_province =
+                #{data.businessProvince},
+            </if>
+            <if test="data.businessCity != null and data.businessCity != ''">business_city = #{data.businessCity},</if>
+            <if test="data.businessCounty != null and data.businessCounty != ''">business_county =
+                #{data.businessCounty},
+            </if>
+            <if test="data.businessAddr != null and data.businessAddr != ''">business_addr = #{data.businessAddr},</if>
+            <if test="data.businessBeginDate != null and data.businessBeginDate != ''">business_begin_date =
+                #{data.businessBeginDate},
+            </if>
+            <if test="data.businessEndDate != null and data.businessEndDate != ''">business_end_date =
+                #{data.businessEndDate},
+            </if>
+
+            <!-- 银行账户信息 -->
+            <if test="data.accType != null">acc_type = #{data.accType},</if>
+            <if test="data.accCardNo != null and data.accCardNo != ''">acc_card_no = #{data.accCardNo},</if>
+            <if test="data.accMobile != null and data.accMobile != ''">acc_mobile = #{data.accMobile},</if>
+            <if test="data.accName != null and data.accName != ''">acc_name = #{data.accName},</if>
+            <if test="data.bank != null and data.bank != ''">bank = #{data.bank},</if>
+            <if test="data.bankName != null and data.bankName != ''">bank_name = #{data.bankName},</if>
+            <if test="data.bankLinkNo != null and data.bankLinkNo != ''">bank_link_no = #{data.bankLinkNo},</if>
+            <if test="data.bankBranch != null and data.bankBranch != ''">bank_branch = #{data.bankBranch},</if>
+            <if test="data.province != null and data.province != ''">province = #{data.province},</if>
+            <if test="data.city != null and data.city != ''">city = #{data.city},</if>
+            <if test="data.parentChannelMerchantNo != null and data.parentChannelMerchantNo != ''">
+                parent_channel_merchant_no = #{data.parentChannelMerchantNo},
+            </if>
+
+            <!-- 证件照片 -->
+            <if test="data.legalLicenceFrontUrl != null and data.legalLicenceFrontUrl != ''">legal_licence_front_url =
+                #{data.legalLicenceFrontUrl},
+            </if>
+            <if test="data.legalLicenceFrontUrlLocal != null and data.legalLicenceFrontUrlLocal != ''">
+                legal_licence_front_url_local = #{data.legalLicenceFrontUrlLocal},
+            </if>
+            <if test="data.legalLicenceBackUrl != null and data.legalLicenceBackUrl != ''">legal_licence_back_url =
+                #{data.legalLicenceBackUrl},
+            </if>
+            <if test="data.legalLicenceBackUrlLocal != null and data.legalLicenceBackUrlLocal != ''">
+                legal_licence_back_url_local = #{data.legalLicenceBackUrlLocal},
+            </if>
+            <if test="data.licenceUrl != null and data.licenceUrl != ''">licence_url = #{data.licenceUrl},</if>
+            <if test="data.openAccountLicenceUrl != null and data.openAccountLicenceUrl != ''">open_account_licence_url
+                = #{data.openAccountLicenceUrl},
+            </if>
+            <if test="data.openAccountLicenceUrlLocal != null and data.openAccountLicenceUrlLocal != ''">
+                open_account_licence_url_local = #{data.openAccountLicenceUrlLocal},
+            </if>
+            <if test="data.licenceUrlLocal != null and data.licenceUrlLocal != ''">licence_url_local =
+                #{data.licenceUrlLocal},
+            </if>
+
+            <!-- 其他信息 -->
+            <if test="data.settleType != null and data.settleType != ''">settle_type = #{data.settleType},</if>
+            <if test="data.loginAccount != null and data.loginAccount != ''">login_account = #{data.loginAccount},</if>
+<!--            <if test="data.merchantNo != null and data.merchantNo != ''">merchant_no = #{data.merchantNo},</if>-->
+            <if test="data.requestNo != null and data.requestNo != ''">request_no = #{data.requestNo},</if>
+            <if test="data.applicationNo != null and data.applicationNo != ''">application_no = #{data.applicationNo},
+            </if>
+            <if test="data.applicationStatus != null and data.applicationStatus != ''">application_status =
+                #{data.applicationStatus},
+            </if>
+            <if test="data.auditOpinion != null and data.auditOpinion != ''">audit_opinion = #{data.auditOpinion},</if>
+            <if test="data.signUrl != null and data.signUrl != ''">sign_url = #{data.signUrl},</if>
+            <if test="data.status != null">status = #{data.status},</if>
+            <if test="data.updateTime != null">update_time = #{data.updateTime},</if>
+            <if test="data.deleteTime != null">delete_time = #{data.deleteTime},</if>
+        </set>
+        WHERE merchant_no = #{data.merchantNo}
+    </update>
+
+    <select id="selectList" resultType="com.zemcho.guzhe.controller.merchant.vo.MerchantListVO"
+            parameterType="com.zemcho.guzhe.common.param.SearchParam">
+        select * from `merchant`
+        <where>
+            <if test="param.searchIds != null and !param.searchIds.isEmpty()">
+                AND id IN
+                <foreach collection="param.searchIds" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.keyword != null">
+                and (merchant_name like concat('%',#{param.keyword},'%') or contact_phone like
+                concat('%',#{param.keyword},'%') or
+                legal_person like concat('%',#{param.keyword},'%'))
+            </if>
+            <if test="param.searchType != null">
+                and main_type = #{param.searchType}
+            </if>
+            <if test="param.searchField1 != null">
+                and acc_type = #{param.searchField1}
+            </if>
+            <if test="param.searchIntStatus != null">
+                and status = #{param.searchIntStatus}
+            </if>
+            <if test="param.searchStatusList != null and !param.searchStatusList.isEmpty()">
+                AND status IN
+                <foreach collection="param.searchStatusList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.searchStrField1 != null">
+                and application_status = #{param.searchStrField1}
+            </if>
+            AND delete_time IS NULL
+        </where>
+    </select>
+
+    <select id="ifExistByIdOrMerchantNo" resultType="java.lang.Boolean">
+        select count(*)
+        from `merchant`
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="merchantNo != null">
+                and merchant_no = #{merchantNo}
+            </if>
+            AND delete_time IS NULL
+        </where>
+    </select>
+
+    <update id="updateStatusByIds">
+        UPDATE `merchant`
+        SET status = #{status}
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND delete_time IS NULL
+    </update>
+</mapper>

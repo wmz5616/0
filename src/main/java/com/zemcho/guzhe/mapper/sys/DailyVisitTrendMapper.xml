@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.sys.DailyVisitTrendMapper">
+    <sql id="field">
+        year,
+        month,
+        date,
+        session_cnt,
+        visit_pv,
+        visit_uv,
+        visit_uv_new,
+        created_at
+    </sql>
+
+    <insert id="insertAll">
+        INSERT INTO `daily_visit_trend`(
+        <include refid="field"></include>
+        )VALUES
+        <foreach collection="data" item="item" separator=",">
+            (
+            #{item.year},
+            #{item.month},
+            #{item.date},
+            #{item.sessionCnt},
+            #{item.visitPv},
+            #{item.visitUv},
+            #{item.visitUvNew},
+            #{item.createdAt}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByDate">
+        DELETE FROM `daily_visit_trend`
+        WHERE `date` = #{date}
+    </delete>
+
+    <select id="countVisitPvByDate" resultType="java.lang.Integer">
+        SELECT sum(visit_pv)
+        FROM `daily_visit_trend`
+        <where>
+            <if test="startDate != null and endDate != null">
+                AND `date` BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+    </select>
+</mapper>

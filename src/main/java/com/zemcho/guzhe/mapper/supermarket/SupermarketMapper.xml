@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.supermarket.SupermarketMapper">
+
+    <select id="select" resultType="com.zemcho.guzhe.controller.supermarket.vo.SupermarketInfoVo"
+            parameterType="com.zemcho.guzhe.common.param.SearchParam">
+        select id,
+        cover_image,
+        logo_image,
+        name,
+        phone,
+        description,
+        business_hours,
+        address,
+        longitude,
+        latitude,
+        status,
+        create_time,
+        update_time
+        from supermarket_info
+        <where>
+            <if test="param.keyword != null and param.keyword != ''">
+                and name like concat('%', #{param.keyword}, '%')
+            </if>
+            <if test="param.startTime != null">
+                and create_time >= #{param.startTime}
+            </if>
+            <if test="param.endTime != null">
+                and #{param.endTime} >= create_time
+            </if>
+            <if test="param.searchId != null">
+                and id = #{param.searchId}
+            </if>
+            <if test="param.searchStatus != null">
+                and status = #{param.searchStatus}
+            </if>
+            and delete_time is null
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="ifExistsByName" resultType="boolean">
+        select count(1) > 0 from supermarket_info
+        where name = #{name}
+        and delete_time is null
+        <if test="id != null">
+            and id != #{id}
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.zemcho.guzhe.controller.supermarket.param.SupermarketParam">
+        INSERT INTO supermarket_info (
+            cover_image,
+            logo_image,
+            name,
+            phone,
+            description,
+            business_hours,
+            address,
+            longitude,
+            latitude,
+            status,
+            create_time,
+            update_time
+        ) VALUES (
+                     #{data.coverImage},
+                     #{data.logoImageUrl},
+                     #{data.name},
+                     COALESCE(#{data.phone}, ''),
+                     COALESCE(#{data.description}, ''),
+                     COALESCE(#{data.businessHours}, ''),
+                     #{data.address},
+                     #{data.longitude},
+                     #{data.latitude},
+                     #{data.status},
+                     now(),
+                     now()
+                 )
+    </insert>
+
+    <update id="delete" parameterType="java.util.List">
+        update supermarket_info
+        set delete_time = now()
+        where id in
+        <foreach item="item" collection="deleteIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="updateStatusByIds">
+        UPDATE `supermarket_info`
+        SET status = #{status}
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND delete_time is null
+    </update>
+
+    <update id="update" parameterType="com.zemcho.guzhe.controller.supermarket.param.SupermarketParam">
+        update supermarket_info
+        <set>
+            <if test="data.coverImage != null">
+                cover_image = #{data.coverImage},
+            </if>
+            <if test="data.logoImage != null">
+                logo_image = #{data.logoImageUrl},
+            </if>
+            <if test="data.name != null">
+                name = #{data.name},
+            </if>
+            <if test="data.phone != null">
+                phone = #{data.phone},
+            </if>
+            <if test="data.description != null">
+                description = #{data.description},
+            </if>
+            <if test="data.businessHours != null">
+                business_hours = #{data.businessHours},
+            </if>
+            <if test="data.address != null">
+                address = #{data.address},
+            </if>
+            <if test="data.longitude != null">
+                longitude = #{data.longitude},
+            </if>
+            <if test="data.latitude != null">
+                latitude = #{data.latitude},
+            </if>
+            <if test="data.status != null">
+                status = #{data.status},
+            </if>
+            update_time = now(),
+        </set>
+        where id = #{data.id} and delete_time is null
+    </update>
+
+    <select id="selectByShopIds" resultType="com.zemcho.guzhe.controller.shop.vo.ShopCircleListVO">
+        SELECT
+        bcs.circle_id AS circleId,
+        bcs.shop_id AS shopId,
+        bc.name AS circleName
+        FROM business_circle_shop bcs
+        left join supermarket_info bc on bcs.circle_id = bc.id
+        WHERE bcs.shop_id IN
+        <foreach item="item" collection="shopIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectSuperList" resultType="com.zemcho.guzhe.controller.supermarket.vo.SupermarketInfoVo">
+            select * from supermarket_info where status = 1
+    </select>
+
+    <select id="selectEnableByAddressKeyword" resultType="com.zemcho.guzhe.entity.supermarket.SupermarketInfo">
+        SELECT *
+        FROM `supermarket_info`
+        WHERE status = 1
+          AND delete_time IS NULL
+        <if test="addressKeyword != null and addressKeyword != ''">
+            AND address LIKE CONCAT('%', #{addressKeyword}, '%')
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectById" resultType="com.zemcho.guzhe.entity.supermarket.SupermarketInfo">
+        SELECT *
+        FROM `supermarket_info`
+        WHERE id = #{id}
+          AND delete_time IS NULL
+    </select>
+
+    <select id="selectCommonList" resultType="com.zemcho.guzhe.controller.common.vo.SupermarketCommonVo">
+        select id, name, status
+        from supermarket_info
+        <where>
+            <if test="param.keyword != null and param.keyword != ''">
+                and name like concat('%', #{param.keyword}, '%')
+            </if>
+            <if test="param.searchIntStatus != null">
+                and status = #{param.searchIntStatus}
+            </if>
+            and delete_time is null
+        </where>
+        order by id desc
+    </select>
+</mapper>

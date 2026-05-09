@@ -1,0 +1,24 @@
+spring:
+  profiles:
+#   active: prod
+#    active: test
+#    active: dev
+   active: local
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
+  transaction:
+    rollback-on-commit-failure: true
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .ftl
+    encoding: UTF-8
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

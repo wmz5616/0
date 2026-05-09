@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.shop.ShopMapper">
+
+    <sql id="field">
+        cover_image_url,
+        gallery_images,
+        name,
+        location,
+        address,
+        user_name,
+        phone,
+        start_time,
+        end_time,
+        top_recommend,
+        top_start_time,
+        top_end_time,
+        recommend_order,
+        status,
+        description,
+        remark,
+        customer_phone,
+        customer_code_img,
+        create_time
+    </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `shop`
+        (<include refid="field"/>)
+        VALUES
+        (
+        #{data.coverImageUrl},
+        #{data.galleryImages},
+        #{data.name},
+        #{data.location},
+        #{data.address},
+        #{data.userName},
+        #{data.phone},
+        #{data.startTime},
+        #{data.endTime},
+        #{data.topRecommend},
+        #{data.topStartTime},
+        #{data.topEndTime},
+        #{data.recommendOrder},
+        #{data.status},
+        #{data.description},
+        #{data.remark},
+        #{data.customerPhone},
+        #{data.customerCodeImg},
+        #{data.createTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `shop`
+        <set>
+            <if test="data.coverImageUrl != null and data.coverImageUrl != ''">
+                cover_image_url = #{data.coverImageUrl},
+            </if>
+            <if test="data.galleryImages != null and data.galleryImages != ''">
+                gallery_images = #{data.galleryImages},
+            </if>
+            <if test="data.name != null and data.name != ''">
+                name = #{data.name},
+            </if>
+            <if test="data.location != null and data.location != ''">
+                location = #{data.location},
+            </if>
+            <if test="data.address != null and data.address != ''">
+                address = #{data.address},
+            </if>
+            <if test="data.userName != null and data.userName != ''">
+                user_name = #{data.userName},
+            </if>
+            <if test="data.phone != null and data.phone != ''">
+                phone = #{data.phone},
+            </if>
+            <if test="data.startTime != null and data.startTime != ''">
+                start_time = #{data.startTime},
+            </if>
+            <if test="data.endTime != null and data.endTime != ''">
+                end_time = #{data.endTime},
+            </if>
+            <if test="data.topRecommend != null">
+                top_recommend = #{data.topRecommend},
+            </if>
+            <if test="data.topStartTime != null">
+                top_start_time = #{data.topStartTime},
+            </if>
+            <if test="data.topEndTime != null">
+                top_end_time = #{data.topEndTime},
+            </if>
+            <if test="data.topConsumption != null">
+                top_consumption = #{data.topConsumption},
+            </if>
+            <if test="data.topConsumptionStartTime != null">
+                top_consumption_start_time = #{data.topConsumptionStartTime},
+            </if>
+            <if test="data.topConsumptionEndTime != null">
+                top_consumption_end_time = #{data.topConsumptionEndTime},
+            </if>
+            <if test="data.recommendOrder != null">
+                recommend_order = #{data.recommendOrder},
+            </if>
+            <if test="data.status != null">
+                status = #{data.status},
+            </if>
+            <if test="data.description != null and data.description != ''">
+                description = #{data.description},
+            </if>
+            <if test="data.remark != null and data.remark != ''">
+                remark = #{data.remark},
+            </if>
+            <if test="data.merchantId != null">
+                merchant_id = #{data.merchantId},
+            </if>
+            <if test="data.rate != null">
+                rate = #{data.rate},
+            </if>
+            <if test="data.contract != null and data.contract != ''">
+                contract = #{data.contract},
+            </if>
+            <if test="data.customerPhone != null">
+                customer_phone = #{data.customerPhone},
+            </if>
+            <if test="data.customerCodeImg != null">
+                customer_code_img = #{data.customerCodeImg},
+            </if>
+            <if test="data.receiptStatus != null">
+                receipt_status = #{data.receiptStatus},
+            </if>
+            <if test="data.shopStatus != null">
+                shop_status = #{data.shopStatus},
+            </if>
+        </set>
+        WHERE id = #{data.id} AND delete_time IS NULL
+    </update>
+
+<!--    searchField2 是否开启收款 searchField3 资质认证状态 searchField4 商家状态-->
+    <select id="selectList" resultType="com.zemcho.guzhe.controller.shop.vo.ShopVO">
+        SELECT s.*, s.gallery_images as gallery_images_str
+        FROM `shop` s
+        <where>
+            <if test="param.searchField1 != null">
+                AND s.top_recommend = #{param.searchField1}
+            </if>
+            <if test="param.searchField2!=null">
+                AND s.receipt_status = #{param.searchField2}
+            </if>
+            <if test="param.searchField3!=null">
+                AND s.qualification_cert = #{param.searchField3}
+            </if>
+            <if test="param.searchField4 != null">
+                AND s.shop_status = #{param.searchField4}
+            </if>
+            <if test="param.searchIntStatus != null">
+                AND s.status = #{param.searchIntStatus}
+            </if>
+            <if test="param.searchId != null">
+                AND EXISTS (
+                SELECT 1 FROM business_circle_shop bus
+                WHERE bus.shop_id = s.id AND bus.circle_id = #{param.searchId}
+                )
+            </if>
+            <if test="param.searchField5 != null">
+                AND EXISTS (
+                SELECT 1 FROM shop_industry_category sic
+                WHERE sic.shop_id = s.id AND sic.industry_category_id = #{param.searchField5}
+                )
+            </if>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND s.name LIKE CONCAT('%', #{param.keyword}, '%')
+            </if>
+            <if test="param.startTime != null">
+                AND s.create_time &gt;= #{param.startTime}
+            </if>
+            <if test="param.endTime != null">
+                AND s.create_time &lt;= #{param.endTime}
+            </if>
+            AND delete_time IS NULL
+        </where>
+        ORDER BY s.recommend_order DESC, s.id DESC
+    </select>
+
+    <select id="selectById" resultType="com.zemcho.guzhe.entity.shop.Shop">
+        SELECT *
+        FROM shop
+        WHERE id = #{id}
+          AND delete_time IS NULL
+    </select>
+
+    <select id="selectByName" resultType="com.zemcho.guzhe.entity.shop.Shop">
+        SELECT id
+        FROM shop
+        WHERE name = #{name}
+        <if test="id != null">
+            AND id != #{id}
+        </if>
+        AND delete_time IS NULL
+    </select>
+
+    <select id="selectByCircleIds" resultType="java.util.Map">
+        SELECT
+        bcs.circle_id AS circleId,
+        bcs.shop_id AS shopId,
+        s.name AS shopName
+        FROM business_circle_shop bcs
+        left join shop s on bcs.shop_id = s.id
+        WHERE bcs.circle_id IN
+        <foreach item="item" collection="circleIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        AND s.delete_time IS NULL
+    </select>
+
+    <delete id="deleteByIds">
+        UPDATE `shop`
+        SET
+            delete_time = NOW()
+        WHERE id IN
+        <foreach item="item" collection="ids" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        AND delete_time IS NULL
+    </delete>
+
+    <update id="updateDeleteTime">
+        UPDATE `shop`
+        SET
+            delete_time = null
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectCommonList" resultType="com.zemcho.guzhe.controller.common.vo.ShopCommonVo">
+        SELECT id, name, status
+        FROM `shop`
+        <where>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND s.name LIKE CONCAT('%', #{param.keyword}, '%')
+            </if>
+            <if test="param.searchIntStatus != null">
+                AND s.status = #{param.searchIntStatus}
+            </if>
+            AND delete_time IS NULL
+        </where>
+        ORDER BY recommend_order DESC, id DESC
+    </select>
+
+    <select id="selectByMerchantId" resultType="com.zemcho.guzhe.controller.merchant.vo.ShopMerchantVO">
+        SELECT id AS shopId,name AS shopName,merchant_id AS merchantId
+        FROM `shop`
+        <where>
+            <if test="merchantIds != null">
+                AND merchant_id IN
+                <foreach item="item" collection="merchantIds" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            AND delete_time IS NULL
+        </where>
+    </select>
+
+    <select id="selectUnAuditById" resultType="com.zemcho.guzhe.entity.shop.Shop">
+        SELECT *
+        FROM `shop`
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByMerchantIdFull" resultType="com.zemcho.guzhe.controller.wechat.shop.vo.MerchantManageVO">
+        SELECT
+            id AS shopId,
+            name AS shopName,
+            qualification_cert AS qualificationCert,
+            shop_status AS shopStatus,
+            status
+        FROM `shop`
+        WHERE merchant_id = #{merchantId}
+          AND delete_time IS NULL
+        ORDER BY id DESC
+    </select>
+
+    <update id="checkUpdateTopStatus">
+        UPDATE `shop`
+        SET `top_recommend`   = 0,
+            `recommend_order` = 0
+        WHERE top_end_time &lt;= #{checkTime}
+          AND delete_time IS NULL
+    </update>
+
+    <select id="selectAppShopListsByShopIds" resultType="com.zemcho.guzhe.controller.app.vo.AppShopListVo">
+        SELECT id,cover_image_url,gallery_images as gallery_images_str,name,status,customer_phone,customer_code_img
+        FROM `shop`
+        WHERE id IN
+        <foreach item="item" collection="shopIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

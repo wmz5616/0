@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.order.ProductOrderRefundApplyMapper">
+    <sql id="fields">
+        order_id,
+        old_status,
+        reason,
+        images,
+        status,
+        create_time
+    </sql>
+
+    <insert id="insert">
+        INSERT INTO `product_order_refund_apply`
+        (<include refid="fields"/>)
+        VALUES
+        (
+        #{data.orderId},
+        #{data.oldStatus},
+        #{data.reason},
+        #{data.images},
+        #{data.status},
+        #{data.createTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `product_order_refund_apply`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.status != null">status = #{data.status},</if>
+            <if test="data.adminId != null">admin_id = #{data.adminId},</if>
+            <if test="data.account != null">account = #{data.account},</if>
+            <if test="data.name != null">name = #{data.name},</if>
+            <if test="data.refundAmount !=null">refund_amount = #{data.refundAmount},</if>
+            <if test="data.auditTime !=null">audit_time = #{data.auditTime},</if>
+            <if test="data.auditRemark !=null">audit_remark = #{data.auditRemark},</if>
+        </trim>
+        WHERE id = #{data.id}
+    </update>
+
+    <select id="selectLatestByOrderId" resultType="com.zemcho.guzhe.entity.order.ProductOrderRefundApply">
+        SELECT *
+        FROM `product_order_refund_apply`
+        WHERE order_id = #{orderId}
+        ORDER BY id DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectLists" resultType="com.zemcho.guzhe.controller.order.vo.ProductOrderRefundApplyListVo">
+        SELECT a.*,
+        b.order_no,
+        b.user_id,
+        b.phone,
+        b.nick_name,
+        b.shop_id,
+        b.shop_name,
+        b.product_id,
+        b.product_no,
+        b.product_name,
+        b.specification,
+        b.unit,
+        b.is_virtual,
+        b.num,
+        b.amount
+        FROM `product_order_refund_apply` as a
+        INNER JOIN `product_order` as b ON a.order_id = b.id
+        <where>
+            <if test="param.searchField4 != null">AND b.`shop_id` = #{param.searchField4}</if>
+            <if test="param.searchIntStatus != null">AND a.`status` = #{param.searchIntStatus}</if>
+            <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+                AND b.`order_no` LIKE CONCAT('%', #{param.searchStrField1}, '%')
+            </if>
+            <if test="param.searchStrField2 != null and param.searchStrField2 != ''">
+                AND b.`product_name` LIKE CONCAT('%', #{param.searchStrField2}, '%')
+            </if>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND (b.phone LIKE CONCAT('%',#{param.keyword},'%') OR b.nick_name LIKE CONCAT('%',#{param.keyword},'%'))
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND a.`create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+        ORDER BY a.`id` desc
+    </select>
+
+    <select id="selectById" resultType="com.zemcho.guzhe.entity.order.ProductOrderRefundApply">
+        SELECT *
+        FROM `product_order_refund_apply`
+        WHERE id = #{id}
+    </select>
+
+    <select id="countPendingByMerchantId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM `product_order_refund_apply` a
+                 INNER JOIN `product_order` b ON a.order_id = b.id
+                 INNER JOIN `shop` s ON b.shop_id = s.id
+        WHERE a.status = 1
+          AND s.merchant_id = #{merchantId}
+          AND s.delete_time IS NULL
+    </select>
+</mapper>
