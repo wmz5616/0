@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.order.ShopOrderMapper">
+
+    <sql id="shop_order_columns">
+        order_no,
+        equipment_id,
+        shop_id,
+        shop_name,
+        business_circle_id,
+        business_circle_name,
+        total_amount,
+        deduct_coin,
+        deduct_amount,
+        pay_amount,
+        order_time,
+        user_id,
+        phone,
+        nick_name,
+        status,
+        refund_reason,
+        refund_time,
+        divide_status,
+        divide_amount,
+        divide_time,
+        remark,
+        create_time,
+        update_time
+    </sql>
+
+    <sql id="wechatOrderWhere">
+        <where>
+                AND user_id = #{userId}
+            <if test="param.shopName != null and param.shopName != ''">
+                AND shop_name LIKE CONCAT('%', #{param.shopName}, '%')
+            </if>
+            <if test="param.status != null">
+                AND status = #{param.status}
+            </if>
+            <if test="param.queryStartTime != null and param.queryEndTime != null">
+                AND order_time BETWEEN #{param.queryStartTime} AND #{param.queryEndTime}
+            </if>
+<!--            <if test="param.id != null">-->
+<!--                AND shop_id=#{param.id}-->
+<!--            </if>-->
+        </where>
+    </sql>
+
+
+    <sql id="wechatShopOrderWhere">
+        <where>
+            AND shop_id = #{param.id}
+            <if test="param.queryStartTime != null and param.queryEndTime != null">
+                AND order_time BETWEEN #{param.queryStartTime} AND #{param.queryEndTime}
+            </if>
+            <if test="param.orderNo != null and param.orderNo!=''">
+                AND order_no Like CONCAT('%',#{param.orderNo},'%')
+            </if>
+            <if test="param.status != null">
+                AND status = #{param.status}
+            </if>
+            <if test="param.nickName != null and param.nickName!=''">
+                AND nick_name Like CONCAT('%',#{param.nickName},'%')
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectWechatOrderList" resultType="com.zemcho.ddql.controller.wechat.personalCenter.vo.WechatShopOrderListVo">
+        SELECT id,
+               shop_name,
+               status,
+               refund_reason,
+               pay_amount,
+               deduct_coin,
+               order_time
+        FROM `shop_order`
+        <include refid="wechatOrderWhere"/>
+        ORDER BY order_time DESC, id DESC
+    </select>
+
+    <select id="selectWechatOrderStat" resultType="com.zemcho.ddql.controller.wechat.personalCenter.vo.WechatShopOrderStatVo">
+        SELECT COUNT(1)                AS total_num,
+               IFNULL(SUM(pay_amount), 0) AS total_pay_amount
+        FROM `shop_order`
+        <include refid="wechatOrderWhere"/>
+    </select>
+
+    <select id="selectWechatOrderInfo" resultType="com.zemcho.ddql.controller.wechat.personalCenter.vo.WechatShopOrderInfoVo">
+        SELECT id,
+               order_no,
+               equipment_id,
+               shop_id,
+               shop_name,
+               business_circle_id,
+               business_circle_name,
+               total_amount,
+               deduct_coin,
+               deduct_amount,
+               pay_amount,
+               order_time,
+               user_id,
+               phone,
+               nick_name,
+               status,
+               refund_reason,
+               refund_time,
+               remark
+        FROM `shop_order`
+        WHERE id = #{id}
+          AND user_id = #{userId}
+    </select>
+
+    <select id="selectDetailListByOrderId" resultType="com.zemcho.ddql.controller.wechat.personalCenter.vo.WechatShopOrderDetailVo">
+        SELECT id,
+               order_id,
+               order_no,
+               item_name,
+               spec_name,
+               unit,
+               unit_price,
+               quantity,
+               total_amount,
+               deduct_coin,
+               deduct_amount,
+               pay_amount,
+               sort,
+               remark
+        FROM `shop_order_detail`
+        WHERE order_id = #{orderId}
+        ORDER BY sort ASC, id ASC
+    </select>
+
+    <select id="selectBusinessData" resultType="com.zemcho.ddql.controller.wechat.shop.vo.BusinessDataVO">
+        SELECT
+        COUNT(*) AS orderCount,
+        IFNULL(SUM(CASE WHEN `status` = 1 THEN `pay_amount` ELSE 0 END), 0) AS revenue,
+        IFNULL(SUM(CASE WHEN `divide_status` = 0 THEN `pay_amount` ELSE 0 END), 0) AS pendingAmount
+        FROM `shop_order`
+        WHERE `shop_id` = #{param.searchField4}
+        <if test="param.startTime != null and param.endTime != null">
+            AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+        </if>
+        <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+            AND nick_name LIKE CONCAT('%',#{param.searchStrField1},'%')
+        </if>
+        <if test="param.searchStrField2 != null and param.searchStrField2 != ''">
+            AND order_no LIKE CONCAT('%',#{param.searchStrField2},'%')
+        </if>
+        <if test="param.searchType != null">
+            AND  status = #{param.searchType}
+        </if>
+    </select>
+
+    <select id="select" resultType="com.zemcho.ddql.entity.personalCenter.ShopOrder">
+        select
+            id,
+            order_no,
+            equipment_id,
+            shop_id,
+            shop_name,
+            business_circle_id,
+            business_circle_name,
+            total_amount,
+            deduct_coin,
+            deduct_amount,
+            pay_amount,
+            order_time,
+            user_id,
+            phone,
+            nick_name,
+            status,
+            refund_reason,
+            refund_time,
+            remark,
+            divide_status,
+            divide_amount,
+            divide_time
+        from `shop_order`
+        <where>
+            <if test="param.searchId != null">
+                AND shop_id = #{param.searchId}
+            </if>
+            <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+                AND nick_name LIKE CONCAT('%',#{param.searchStrField1},'%')
+            </if>
+            <if test="param.searchStrField2 != null and param.searchStrField2 != ''">
+                AND order_no LIKE CONCAT('%',#{param.searchStrField2},'%')
+           </if>
+        <if test="param.searchType != null">
+            AND  status = #{param.searchType}
+        </if>
+        </where>
+        order by order_time desc
+    </select>
+
+    <select id="selectLists" resultType="com.zemcho.ddql.entity.personalCenter.ShopOrder">
+        SELECT *
+        FROM `shop_order`
+        <where>
+            <if test="param.searchField1 != null">AND user_id = #{param.searchField1}</if>
+            <if test="param.searchTypeList != null and param.searchTypeList.size() > 0">
+                AND `order_type` IN
+                <foreach collection="param.searchTypeList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.searchStatusList != null and param.searchStatusList.size() > 0">
+                AND `status` IN
+                <foreach collection="param.searchStatusList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.searchIntStatus != null">AND `status` = #{param.searchIntStatus}</if>
+            <if test="param.searchField2 != null">AND `divide_status` = #{param.searchField2}</if>
+            <if test="param.searchField3 != null">AND `shop_id` = #{param.searchField3}</if>
+            <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+                AND `order_no` LIKE CONCAT('%', #{param.searchStrField1}, '%')
+            </if>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND (phone LIKE CONCAT('%',#{param.keyword},'%') OR nick_name LIKE CONCAT('%',#{param.keyword},'%'))
+            </if>
+            <if test="param.limitTime != null">
+                AND `order_time` &gt;= #{param.limitTime}
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+        ORDER BY `id` desc
+    </select>
+
+    <update id="update">
+        UPDATE `shop_order`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.status != null">status = #{data.status},</if>
+            <if test="data.refundReason != null">refund_reason = #{data.refundReason},</if>
+            <if test="data.divideStatus != null">divide_status = #{data.divideStatus},</if>
+            <if test="data.divideAmount != null">divide_amount = #{data.divideAmount},</if>
+            <if test="data.divideTime != null">divide_time = #{data.divideTime},</if>
+            <if test="data.refundTime != null">refund_time = #{data.refundTime},</if>
+            update_time = now()
+        </trim>
+        WHERE id = #{data.id}
+    </update>
+
+    <select id="selectById" resultType="com.zemcho.ddql.entity.personalCenter.ShopOrder">
+        SELECT * FROM `shop_order` WHERE id = #{searchId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="param.id">
+        INSERT INTO `shop_order` (
+        <include refid="shop_order_columns"/>
+        )
+        VALUES (
+        #{param.orderNo},
+        #{param.equipmentId},
+        #{param.shopId},
+        #{param.shopName},
+        #{param.businessCircleId},
+        #{param.businessCircleName},
+        #{param.totalAmount},
+        #{param.deductCoin},
+        #{param.deductAmount},
+        #{param.payAmount},
+        #{param.orderTime},
+        #{param.userId},
+        #{param.phone},
+        #{param.nickName},
+        #{param.status},
+        #{param.refundReason},
+        #{param.refundTime},
+        #{param.divideStatus},
+        #{param.divideAmount},
+        #{param.divideTime},
+        #{param.remark},
+        #{param.createTime},
+        #{param.updateTime}
+        )
+    </insert>
+
+    <select id="selectOrderListForReconciliation" resultType="com.zemcho.ddql.entity.personalCenter.ShopOrder">
+        SELECT * FROM shop_order
+        WHERE (order_time &gt;= #{startTime} AND order_time &lt;= #{endTime})
+           OR (refund_time &gt;= #{startTime} AND refund_time &lt;= #{endTime})
+    </select>
+
+    <select id="selectByOrderNo" resultType="com.zemcho.ddql.entity.personalCenter.ShopOrder">
+            select * from shop_order where order_no = #{orderNo}
+    </select>
+
+    <select id="selectWechatShopOrderList" resultType="com.zemcho.ddql.controller.wechat.order.vo.WechatShopOrderVo">
+        SELECT
+        id,
+        order_no,
+        shop_id,
+        shop_name,
+        total_amount,
+        deduct_coin,
+        deduct_amount,
+        pay_amount,
+        order_time,
+        user_id,
+        phone,
+        nick_name,
+        status,
+        refund_reason,
+        refund_time
+        FROM `shop_order`
+        <include refid="wechatShopOrderWhere"/>
+    </select>
+
+    <select id="selectShopOrderStat"
+            resultType="com.zemcho.ddql.controller.wechat.personalCenter.vo.WechatShopOrderStatVo">
+        SELECT COUNT(1)                AS total_num,
+               IFNULL(SUM(pay_amount), 0) AS total_pay_amount
+        FROM `shop_order`
+        <include refid="wechatShopOrderWhere"/>
+    </select>
+</mapper>

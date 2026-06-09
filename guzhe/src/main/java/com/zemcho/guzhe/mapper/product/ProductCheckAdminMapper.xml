@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.product.ProductCheckAdminMapper">
+
+    <sql id="field">
+        product_id,
+        admin_id
+    </sql>
+    <delete id="deleteByProductIds">
+        DELETE FROM `product_check_admin`
+        WHERE product_id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="insertAll">
+        INSERT INTO `product_check_admin`(
+        <include refid="field"></include>
+        )VALUES
+        <foreach collection="data" item="item" separator=",">
+            (
+            #{item.productId},
+            #{item.adminId}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectAdminIdByProductId" resultType="java.lang.Integer">
+        SELECT admin_id
+        FROM `product_check_admin`
+        WHERE product_id = #{productId}
+    </select>
+
+    <select id="selectProductIdByAdminId" resultType="java.lang.Integer">
+        SELECT product_id
+        FROM `product_check_admin`
+        WHERE admin_id = #{adminId}
+    </select>
+</mapper>

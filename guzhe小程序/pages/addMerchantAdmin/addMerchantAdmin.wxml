@@ -1,0 +1,48 @@
+<wxs module="utl" src="./addMerchantAdmin.wxs"></wxs>
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">添加管理员</text>
+  </van-nav-bar>
+  <view class="rule box mlr">
+    <view class="flex1">
+      <view class="point"></view>
+      <text class="rule_text">管理员可协助店长管理商家，拥有编辑商家信息、操作订单退款等能力。</text>
+    </view>
+    <view class="flex1">
+      <view class="point"></view>
+      <text class="rule_text">只有店长具备设置管理员的能力</text>
+    </view>
+  </view>
+  <view class="mlr search">
+    <van-search value="{{ keyword }}" bind:change="onInput" bind:clear="onCancel" bind:search="onSearch" shape="round" background="#fff" placeholder="请输入完整的手机号搜索" left-icon='' use-right-icon-slot placeholder-style="font-size: 30rpx;color:#CCC;">
+      <view slot="right-icon" style="display: flex;align-items: center;" bind:tap="onSearch">
+        <image src="/assets/images/search.svg" mode="aspectFill" style="height: 44rpx;width: 43rpx;" />
+      </view>
+    </van-search>
+  </view>
+  <view class="swiper">
+    <scroll-view wx:for="{{list}}" wx:key="id" class="box item" bindscrolltolower='onScroll'>
+      <view class="left flex" bind:tap="choseMember" data-phone="{{item.phone}}">
+        <view class="l_left flex">
+          <image src="{{item.avatar}}" style="height: 106rpx;width: 106rpx;border-radius: 50%;" mode="aspectFill" />
+          <view class="f_l_r_top">
+            <view class="flex ffff">
+              <text class="tag">{{item.nickname}}</text>
+              <text class="name">{{item.userName}}</text>
+            </view>
+            <text class="gray_tag">{{item.phone}}</text>
+          </view>
+        </view>
+        <view class="radio {{utl.checkInclude(selectUserColumn,item.phone) && 'activeRadio'}}">
+          <image wx:if="{{utl.checkInclude(selectUserColumn,item.phone)}}" src="/assets/images/select.svg" mode="aspectFill" style="height: 36rpx;width: 36rpx;" />
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+  <view class="Btn">
+    <view class="btn" bind:tap="add">确认添加</view>
+  </view>
+</view>

@@ -1,0 +1,49 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">权限管理</text>
+  </van-nav-bar>
+  <view class="swiper" wx:if="{{!showSearch}}" style="padding: 30rpx;display: flex;flex-direction: column;gap: 30rpx;box-sizing: border-box;">
+    <view class="flex transfer" bind:tap="changeSelect">
+      <text class="title">店长管理权转让</text>
+      <image src="/assets/images/more.svg" class="gray_right" mode="aspectFill" />
+    </view>
+    <view class="flex transfer" bind:tap="jump" data-url="/pages/merchantAdmin/merchantAdmin?id={{shopId}}">
+      <text class="title">商家管理员</text>
+      <image src="/assets/images/more.svg" class="gray_right" mode="aspectFill" />
+    </view>
+  </view>
+  <view wx:else style="width: 100%;">
+    <view class="search">
+      <van-search value="{{ keyword }}" bind:change="onInput" bind:clear="onCancel" bind:search="onSearch" shape="round" background="#fff" placeholder="请输入完整的手机号搜索" left-icon='' use-right-icon-slot placeholder-style="font-size: 30rpx;color:#CCC;">
+        <view slot="right-icon" style="display: flex;align-items: center;" bind:tap="onSearch">
+          <image src="/assets/images/search.svg" mode="aspectFill" style="height: 44rpx;width: 43rpx;" />
+        </view>
+      </van-search>
+    </view>
+    <scroll-view class="swiper h284" bindscrolltolower='onScroll' scroll-y>
+      <view wx:for="{{list}}" wx:key="id" class="box left flex item" data-name="{{item.nickname}}" data-id="{{item.id}}" data-index="{{index}}" bind:tap="choseMember">
+        <view class="g20 Rflex">
+          <view class="Rflex" style="gap: 16rpx;">
+            <image src="{{item.avatar}}" style="height: 106rpx;width: 106rpx;border-radius: 50%;" mode="aspectFill" />
+            <text class="tag">{{item.name}}</text>
+          </view>
+          <view class="g20 Rflex">
+            <text class="name">{{item.userName}}</text>
+            <text class="name">{{item.phone}}</text>
+          </view>
+        </view>
+        <view class="radio {{index === selectRadio && 'activeRadio'}}">
+          <image wx:if="{{index === selectRadio}}" src="/assets/images/select.svg" mode="aspectFill" style="height: 36rpx;width: 36rpx;" />
+        </view>
+      </view>
+      <view style="height: 30rpx;width: 100%;"></view>
+    </scroll-view>
+  </view>
+  <van-dialog use-slot use-title-slot show="{{ showDialog }}" showConfirmButton showCancelButton cancelButtonText="取消" confirmButtonText="确定" width="540rpx" bind:close="onClose" bind:confirm="dialogConfirm" bin data-name="showDialog" confirm-button-class="dialogBtn d_v_btn" cancle-button-class="dialogBtn">
+    <view slot="title">确定选择“{{tearnuserName}}”为新创建者，你将自动放弃创建者身份
+    </view>
+  </van-dialog>
+</view>

@@ -1,0 +1,104 @@
+<!--index.wxml-->
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">收货地址</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <view wx:for="{{addressList}}" wx:key="id" class="address_item boxShadow">
+      <view class="flex LRP30">
+        <view class="a_t_left">
+          <text class="title">{{item.name}}</text>
+          <text class="title fw400">{{item.phone}}</text>
+        </view>
+        <image catch:tap="deleteAddress" data-deleteid="{{item.id}}" src="/assets/images/closed.svg" mode="aspectFill" class="close" />
+      </view>
+      <view class="flex LRP30 a_middle">
+        <view class="title fw400 addressInfo">{{item.regionName}}{{item.address}}</view>
+        <image wx:if="{{Dflag && selectAddressId == item.id}}" src="/assets/images/select.svg" mode="aspectFill" class="atciveChose" />
+        <view bind:tap="choseAddress" data-selectId="{{item.id}}" wx:if="{{Dflag && selectAddressId != item.id}}" class="a_m_right label">使用</view>
+      </view>
+      <view class="flex LRP30 a_bottom">
+        <view data-item="{{item}}" bind:tap="changeRadio" class="a_b_left">
+          <view class="radio {{item.isDefault && 'activeRadio'}}">
+            <image wx:if="{{item.isDefault}}" src="/assets/images/select.svg" mode="aspectFill" style="height: 36rpx;width: 36rpx;" />
+          </view>
+          <text class="{{item.isDefault?'label':'nomalLabel'}}">{{item.isDefault?'设为默认':'默认'}}</text>
+        </view>
+        <view class="a_b_right" catch:tap="openOverlay" data-type="edit" data-item="{{item}}">编辑</view>
+      </view>
+    </view>
+  </view>
+  <view class="Btn">
+    <view bind:tap="openOverlay" data-type="add" class="btn">新增收货地址</view>
+  </view>
+  <!-- 弹出框 -->
+  <van-dialog custom-class="active4d" use-slot use-title-slot show="{{ showDialog }}" showConfirmButton showCancelButton confirmButtonText="确认" cancelButtonText="取消" width="540rpx" bind:cancel="onClose" bind:confirm="getDeleteAddress" bin data-name="showDialog" confirm-button-class="dialogBtn d_v_btn" cancle-button-class="dialogBtn">
+    <view slot="title">确定要删除该地址吗？</view>
+  </van-dialog>
+
+  <!-- 新增或编辑收货地址 -->
+  <van-overlay show="{{ showOverlay }}" data-name="flag" bind:click="onClose" lock-scroll="{{false}}">
+    <view class="overlay">
+      <view class="box_item">
+        <view class="p-title">
+          <image wx:if="{{changeFlag}}" data-name="changeFlag" bind:tap="onClose" src="/assets/images/arrow-back.svg" mode="aspectFill" class="pos" />
+          <text class="p-text">{{changeFlag?'根据定位获取附近地址':overlayType == 'add'?'新增收货的地址':'编辑收货的地址'}}</text>
+        </view>
+        <view wx:if="{{!changeFlag}}">
+          <view class="o_content">
+            <van-cell-group>
+              <van-field custom-class="field" model:value="{{ name }}" clearable placeholder="收货人姓名" placeholder-style="font-size:34rpx;color:#CCC;">
+                <view slot="label" class="vLabel">
+                  <text class="title fw400 require">收货人：</text>
+                </view>
+              </van-field>
+              <van-field custom-class="field" model:value="{{ phone }}" clearable placeholder="收货人手机号" placeholder-style="font-size:34rpx;color:#CCC;">
+                <view slot="label" class="vLabel">
+                  <text class="title fw400 require">手机号码：</text>
+                </view>
+              </van-field>
+              <van-field disabled custom-class="field" value="{{ region }}" clearable icon="arrow-down" placeholder="地请选择所在地区" bind:click-icon="onClickIcon" bind:click-input="onClickIcon" data-type="area" placeholder-style="font-size:34rpx;color:#CCC;">
+                <view slot="label" class="vLabel">
+                  <text class="title fw400 require">地区：</text>
+                </view>
+              </van-field>
+              <van-field custom-class="field field1" value="{{ address }}" clearable bind:click-icon="onClickIcon" bind:change="getLocation" bind:blur='getAddressLocation' data-type="address" placeholder="详细地址与门牌号" right-icon="/assets/images/location.svg" placeholder-style="font-size:34rpx;color:#CCC;">
+                <view slot="label" class="vLabel">
+                  <text class="title fw400 require">详细地址：</text>
+                </view>
+              </van-field>
+            </van-cell-group>
+          </view>
+          <view class="footer">
+            <view class="base" data-name="showOverlay" bind:tap="onClose">取消</view>
+            <view class="line"></view>
+            <view class="base activeText" data-name="showOverlay" bind:tap="overlayConfirm">{{overlayType == 'add'?'保存':'确认'}}</view>
+          </view>
+          <view wx:if="{{address && flag}}" class="angle"></view>
+          <view wx:if="{{address && flag}}" class="detail">
+            <view class="locationItem" wx:for="{{placeList}}" wx:key="id" data-item="{{item}}" bind:tap="changeAddress">
+              <text class="title fw400 ellipsis">{{item.title}}</text>
+              <text class="info ellipsis">{{item.address}}</text>
+            </view>
+          </view>
+        </view>
+        <view wx:else class="llist">
+          <view wx:for="{{placeList}}" wx:key="id" data-item="{{item}}" bind:tap="changeAddress" class="locationList flex">
+            <view class="l_left">
+              <text class="title">{{item.title}}</text>
+              <text class="grayTitle ellipsis">{{item.address}}</text>
+            </view>
+            <image src="/assets/images/gray-rightArrow.svg" mode="aspectFill" class="rightIcon" />
+          </view>
+        </view>
+      </view>
+    </view>
+  </van-overlay>
+  <!-- 地区 -->
+  <van-popup close-on-click-overlay position="bottom" round show="{{ showAreaPicker }}" bind:close="onClose" data-name="showAreaPicker">
+    <van-picker id="myPicker" toolbar-class="p_title" cancel-button-text="重置" show-toolbar title="地区" columns="{{ columns }}" bind:confirm="onConfirm" bind:cancel="onClose" data-name="showAreaPicker" data-reset="reset" bind:change="onAreaChange" />
+  </van-popup>
+</view>

@@ -1,0 +1,70 @@
+<wxs module="format" src="../../pages/myOrder/myOrder.wxs"></wxs>
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">我的兑换</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <view wx:if="{{!orderInfo.isVirtual}}" class="address boxShadow">
+      <view class="h_top">
+        <text class="title">{{orderAddress.name}}</text>
+        <text class="title fw400">{{orderAddress.phone}}</text>
+      </view>
+      <text class="title fw400">{{orderAddress.address}}</text>
+    </view>
+    <view class="address boxShadow">
+      <view class="flex">
+        <text class="title">商品详情</text>
+        <text class="grayText">{{format.formatStatus(orderInfo.status)}}</text>
+      </view>
+      <view class="m_bottom flex">
+        <image src="{{orderInfo.coverImage}}" mode="aspectFill" class="goodImage"/>
+        <view class="m_b_right">
+          <view class="m_b_right_top flex">
+            <text class="title label">{{orderInfo.productName}}</text>
+            <text class="count">x{{orderInfo.num}}</text>
+          </view>
+          <text wx:if="{{orderInfo.isVirtual}}" class="title label">有效期至：{{orderInfo.deadline}}</text>
+          <view class="m_b_right_bottom">
+            <text class="heji">合计：</text>
+            <text class="coin">{{orderInfo.amount}}金币</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{!orderInfo.isVirtual}}" class="address boxShadow gap30">
+      <view style="border-bottom:none;padding-bottom:0;" class="orderNo title fw400">订单编号：{{orderInfo.orderNo}}</view>
+      <view class="orderNo title fw400">快递单号：{{orderInfo.expressNo}}</view>
+      <view class="process">
+        <view class="line" style="height: {{206 * (processData.length - 1)}}rpx;"></view>
+        <view class="pItem" wx:for="{{processData}}" wx:key="index">
+          <!-- <image src="/assets/images/{{item.img}}" mode="aspectFill" class="imgIcon"/> -->
+          <view style="flex:0 0 15rpx;height:15rpx;background-color:#04C0D9;border-radius:60rpx;position:relative;"></view>
+          <view class="pInfo" style="transform:translate(0rpx,-18rpx);height:126rpx;">
+            <!-- <text class="pTitle">{{item.status}}</text> -->
+            <text style="color:rgba(51, 51, 51, 0.60);font-size:22rpx;word-break: break-all;">{{item.context}}</text>
+            <text class="grayTime">{{item.time}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{!orderInfo.isVirtual}}" class="{{orderInfo.status == 2?'btn1':'btn'}}">
+    <view wx:if="{{orderInfo.status == 1}}" class="btn1 nomalBtn" bind:tap="jump" data-url="/pages/refundRequest/refundRequest?searchId={{searchId}}">申请退款</view>
+    <view wx:elif="{{orderInfo.status == 2}}" class="btn1" style="gap: 46rpx;">
+      <view class="btn nomalBtn" bind:tap="jump" data-item="{{orderInfo}}" data-url="/pages/refundProgress/refundProgress">退款进度</view>
+      <view class="btn activeBtn" bind:tap="go" data-url="/pages/exchange/exchange">再次购买</view>
+    </view>
+    <view wx:else class="btn1 activeBtn" bind:tap="go" data-url="/pages/exchange/exchange">再次购买</view>
+  </view>
+  <view wx:else class="Btn1">
+    <view class="btn1 activeBtn" bind:tap="jump" data-url="/pages/coupon/coupon?searchId={{searchId}}">查看券码</view>
+  </view>
+    <!-- 弹出框 -->
+    <van-dialog use-slot use-title-slot show="{{ showDialog }}" showConfirmButton showCancelButton confirmButtonText="确定" width="540rpx" bind:close="onClose" bind:confirm="dialogConfirm" bin data-name="showDialog" confirm-button-class="dialogBtn d_v_btn" cancle-button-class="dialogBtn">
+    <view slot="title">确认收货</view>
+    <view class="d_content">
+      确认已收货后不可撤回，是否确认？
+    </view>
+  </van-dialog>
+</view>

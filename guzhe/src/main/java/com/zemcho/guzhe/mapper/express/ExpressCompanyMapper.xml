@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.express.ExpressCompanyMapper">
+    <select id="selectLists" resultType="com.zemcho.guzhe.entity.express.ExpressCompany">
+        SELECT *
+        FROM `express_company`
+        <where>
+            <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+                AND `name` LIKE CONCAT('%', #{param.searchStrField1}, '%')
+            </if>
+            <if test="param.searchStrField2 != null and param.searchStrField2 != ''">
+                AND `code` LIKE CONCAT('%', #{param.searchStrField2}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>

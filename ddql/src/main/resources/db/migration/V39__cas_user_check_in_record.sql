@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS `cas_user_check_in_record`  (
+    `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+    `user_id` int NOT NULL DEFAULT 0 COMMENT '用户id',
+    `nickname` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '用户昵称',
+    `phone` char(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '用户手机号',
+    `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '用户头像',
+    `place_id` int NOT NULL DEFAULT 0 COMMENT '场地id',
+    `place_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '场地名称',
+    `place_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '场地地址',
+    `location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '场地经纬度',
+    `check_in_method` int UNSIGNED NOT NULL DEFAULT 0 COMMENT '打卡方式 0扫码打卡 1距离打卡',
+    `date` date NULL DEFAULT NULL COMMENT '打卡日期',
+    `start_time` datetime NULL COMMENT '打卡开始时间',
+    `end_time` datetime NULL COMMENT '打卡结束时间',
+    `check_in_time` int NOT NULL DEFAULT 0 COMMENT '打卡总时长（秒）',
+    `status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '状态：1打卡中、2打卡成功、3打卡失效',
+    `health_coin` int NOT NULL DEFAULT 0 COMMENT '本次打卡获得的总健康币数量',
+    `gold_coin` int NOT NULL DEFAULT 0 COMMENT '本次打卡获得的总金币数量',
+    `create_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `user_id`(`user_id`) USING BTREE
+    ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户打卡记录表' ROW_FORMAT = DYNAMIC;

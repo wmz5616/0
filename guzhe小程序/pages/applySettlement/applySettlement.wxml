@@ -1,0 +1,136 @@
+<!--pages/applySettlement/applySettlement.wxml-->
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">{{type=='shoplist'?'商家信息':shopId?'申请入驻记录':'申请入驻'}}</text>
+  </van-nav-bar>
+  <view class="swiper {{(shopAuditInfo.applyResult != 2 && shopId && !type)?'h180':isIOS?'h336':''}}">
+    <view class="box info" wx:if="{{shopAuditInfo.id}}">
+      <view class="flex">
+        <text class="nomalText c666">审核状态：</text>
+        <text class="nomalText {{shopAuditInfo.applyResult==0?'noaudit':shopAuditInfo.applyResult==1?'green':'red'}}">{{shopAuditInfo.applyResult==0?'待审核':shopAuditInfo.applyResult==1?'已通过':'已驳回'}}</text>
+      </view>
+      <view class="flex" wx:if="{{shopAuditInfo.applyResult!=0}}">
+        <text class="nomalText c666">审核时间：</text>
+        <text class="nomalText c333">{{shopAuditInfo.auditTime}}</text>
+      </view>
+      <view class="flex">
+        <text class="nomalText c666">申请时间：</text>
+        <text class="nomalText c333">{{shopAuditInfo.submitTime}}</text>
+      </view>
+      <view class="flex" wx:if="{{shopAuditInfo.applyResult!=0}}">
+        <text class="nomalText c666">驳回原因：</text>
+        <text class="nomalText c333">{{shopAuditInfo.rejectReason?shopAuditInfo.rejectReason:''}}</text>
+      </view>
+    </view>
+    <view class="box Cflex">
+      <view class="title require">商家logo</view>
+      <van-uploader class="logo" image-fit="aspectFit" file-list="{{ fileList }}" deletable max-count="1" use-before-read preview-file bind:before-read="beforeRead" upload-icon="plus" bind:after-read="afterRead" bind:delete="deleteRead" data-type="fileList" />
+    </view>
+    <view class="box Cflex">
+      <view class="title">商家轮播图（最多可上传6张图片）</view>
+      <van-uploader multiple="{{true}}" class="banner" image-fit="aspectFit" file-list="{{ bannerList }}" deletable max-count="6" use-before-read preview-file bind:before-read="beforeRead" upload-icon="plus" bind:after-read="afterRead" bind:delete="deleteRead" data-type="bannerList" />
+    </view>
+    <view class="box Cflex">
+      <view class="field">
+        <view class="title require">商家名称：</view>
+        <input value="{{name}}" bind:input="getInputValue" data-type="name" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field">
+        <view class="title require">店长：</view>
+        <input value="{{userName}}" bind:input="getInputValue" data-type="userName" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field">
+        <view class="title require">联系电话：</view>
+        <input value="{{phone}}" bind:input="getInputValue" data-type="phone" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field">
+        <view class="title">营业时间：</view>
+        <input value="{{businessTime}}" bind:input="getInputValue" data-type="businessTime" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+        <!-- <view class="gap15" bind:tap="openTime">
+          <view wx:if="{{showStartTime}}">{{showStartTime}}~{{showEndTime}}</view>
+          <view wx:else class="grayText">开始时间~结束时间</view>
+          <image src="/assets/images/time.svg" mode="aspectFill" style="height: 30rpx;width: 35rpx;" />
+        </view> -->
+      </view>
+      <view class="field">
+        <view class="title" style="flex-shrink:0;">企业位置：</view>
+        <view class="gap30" bind:tap="jumpmap">
+          <view wx:if="{{!selectAddress.title}}" class="grayText">请输入位置</view>
+          <view wx:else class="selectText">{{selectAddress.title}}</view>
+          <view class="btn" style="flex-shrink:0;">选择位置</view>
+        </view>
+      </view>
+      <view class="field">
+        <view class="title require">行业类别：</view>
+        <view bind:tap="openPop" class="gap42" data-pickertype="typeList">
+          <view wx:if="{{typeList.length}}" class="list">
+            <view catch:tap="clearItem" data-value="{{item.value}}" data-pickertype="typeList" wx:for="{{typeList}}" wx:key="index" class="item badge">{{item.text}}</view>
+          </view>
+          <view wx:else class="grayText">请选择类别</view>
+          <image src="/assets/images/pullDown.svg" mode="aspectFill" style="height: 17rpx;width: 28rpx;" />
+        </view>
+      </view>
+      <!-- <view class="field">
+        <view class="title require">所属商超：</view>
+        <view bind:tap="openPop" class="gap42" data-pickertype="circleList">
+          <view wx:if="{{circleList.length}}" class="list">
+            <view catch:tap="clearItem" data-value="{{item.value}}" data-pickertype="circleList" wx:for="{{circleList}}" wx:key="index" class="item badge">{{item.text}}</view>
+          </view>
+          <view wx:else class="grayText">请选择商超</view>
+          <image src="/assets/images/pullDown.svg" mode="aspectFill" style="height: 17rpx;width: 28rpx;" />
+        </view>
+      </view> -->
+      <!-- <view class="vetical">
+        <view class="title require">商家介绍：</view>
+        <textarea auto-height class="textarea" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+      </view> -->
+      <view class="field">
+        <view class="title">客服电话：</view>
+        <input value="{{customerPhone}}" bind:input="getInputValue" data-type="customerPhone" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="vetical">
+        <view class="title require">客服微信：</view>
+        <van-uploader file-list="{{ qrcCodeList }}" deletable max-count="1" use-before-read preview-file bind:before-read="beforeRead" upload-icon="plus" bind:after-read="afterRead" bind:delete="deleteRead" data-type="qrcCodeList" />
+        <!-- <view class="imgBox">
+          <canvas canvas-id="qrcodeCanvas" style="width: 143rpx; height: 143rpx; position: absolute;top: -9999rpx;"></canvas>
+          <image bind:tap="showImg" src="{{qrCodeImage}}" mode="aspectFill" style="height: 143rpx;width: 143rpx;" />
+        </view> -->
+      </view>
+      <view class="field">
+        <view class="title" style="flex-shrink:0;">商家介绍：</view>
+        <textarea value="{{description}}" bind:input="getInputValue" data-type="description" auto-height class="textarea" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+      </view>
+    </view>
+    <view class="box Rflex" bind:tap="isjumpauthority" wx:if="{{authorityId}}">
+      <text class="zizhi">资质认证</text>
+      <view class="gap12">
+        <text class="nomal" style="color:{{shopAuditInfo.qualificationCert==0?'#7F7F7F':shopAuditInfo.qualificationCert==1?'#FB6C00':shopAuditInfo.qualificationCert==2?'#8153FC':shopAuditInfo.qualificationCert==3?'#E62E3D':'#7F7F7F'}}">{{shopAuditInfo.qualificationCert==0?'未认证':shopAuditInfo.qualificationCert==1?'待审核':shopAuditInfo.qualificationCert==2?'已认证':shopAuditInfo.qualificationCert==3?'已驳回':'未认证'}}</text>
+        <image src="/assets/images/more.svg" mode="aspectFill" style="height: 28rpx;width: 16rpx;" />
+      </view>
+    </view>
+  </view>
+  <view bind:tap="submit" wx:if="{{!shopId || shopAuditInfo.applyResult == 2}}" class="Btn1 {{isIOS?'isIOS':''}}">
+    <view class="btn1">提交</view>
+  </view>
+  <view bind:tap="submit" wx:if="{{type}}" class="Btn1 {{isIOS?'isIOS':''}}">
+    <view class="btn1">保存</view>
+  </view>
+  <van-popup close-on-click-overlay position="bottom" round show="{{ showPop }}" bind:close="onClose" data-name="showPop">
+    <van-picker id="myPicker" toolbar-class="p_title" show-toolbar cancel-button-text="取消" title="{{pickertype == 'typeList'?'行业类别':'所属商超'}}" columns="{{ columns }}" bind:confirm="onConfirm" data-name="showPop" bind:cancel="onClose" />
+  </van-popup>
+  <!-- 时间筛选 -->
+  <van-popup position="bottom" round show="{{ showPop1 }}" bind:close="onClose" data-name="showPop1">
+    <view>
+      <view class="pickerTime flex">
+        <text class="p_avtiveText" bind:tap="onClose" data-name="showPop1">取消</text>
+        <text class="p_text">选择时间</text>
+        <text class="p_avtiveText" bind:tap="comfrimDate" data-name="showPop1">确定</text>
+      </view>
+      <van-datetime-picker show-toolbar="{{false}}" type="time" data-field="startTime" value="{{ startTime }}" min-hour="{{ minHour  }}" max-hour="{{ maxHour   }}" bind:input="onInput" formatter="{{ forma }}" />
+      <van-datetime-picker show-toolbar="{{false}}" type="time" data-field="endTime" value="{{ endTime }}" min-hour="{{ minHour  }}" max-hour="{{ maxHour   }}" bind:input="onInput" formatter="{{ forma }}" />
+    </view>
+  </van-popup>
+</view>

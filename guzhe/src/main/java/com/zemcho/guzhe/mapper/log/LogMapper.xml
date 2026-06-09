@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.log.LogMapper">
+
+    <insert id="insertLoginLog">
+        INSERT INTO sys_login_log(
+            admin_id, account, name, login_time, ip
+        ) VALUE (
+            #{log.adminId},
+            #{log.account},
+            #{log.name},
+            #{log.loginTime},
+            #{log.ip}
+        )
+    </insert>
+
+    <insert id="insertOperateLog">
+        INSERT INTO sys_operate_log(
+            admin_id,
+            account,
+            name,
+            operate_time,
+            ip,
+            description,
+            api,
+            param,
+            result,
+            module,
+            type
+        ) value (
+            #{log.adminId},
+            #{log.account},
+            #{log.name},
+            #{log.operateTime},
+            #{log.ip},
+            #{log.description},
+            #{log.api},
+            #{log.param},
+            #{log.result},
+            #{log.module},
+            #{log.type}
+        )
+    </insert>
+
+    <select id="selectLoginLog" resultType="com.zemcho.guzhe.entity.log.LoginLog">
+        SELECT *
+        FROM sys_login_log
+        <where>
+            <if test="param.startTime != null and param.endTime != null"> AND login_time BETWEEN #{param.startTime} AND #{param.endTime}</if>
+            <if test="param.keyword != null and param.keyword != ''"> AND ((account LIKE CONCAT('%',#{param.keyword},'%')) OR (name LIKE CONCAT('%',#{param.keyword},'%')))</if>
+            <if test="param.ip != null and param.ip != ''"> AND ip LIKE CONCAT('%',#{param.ip},'%')</if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <select id="selectOperateLog" resultType="com.zemcho.guzhe.entity.log.OperateLog">
+        SELECT *
+        FROM sys_operate_log
+        <where>
+            <if test="param.startTime != null and param.endTime != null"> AND operate_time BETWEEN #{param.startTime} AND #{param.endTime}</if>
+            <if test="param.keyword != null and param.keyword != ''"> AND ((account LIKE CONCAT('%',#{param.keyword},'%')) OR (name LIKE CONCAT('%',#{param.keyword},'%')))</if>
+            <if test="param.ip != null and param.ip != ''"> AND ip LIKE CONCAT('%',#{param.ip},'%')</if>
+            <if test="param.module != null and param.module != ''"> AND module LIKE CONCAT('%',#{param.module},'%')</if>
+            <if test="param.description != null and param.description != ''"> AND description LIKE CONCAT('%',#{param.description},'%')</if>
+        </where>
+        ORDER BY id DESC
+    </select>
+</mapper>

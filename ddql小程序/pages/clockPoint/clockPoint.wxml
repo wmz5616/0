@@ -1,0 +1,57 @@
+<view class="bc">
+  <button open-type="contact" class="concat-btn">新增地点</button>
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">附近打卡点</text>
+  </van-nav-bar>
+  <van-tabs active="{{ active }}" bind:change="onChange" custom-class="tab">
+    <van-tab title="全部"></van-tab>
+    <van-tab title="设备打卡"></van-tab>
+    <van-tab title="距离打卡"></van-tab>
+  </van-tabs>
+  <van-search bind:change="search" clearable="{{false}}" bind:search="comfrimsearch" shape="round" bind:clear="onSearch" value="{{ value }}" placeholder="请输入您要搜索的场地名称" use-action-slot>
+    <view slot="action" bind:tap="comfrimsearch" style="position:relative;right:60rpx;top:10rpx;z-index:9999;">
+      <image src="/assets/images/search.svg" mode="aspectFit" style="width:40rpx;height:40rpx;" />
+    </view>
+  </van-search>
+  <view class="swiper">
+    <view class="c_list" bind:tap="jump" data-type="1">
+      <viwe class="c_lists" wx:for="{{siteData}}" wx:key="index">
+        <image src="{{item.img}}" mode="aspectFill" style="height:100%;width:280rpx" />
+        <view class="c_l_right">
+          <view class="flex">
+            <text class="c_title" style="padding-bottom:10rpx;">{{item.name}}</text>
+            <!-- gray-btn -->
+            <view data-placeid="{{item.id}}" bind:tap="usecheck" class="Btn" wx:if="{{item.distanceM <= item.checkInDistance && item.checkInMethod==1 && !runInfo.id}}">
+              <text>距离打卡</text>
+            </view>
+            <view data-placeid="{{item.id}}" bind:tap="backcheck" class="Btn" wx:if="{{runInfo.placeId==item.id}}">
+              <text>离场打卡</text>
+            </view>
+          </view>
+          <!-- <view class="tags flex start">
+            <view class="tag_item" catch:tap="jump" data-type="2">佳纷天地</view>
+          </view> -->
+          <view class="c_bottom flex start" style="padding-bottom:10rpx;">
+            <image src="/assets/images/tasks.svg" mode="aspectFill" style="height: 20rpx;width: 20rpx;" />
+            <text>打卡方式：{{item.checkInMethod==1?'距离打卡':'扫码打卡'}}</text>
+          </view>
+          <view class="c_bottom flex start" bind:tap="callPhone" data-info="{{item}}">
+            <image src="/assets/images/phone.svg" mode="aspectFill" style="height: 20rpx;width: 20rpx;" />
+            <text>联系电话：{{item.contactPhone}}</text>
+          </view>
+          <view class="c_bottom flex start">
+            <view class="c_bottom flex" bind:tap="openlocations" data-info="{{item}}">
+              <image src="/assets/images/address.svg" mode="aspectFill" style="height: 20rpx;width: 19rpx;" />
+              <text class="location">{{item.address}}</text>
+            </view>
+            <view class="btn" bind:tap="openlocations" data-info="{{item}}">
+              <image src="/assets/images/airplane.svg" style="height:25rpx;width:22rpx;" mode="aspectFill" />
+              <text>{{item.distance}}km</text>
+            </view>
+          </view>
+        </view>
+      </viwe>
+    </view>
+  </view>
+</view>

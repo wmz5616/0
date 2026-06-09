@@ -1,0 +1,170 @@
+<wxs module="filters" src="./clock.wxs"></wxs>
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">打卡</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <view class="c_info">
+      <view class="info_top LRP30">
+        <view class="i_t_left">
+          <image src="/assets/images/Sclock.svg" style="height: 66rpx;width: 52rpx;" mode="aspectFill" />
+          <text class="i_t_l_text">{{type=='exit'?'离场打卡成功！':'到场打卡成功！'}}</text>
+        </view>
+        <view class="i_t_right" data-name="showPopup" bind:tap="showComponent">
+          <image src="/assets/images/wechat.svg" mode="aspectFill" style="height: 32rpx;width: 38rpx;"></image>
+          <text>分享</text>
+        </view>
+      </view>
+      <view class="info_middle MLR30">
+        <view class="i_m_text">
+          <text class="gray_label">打卡人</text>
+          <view class="i_m_left flex">
+            <image src="{{recordInfo.avatar}}" style="height: 62rpx;width: 62rpx;border-radius:62rpx;" mode="" />
+            <text class="left-text" style="font-weight: 500;">{{recordInfo.nickname}}</text>
+          </view>
+        </view>
+        <view class="i_m_text">
+          <text class="gray_label">打卡场地</text>
+          <text class="left-text">{{recordInfo.placeName}}</text>
+        </view>
+        <view class="i_m_text" bind:tap="openlocations">
+          <text class="gray_label">打卡地址</text>
+          <view class="i_m_left flex">
+            <text class="left-text">{{recordInfo.placeAddress}}</text>
+            <image src="/assets/images/xiala.svg" style="height: 20rpx;width: 10rpx;" mode="" />
+          </view>
+        </view>
+        <view class="i_m_text">
+          <text class="gray_label">打卡时间</text>
+          <text class="left-text">{{recordInfo.createTime}}</text>
+        </view>
+      </view>
+      <!-- <text class="active_middle LRP30">共获得55枚健康币</text> -->
+      <view class="info_footer LRP30" wx:if="{{type=='exit'}}">
+        <view class="f_title flex" wx:if="{{info.teamData.length!=0}}">
+          <view style="flex:0 0 33.333333333333336%;">团体</view>
+          <text style="flex:0 0 33.333333333333336%;text-align: center;">打卡排名</text>
+          <text style="flex:0 0 33.333333333333336%;text-align: right;" class="max_last">获币数</text>
+        </view>
+        <!-- activeItem离场打卡类 -->
+        <view class="flex" wx:for="{{info.teamData}}" wx:key="index">
+          <view style="flex:0 0 33.333333333333336%;">{{item.teamName}}</view>
+          <text style="flex:0 0 33.333333333333336%;text-align: center;" class="i_left">{{item.rank}}</text>
+          <text style="flex:0 0 33.333333333333336%;text-align: right;" class="max_last">+{{item.healthCoin}}币</text>
+        </view>
+      </view>
+      <view class="info_footer LRP30" wx:else>
+        <view class="f_title flex" wx:if="{{info.teamData.length!=0}}">
+          <view>团体</view>
+          <text>打卡排名</text>
+        </view>
+        <!-- activeItem离场打卡类 -->
+        <view class="flex" wx:for="{{info.teamData}}" wx:key="index">
+          <view>{{item.teamName}}</view>
+          <text class="i_left">{{item.rank}}</text>
+        </view>
+      </view>
+    </view>
+    <text wx:if="{{type=='exit'}}" class="active_middle MT14">共获得{{recordInfo.healthCoin}}枚健康币</text>
+    <view class="c_list">
+      <viwe class="c_lists" wx:for="{{shopList}}" wx:key="index" bind:tap="jump" data-type="1" data-id="{{item.id}}">
+        <image src="{{item.coverImageUrl}}" mode="aspectFill" style="height: 216rpx;width:280rpx;flex-shrink:0;" />
+        <view class="c_l_right">
+          <text class="c_title">{{item.name}}</text>
+          <view class="tags flex start">
+            <view wx:key="index" wx:for="{{item.circleList}}" wx:for-item="circleItem" class="tag_item" catch:tap="jump" data-type="2" data-id="{{circleItem.circleId}}">{{circleItem.circleName}}</view>
+          </view>
+          <view class="c_bottom flex start">
+            <image src="/assets/images/businessHours.svg" mode="aspectFill" style="height: 20rpx;width: 20rpx;" />
+            <text>营业时间：{{item.startTime?item.startTime+'-'+item.endTime:'暂无'}}</text>
+          </view>
+          <view class="c_bottom flex start" catch:tap="openlocationsd" data-item="{{item}}">
+            <image src="/assets/images/address.svg" mode="aspectFill" style="height: 20rpx;width: 19rpx;" />
+            <text class="location">{{item.address}}</text>
+            <view class="btn">
+              <image src="/assets/images/airplane.svg" style="height:25rpx;width:22rpx;" mode="aspectFill" />
+              <text>{{filters.toFix(item.distance)}}km</text>
+            </view>
+          </view>
+        </view>
+      </viwe>
+    </view>
+  </view>
+  <!-- 自定义弹出层 -->
+  <van-popup show="{{ showPopup }}" z-index="{{100}}" position="bottom" round data-name="showPopup" bind:close="onClose">
+    <view class="p-title">
+      <text class="p-text">分享</text>
+      <image bind:tap="onClose" data-name="showPopup" class="p-close" src="/assets/images/close.png" mode="" />
+    </view>
+    <view class="p-connent">
+      <view class="shareBox">
+        <view class="info_top">
+          <view class="i_t_left">
+            <image src="/assets/images/Sclock.svg" style="height: 66rpx;width: 52rpx;" mode="aspectFill" />
+            <text class="i_t_l_text">{{type=='exit'?'离场打卡成功！':'到场打卡成功！'}}</text>
+          </view>
+        </view>
+        <view class="info_middle">
+          <view class="i_m_text">
+            <text class="gray_label">打卡人</text>
+            <view class="i_m_left flex">
+              <image src="{{recordInfo.avatar}}" style="height: 62rpx;width: 62rpx;" mode="aspectFit" />
+              <text class="left-text" style="font-weight: 500;">{{recordInfo.nickname}}</text>
+            </view>
+          </view>
+          <view class="i_m_text">
+            <text class="gray_label">打卡场地</text>
+            <text class="left-text">篮球场</text>
+          </view>
+          <view class="i_m_text">
+            <text class="gray_label">打卡地址</text>
+            <view class="i_m_left flex">
+              <text class="left-text">广东东莞松山湖</text>
+              <image src="/assets/images/xiala.svg" style="height: 20rpx;width: 10rpx;" mode="" />
+            </view>
+          </view>
+          <view class="i_m_text">
+            <text class="gray_label">打卡时间</text>
+            <text class="left-text">{{recordInfo.createTime}}</text>
+          </view>
+          <!-- <text class="active_middle MT14">共获得{{recordInfo.healthCoin}}枚健康币</text> -->
+        </view>
+        <view class="p_img">
+          <image src="/assets/images/logo.png" class="p-logo" mode="aspectFit" />
+          <image src="/assets/images/p_code.png" class="p-code" mode="aspectFit" />
+        </view>
+      </view>
+      <view class="p_btn">
+        <button class="Btn avtiveBtn" style="font-weight:normal;" open-type="share">
+          <image src="/assets/images/white-wechat.svg" mode="aspectFill" style="height:30rpx;width:37rpx;"></image>
+          <text>微信好友</text>
+        </button>
+        <view class="Btn unAvtiveBtn" bind:tap="sharetimeLine">
+          <image src="/assets/images/pyq.svg" mode="aspectFill" style="height: 36rpx;width:36rpx;"></image>
+          <text>微信朋友圈</text>
+        </view>
+      </view>
+    </view>
+  </van-popup>
+  <van-popup show="{{ showPopup2}}" position="bottom" round data-name="showPopup2" bind:close="onClose" custom-class="pop">
+    <view class="p-title">
+      <text class="p-text">分享</text>
+      <image bind:tap="onClose" data-name="showPopup2" class="p-close" src="/assets/images/close.png" mode="" />
+    </view>
+    <view class="share-wrapper" style="padding:30rpx;">
+      <view style="color:#04C0D9;font-weight:bold;font-size:42rpx;padding-top:40rpx;">分享到微信朋友圈操作指引</view>
+      <view style="height:268rpx;border:1rpx solid #5DD5DE;border-radius:18rpx;margin-top:30rpx;padding-left:30rpx;">
+        <view class="step-one" style="display:flex;margin-top:60rpx;margin-bottom:30rpx;align-items:center;">
+          <view style="background-image: linear-gradient(192deg, #5DD5DE 0%, #4EACD3 84%);width:200rpx;height:60rpx;color:#fff;text-align:center;font-weight:bold;border-radius:26rpx;line-height:60rpx;">STEP 01</view>
+          <view style="color:#333333;font-weight:bold;padding-left:30rpx;">点击右上角“...”</view>
+        </view>
+        <view class="step-two" style="display:flex;align-items:center;">
+          <view style="background-image: linear-gradient(192deg, #5DD5DE 0%, #4EACD3 84%);width:200rpx;height:60rpx;color:#fff;text-align:center;font-weight:bold;border-radius:26rpx;line-height:60rpx;">STEP 02</view>
+          <view style="color:#333333;font-weight:bold;padding-left:30rpx;">选择分享到朋友圈</view>
+          <image src="/assets/images/timeline.svg" mode="aspectFit" style="height:45rpx;width:45rpx;padding-left:15rpx;" />
+        </view>
+      </view>
+    </view>
+  </van-popup>
+</view>

@@ -1,0 +1,33 @@
+.circle_box,
+.circle_draw {
+  position: relative;
+}
+
+.circle_bg {
+  position: absolute;
+}
+
+.circle_box {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.circle_txt {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 28rpx;
+  font-size: 31prx;
+  color: #A3A9AF;
+  font-weight: 400;
+}
+
+.circle_text {
+  font-size: 80rpx;
+  color: #0D0E10;
+  line-height: 96rpx;
+  font-weight: 400;
+}

@@ -1,0 +1,26 @@
+var format = {
+  formatter: function (time, gap) {
+    if (!time) return ''
+    var date = getDate(time)
+    var year = date.getFullYear()
+    var month = date.getMonth() + 1
+    var day = date.getDate()
+
+    month = month < 10 ? '0' + month : month
+    day = day < 10 ? '0' + day : day
+
+    return gap ? year + gap + month + gap + day : year + '年' + month + '月' + day + '日'
+  },
+  find: function name(arr, value) {
+    if (!arr.length) return {}
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i].value === value) return arr[i];
+    }
+    return {};
+  }
+};
+
+module.exports = {
+  formatter: format.formatter,
+  find: format.find,
+};

@@ -1,0 +1,43 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">商家管理员</text>
+  </van-nav-bar>
+  <view class="rule box mlr">
+    <view class="flex1">
+      <view class="point"></view>
+      <text class="rule_text">管理员可协助店长管理商家，拥有编辑商家信息、操作订单退款等能力</text>
+    </view>
+    <view class="flex1">
+      <view class="point"></view>
+      <text class="rule_text">只有店长具备设置管理员的能力。</text>
+    </view>
+  </view>
+  <view class="swiper">
+    <!-- 移除 -->
+    <view wx:for="{{list}}" wx:key="id" class="box item">
+      <view class="left flex">
+        <view class="l_left flex">
+          <!-- <image src="{{item.avatar}}" style="height: 106rpx;width: 106rpx;border-radius: 50%;" mode="aspectFill" /> -->
+          <view class="f_l_r_top">
+            <view class="flex ffff">
+              <text wx:if="{{item.nickName}}" class="tag">{{item.nickName}}</text>
+              <text class="name">{{item.name}}</text>
+            </view>
+            <text class="gray_tag">{{item.phone}}</text>
+          </view>
+        </view>
+        <view bind:tap="open" data-deleteId="{{item.id}}" data-userName="{{item.name}}" data-name="showDialog" class="sbtn sbtn_text">移除</view>
+      </view>
+    </view>
+  </view>
+  <view class="Btn">
+    <view class="btn" bind:tap="jump" data-url="/pages/addMerchantAdmin/addMerchantAdmin?id={{id}}">添加管理员</view>
+  </view>
+  <!-- 弹出框 -->
+  <van-dialog custom-class="active4d" use-slot use-title-slot show="{{ showDialog }}" showConfirmButton showCancelButton confirmButtonText="移除" width="540rpx" bind:close="onClose" bind:confirm="dialogConfirm" bin data-name="showDialog" confirm-button-class="dialogBtn d_v_btn" cancle-button-class="dialogBtn">
+    <view slot="title">移除“{{deleteName}}”将无法管理商家</view>
+  </van-dialog>
+</view>

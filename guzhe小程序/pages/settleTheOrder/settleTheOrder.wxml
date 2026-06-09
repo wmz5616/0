@@ -1,0 +1,63 @@
+<wxs module="format" src="./settleTheOrder.wxs"></wxs>
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">结算记录</text>
+  </van-nav-bar>
+  <view class="pup">
+    <view class="selectTime" bind:tap="selectTime">
+      <text>{{format.formatter(showStartTime,'.')}}</text>
+      <text>至</text>
+      <view>{{format.formatter(showEndTime,'.')}}</view>
+      <image class="{{showPopup1?'up':''}}}" src="/assets/images/down.svg" mode="aspectFill" style="height: 10rpx;width: 20rpx;transition: all 0.3s linear;" />
+    </view>
+  </view>
+  <view class="tis">共{{totalCount}}笔，实付金额￥{{totalAmount}}元</view>
+  <view class="swiper">
+    <view class="table">
+      <view class="tHeader">
+        <view class="hText">计算日期</view>
+        <view class="hText">结算金额</view>
+        <view class="hText">费率</view>
+        <view class="hText">营业额</view>
+      </view>
+      <view class="tBody">
+        <!-- 无数据时展示 -->
+        <view wx:if="{{!list.length}}" style="width: 411rpx;margin: 0 auto;margin-top: 60rpx;padding-bottom: 30rpx;">
+          <image src="/assets/images/empty.png" mode="aspectFill" style="width: 411rpx;height: 290rpx;" />
+          <view style="font-size: 33rpx;color: #999999;text-align: center;margin-top: 30rpx;">暂无数据～</view>
+        </view>
+        <view class="tItem" wx:for="{{list}}" wx:key="index">
+          <view class="hText fw400">{{item.settlementTime}}</view>
+          <view class="hText fw400">{{item.settlementAmount}}</view>
+          <view class="hText fw400">{{item.rate}}</view>
+          <view class="hText fw400">{{item.turnover}}</view>
+        </view>
+      </view>
+      <view wx:if="{{list.length}}" class="p30 tFooter">
+        <van-button custom-class="btn" bind:click="prevPage">上一页</van-button>
+        <view class="total">
+          <text class="basePage purple">{{pageNum}}</text>
+          <text class="basePage">/{{pages}}</text>
+        </view>
+        <van-button custom-class="btn" bind:click="nextPage">下一页</van-button>
+      </view>
+    </view>
+  </view>
+  <view class="Btn">
+    <view class="btn1" bind:tap="handleExport">导出</view>
+  </view>
+  <van-popup position="bottom" round show="{{ showPopup1 }}" bind:close="onClose" data-name="showPopup1">
+    <view>
+      <view class="pickerTime flex">
+        <text class="p_avtiveText" bind:tap="onClose" data-name="showPopup1">取消</text>
+        <text class="p_text">选择时间</text>
+        <text class="p_avtiveText" bind:tap="comfrimDate" data-name="showPopup1">确定</text>
+      </view>
+      <van-datetime-picker show-toolbar="{{false}}" type="date" data-field="startTime" value="{{ startTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ forma }}" />
+      <van-datetime-picker show-toolbar="{{false}}" type="date" data-field="endTime" value="{{ endTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ forma }}" />
+    </view>
+  </van-popup>
+</view>

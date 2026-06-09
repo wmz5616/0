@@ -1,0 +1,60 @@
+<!--pages/userMag/userMag.wxml-->
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">设置</text>
+  </van-nav-bar>
+  <view class="MsgForm">
+    <view class="ListItem" style="height: 193rpx;">
+      <view>头像</view>
+      <button style="padding: 0;margin: 0;width: auto;height: auto;" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+        <view style="position: relative;">
+          <van-image round fit="cover" height="160rpx" width="160rpx" src="{{avatar}}" />
+          <view class="mask">更换头像</view>
+        </view>
+      </button>
+    </view>
+    <view class="ListItem">
+      <view>昵称</view>
+      <view style="display: flex;flex-direction: row;align-items: center;">
+        <van-cell-group>
+          <van-field disabled="{{ disabled }}" focus="{{!disabled}}" value="{{ nickname }}" placeholder="请输入用户名" border="{{ false }}" bind:change="onChange" input-align="right" bind:blur="changeAble" data-disabled="{{true}}" />
+        </van-cell-group>
+        <view>
+          <image bind:tap="changeAble" data-disabled="{{false}}" src="/assets/images/bianji-2 2.svg" mode="aspectFill" style="width: 32rpx;height: 32rpx;" />
+        </view>
+      </view>
+    </view>
+    <!-- <view class="ListItem">
+      <view>微信号</view>
+      <view>{{userInfo.nickname}}</view>
+    </view> -->
+    <view class="ListItem">
+      <view>手机号</view>
+      <view>{{userInfo.phone || '未绑定手机号'}}</view>
+    </view>
+    <view class="ListItem" style="border: none;">
+      <view>用户状态</view>
+      <view wx:if="{{!userInfo.lock}}" style="color: #00BF73;">正常</view>
+      <view wx:elif="{{userInfo.lock == 1}}" style="color: red;">暂时锁住</view>
+      <view wx:else style="color: red;">永久锁住</view>
+    </view>
+  </view>
+  <view class="toolList">
+    <view class="ListItem">
+      <button class="bind-btn" open-type="getPhoneNumber" bindgetphonenumber="getThePhoneNumber">
+        <text>改绑手机</text>
+        <image src="/assets/images/more.svg" mode="aspectFill" style="width: 16rpx;height: 25rpx;" />
+      </button>
+    </view>
+    <view class="ListItem" style="border: none;" data-name="showDialog" bind:tap="open">
+      <view>退出登录</view>
+      <image src="/assets/images/more.svg" mode="aspectFill" style="width: 16rpx;height: 25rpx;" />
+    </view>
+    <van-dialog use-slot use-title-slot show="{{ showDialog }}" showConfirmButton showCancelButton confirmButtonText="确定" width="540rpx" bind:close="onClose" data-name="showDialog" confirm-button-class="dialogBtn d_v_btn" cancle-button-class="dialogBtn" bind:confirm="showDialog">
+      <view slot="title">确认退出吗</view>
+    </van-dialog>
+  </view>
+</view>

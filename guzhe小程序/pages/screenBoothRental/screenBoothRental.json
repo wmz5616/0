@@ -1,0 +1,8 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "van-popup": "@vant/weapp/popup/index",
+    "van-cascader": "@vant/weapp/cascader/index",
+    "van-nav-bar": "@vant/weapp/nav-bar/index"
+  }
+}

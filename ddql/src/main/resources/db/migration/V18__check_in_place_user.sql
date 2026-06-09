@@ -1,0 +1,11 @@
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+CREATE TABLE IF NOT  EXISTS `check_in_place_user`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `user_id` int UNSIGNED NOT NULL COMMENT '管理员的id',
+  `place_id` int NOT NULL COMMENT '打卡场所的id',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '打卡场所管理员表' ROW_FORMAT = Dynamic;
+
+SET FOREIGN_KEY_CHECKS = 1;

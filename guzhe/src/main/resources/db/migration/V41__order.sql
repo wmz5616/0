@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS `order` (
+    `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
+    `user_id` int NOT NULL DEFAULT 0 COMMENT '下单用户id',
+    `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '下单手机号',
+    `nick_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '下单用户昵称',
+    `order_type` tinyint NOT NULL DEFAULT 0 COMMENT '订单类型',
+    `order_id` int UNSIGNED NOT NULL DEFAULT 0 COMMENT '对应类型的id',
+    `order_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '订单编号',
+    `price` int NOT NULL DEFAULT 0 COMMENT '单价（分）',
+    `num` int NOT NULL DEFAULT 0 COMMENT '数量',
+    `amount` int NOT NULL DEFAULT 0 COMMENT '支付总金额（分）',
+    `status` tinyint NOT NULL DEFAULT 0 COMMENT '状态: 1已支付、2已退款',
+    `pay_time` timestamp(0) NULL DEFAULT NULL COMMENT '支付时间',
+    `refund_amount` int NOT NULL DEFAULT 0 COMMENT '退款金额(分)',
+    `refund_time` timestamp(0) NULL DEFAULT NULL COMMENT '退款时间',
+    `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+    primary key (id),
+    INDEX `idx_user`(`user_id`) USING BTREE
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '总订单管理表--主要用于总订单统计相关' ROW_FORMAT = DYNAMIC;

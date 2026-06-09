@@ -1,0 +1,62 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">我的团体</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <van-swipe-cell wx:for="{{teamList}}" wx:key="id" bind:close="onClose" class="box item" right-width="{{ 65 }}" async-close>
+      <view class="flex left" data-type="{{item.type == 2}}" bind:tap="jump" data-url="/pagesA/baseInfo/baseInfo?teamId={{item.team.id}}&type={{item.type}}">
+        <view class="flex">
+          <image src="/assets/images/type{{item.team.type}}.png" style="height: 86rpx;width: 86rpx;flex-shrink:0;" mode="aspectFill" />
+          <text class="nomal">{{item.team.name}}</text>
+          <text wx:if="{{item.team.type == 0 || item.team.type == 1}}" class="{{item.team.isVerified == 0?'red':'blue'}}">{{item.team.isVerified == 0?'未认证':'已通过'}}</text>
+        </view>
+        <view wx:if="{{item.type != 2}}" class="btn btn_text">管理</view>
+        <image wx:else src="/assets/images/gray-rightArrow.svg" mode="aspectFill" class="iconImage" />
+      </view>
+      <view bind:tap="showComponent" data-teamInfo="{{item}}" data-name="showDialog" slot="right" class="delete btn_text">退出</view>
+    </van-swipe-cell>
+  </view>
+  <view class="flex bottom">
+    <view class="base nomalBtb" bind:tap="jump" data-url="/pages/createGroup/createGroup">创建团体</view>
+    <view bind:tap="showComponent" data-name="showOverlay" class="base activeBtb">申请加入</view>
+  </view>
+  <van-dialog use-slot use-title-slot show="{{ showDialog }}" showConfirmButton showCancelButton confirmButtonText="确定" width="540rpx" bind:close="onClose" data-name="showDialog" bind:confirm="getDeleteTeamUser" confirm-button-class="dialogBtn d_v_btn" cancle-button-class="dialogBtn">
+    <text slot="title">退出团体</text>
+    <view class="d_content">{{teamInfo.type == 0?'请先转让创建者管理权，再退出':'退出团体后健康币会保留，是否确认退出'+teamInfo.team.name}}</view>
+  </van-dialog>
+  <!-- 申请加入 -->
+  <van-overlay show="{{ showOverlay }}" bind:click="onClose" data-name="flag" lock-scroll="{{false}}">
+    <view class="overlay">
+      <view class="box_item">
+        <view class="p-title">
+          <text class="p-text">申请加入</text>
+          <image bind:tap="onClose" data-name="showOverlay" src="/assets/images/close.png" class="p-close" mode="aspectFill" />
+        </view>
+        <view class="o_content">
+          <text decode="{{true}}" class="o_text">昵&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称：{{userInfo.nickname}}</text>
+          <text decode="{{true}}" class="o_text">手&nbsp;&nbsp;机&nbsp;&nbsp;号：{{userInfo.phone}}</text>
+          <text class="o_text">团体名称：</text>
+          <input class="o_input" value="{{teamName}}" type="text" placeholder="请输入" data-name="teamName" bindinput="changeTeam" />
+          <text class="o_text">真实姓名：</text>
+          <input class="o_input" value="{{name}}" type="text" placeholder="请输入" data-name="name" bindinput="changeTeam" />
+          <text wx:if="{{isMultiDepartment}}" class="o_text">部门：</text>
+          <van-field wx:if="{{isMultiDepartment}}" disabled custom-class="field" value="{{ pickerData.text }}" clearable icon="arrow-down" placeholder="请选择" bind:click-icon="onClickIcon" bind:click-input="onClickIcon" placeholder-style="font-size:34rpx;color:#CCC;">
+          </van-field>
+          <view wx:if="{{teamName && flag}}" class="angle"></view>
+          <view wx:if="{{teamName && flag}}" class="detail">
+            <view class="locationItem" wx:for="{{allTeamList}}" wx:key="id" data-item="{{item}}" catch:tap="chose">
+              <text class="title fw400 ellipsis">{{item.name}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="footer">
+          <view class="f_input" bind:tap="getSaveTeamApplicationRecord" data-name="showOverlay">确定</view>
+        </view>
+      </view>
+    </view>
+  </van-overlay>
+  <van-popup close-on-click-overlay position="bottom" round show="{{ showAreaPicker }}" bind:close="onClose" data-name="showAreaPicker">
+    <van-picker id="myPicker" toolbar-class="p_title" show-toolbar cancel-button-text="重置" title="请选择部门" columns="{{ departmentList }}" bind:confirm="onDConfirm" data-name="showAreaPicker" bind:cancel="reset" />
+  </van-popup>
+</view>

@@ -1,0 +1,42 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">实名认证</text>
+  </van-nav-bar>
+  <view wx:if="{{!verify}}" class="swiper">
+    <!-- 未实名认证 -->
+    <van-cell-group>
+      <van-field required value="{{ name }}" label="姓名" placeholder="请准确输入个人姓名" input-align="right" placeholder-style="font-size: 32rpx;color: #C7CDD3;" data-type="name" bind:change="change"/>
+      <van-field required value="{{ cardNum }}" label="身份证号码" data-type="cardNum" bind:change="change" placeholder="请准确输入个人身份证号码" input-align="right" placeholder-style="font-size: 32rpx;color: #C7CDD3;" />
+    </van-cell-group>
+    <view class="flex">
+      <view bind:tap="goBack" class="btn btn1">取消</view>
+      <view bind:tap="getCertification" class="btn btn2">提交认证</view>
+    </view>
+  </view>
+  <!-- 通过实名认证 -->
+  <view wx:else class="swiper">
+    <view class="box item">
+      <image src="/assets/images/verifySuccess.svg" mode="aspectFill" style="height:130rpx;width:130rpx;" />
+      <view class="title">您已通过实名认证</view>
+      <view class="form">
+        <view class="flex f_item">
+          <text class="nomal_text">真实姓名</text>
+          <text class="gary_text">赵黎加</text>
+        </view>
+        <view class="flex f_item">
+          <text class="nomal_text">证件号码</text>
+          <text class="gary_text">440801*********4087</text>
+        </view>
+        <view class="flex f_item">
+          <text class="nomal_text">籍贯</text>
+          <text class="gary_text">广东省东莞市</text>
+        </view>
+        <view class="flex f_item">
+          <text class="nomal_text">出生年月</text>
+          <text class="gary_text">2005年11月17日</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

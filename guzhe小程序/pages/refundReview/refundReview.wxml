@@ -1,0 +1,104 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">退款审核</text>
+  </van-nav-bar>
+  <view class="swiper {{isIOS?'h354rpx':''}}">
+    <view class="boxShadow Cflex list">
+      <view class="title1">订单信息</view>
+      <view class="flex g30">
+        <image src="{{orderInfo.coverImage}}" mode="aspectFill" class="goodImage" />
+        <view class="left">
+          <view class="flex" style="align-items: flex-end;gap: 10rpx;">
+            <view class="l_r_t_left">
+              <text class="baseText elip">{{orderInfo.productName}}Nike air 透气男子透气男子运动鞋运动鞋</text>
+            </view>
+            <text class="grayText">x{{orderInfo.num}}</text>
+          </view>
+          <view class="flex1">
+            <text class="grayTime">{{orderInfo.updateTime}}</text>
+          </view>
+          <view style="text-align: end;">合计：<text style="color:#333333;font-weight:500;font-size:36rpx;">{{orderInfo.amount /100 || 0}}元</text></view>
+        </view>
+      </view>
+    </view>
+    <view class="refundForm">
+      <view class="refundReason">
+        <view class="formTitle">退款原因</view>
+        <van-cell-group>
+          <van-field value="{{ message }}" type="textarea" bind:change="change" placeholder="请输入" autosize border="{{ false }}" />
+        </van-cell-group>
+      </view>
+      <view class="refundFormPic">
+        <view class="formTitle">
+          <view class="pic">
+            <text class="title">图片</text>
+            <text class="grayTextt">（选填，提供问题截图）</text>
+          </view>
+          <view>{{images.length || 0}}/4</view>
+        </view>
+        <view style="margin: 30rpx 0 0 20rpx;">
+          <van-uploader file-list="{{ images }}" deletable max-count="4" use-before-read bind:before-read="beforeRead" bind:after-read="afterRead" bind:delete="deleteRead" />
+        </view>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{refundApplyInfo.status == 1}}" class="Btn {{isIOS?'isIOS':''}}">
+    <view class="btn btn1" bind:tap="showRefund1">审核不通过</view>
+    <view class="btn btn2" bind:tap="showRefund">审核通过</view>
+  </view>
+  <!-- 审核通过 -->
+  <van-popup show="{{ showRefund }}" position="center" bind:close="onClose" data-name="showRefund" custom-style="width: 600rpx;overflow:hidden;border-radius: 12rpx;">
+    <view class="popup-content">
+      <view class="tit">
+        <text class="rtitle">确定操作退款此订单吗？</text>
+        <view style="position: absolute;right: 0rpx;top: 0;height: 108rpx;width: 108rpx;display: flex;align-items: center;justify-content: center;" bind:tap="onClose" data-name="showRefund">
+          <image src="/assets/images/closed.svg" mode="aspectFill" style="height: 36rpx;width: 36rpx;" />
+        </view>
+      </view>
+      <view class="p_center">
+        <view class="p_item">
+          <view class="p_text" style="display: flex;align-items: center;">
+            <text style="color: red;">*</text>
+            退款金额
+          </view>
+          <view style="display: flex;flex-direction: column;gap: 10rpx;">
+            <view class="step">
+              <input class="p_input" type="digit" value="{{refundPrice / 100}}" bindchange="changePrice" placeholder="请输入" />
+              <view class="s-item">
+                <view class="step-item up1 {{ flag && 'active1'}}" data-add="{{step}}" bind:tap="calc"></view>
+                <view class="step-item down {{ !flag && 'active2'}}" data-add="{{-step}}" bind:tap="calc"></view>
+              </view>
+            </view>
+            <view class="pGrayText">订单金额：￥{{orderInfo.amount / 100 || 0}}</view>
+          </view>
+        </view>
+        <view class="tis">退款审核通过后不可撤销操作，订单金额原路返回给用户。</view>
+      </view>
+      <view class="footer">
+        <view class="f_base cancle" bind:tap="onClose" data-name="showRefund">取消</view>
+        <view class="f_line"></view>
+        <view class="f_base comfirm" bind:tap="onConfirm" data-name="showRefund" data-status="2">确认</view>
+      </view>
+    </view>
+  </van-popup>
+  <!-- 审核不通过 -->
+  <van-popup show="{{ showRefund1 }}" position="center" bind:close="onClose" data-name="showRefund1" custom-style="width: 600rpx;overflow:hidden;border-radius: 12rpx;">
+    <view class="popup-content">
+      <view class="tit">
+        <text class="rtitle">审核不通过的原因</text>
+        <view style="position: absolute;right: 0rpx;top: 0;height: 108rpx;width: 108rpx;display: flex;align-items: center;justify-content: center;" bind:tap="onClose" data-name="showRefund1">
+          <image src="/assets/images/closed.svg" mode="aspectFill" style="height: 36rpx;width: 36rpx;" />
+        </view>
+      </view>
+      <view class="p_center">
+        <textarea value="{{remark}}" bind:input="changeRemark" auto-height class="textarea" placeholder="请输入"></textarea>
+      </view>
+      <view class="footer">
+        <view class="f_base comfirm" bind:tap="onConfirm" data-name="showRefund1" data-status="3">提交</view>
+      </view>
+    </view>
+  </van-popup>
+</view>

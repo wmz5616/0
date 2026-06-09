@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.product.ProductCategoryMapper">
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `product_category` (
+        product_id,
+        category_id
+        ) VALUES
+        <foreach collection="data" item="item" separator=",">
+            (
+            #{item.productId},
+            #{item.categoryId}
+            )
+        </foreach>
+    </insert>
+
+
+    <select id="selectList" resultType="com.zemcho.ddql.entity.product.ProductCategory">
+        SELECT *
+        FROM `product_category`
+        <where>
+            <if test="param.searchId != null">
+                AND (product_id = #{param.searchId} OR category_id = #{param.searchId})
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByProductId" resultType="com.zemcho.ddql.entity.product.ProductCategory">
+        SELECT *
+        FROM product_category
+        WHERE product_id = #{productId}
+    </select>
+
+    <select id="selectByCategoryId" resultType="com.zemcho.ddql.entity.product.ProductCategory">
+        SELECT *
+        FROM product_category
+        WHERE category_id = #{categoryId}
+    </select>
+
+    <delete id="deleteByProductId">
+        DELETE FROM product_category WHERE product_id = #{productId}
+    </delete>
+    <delete id="deleteByProductIds">
+        DELETE FROM product_category WHERE product_id IN
+        <foreach item="item" collection="productIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

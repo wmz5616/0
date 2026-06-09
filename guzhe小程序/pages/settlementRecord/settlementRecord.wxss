@@ -1,0 +1,96 @@
+/* pages/settlementRecord/settlementRecord.wxss */
+.bc {
+  height: 100vh;
+  overflow: hidden;
+  background-color: #f8f8f8;
+}
+
+.swiper {
+  height: calc(100vh - 282rpx);
+  overflow: scroll;
+}
+
+.cns{
+  padding: 30rpx 30rpx 0 30rpx;
+}
+
+.h30{
+  height: 30rpx;
+}
+
+.isIOS{
+  height: env(safe-area-inset-bottom) !important;
+}
+
+.item {
+  position: relative;
+  background: #FFFFFF;
+  box-shadow: 0rpx 2rpx 10rpx 0rpx rgba(0, 0, 0, 0.05);
+  border-radius: 18rpx;
+  padding:30rpx;
+  /* margin-bottom:30rpx; */
+  display: flex;
+  gap: 16rpx;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.middle {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  flex-grow: 1;
+}
+
+.title {
+  font-size: 30rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.grayText {
+  font-size: 24rpx;
+  color: #848484;
+  font-weight: 400;
+}
+
+.grayTime {
+  font-size: 20rpx;
+  color: #848484;
+  font-weight: 400;
+}
+
+.bigIcon {
+  height: 92rpx;
+  width: 121rpx;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.tabs_title {
+  background-color: #fff;
+  display: flex;
+  height: 103rpx;
+}
+.title_item {
+  color: #333333;
+  padding: 15rpx 0;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  font-size: 32rpx;
+}
+
+.active {
+  color: #8153FC ;
+  border-bottom: 5rpx solid #8153FC;
+  animation: mymove 0.2s;
+}
+

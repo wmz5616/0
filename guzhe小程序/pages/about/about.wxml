@@ -1,0 +1,26 @@
+<!--pages/about/about.wxml-->
+<van-nav-bar bind:click-left="goBack">
+  <view slot="left" class="backLeft">
+    <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+  </view>
+  <text slot="title" class="navText">关于我们</text>
+</van-nav-bar>
+
+<view class="system">
+  <image src="{{logo}}" mode="aspectFill" style="height: 66rpx;width: 294rpx;border-radius: 16rpx;" />
+</view>
+
+<!-- 中间列表 -->
+<view class="toolList">
+  <view wx:for="{{articleLists}}" wx:key="id" class="ListItem" data-id="{{item.id}}" bindtap="navigateTo">
+    <view>{{item.title}}</view>
+    <image src="/assets/images/more.svg" mode="aspectFill" style="width: 16rpx;height: 25rpx;" />
+  </view>
+</view>
+
+
+<view class="sys">
+  <text class="grayText">{{version}}</text>
+  <text class="grayText" bind:tap="jumpH5">{{org_name}}</text>
+  <text class="grayText">{{miitbeian}}</text>
+</view>

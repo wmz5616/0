@@ -1,0 +1,286 @@
+.bc {
+  height: 100vh;
+  background-color: rgba(249, 249, 249, 0.979);
+  position: relative;
+}
+
+.LRP30 {
+  padding: 0 30rpx;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navLeft {
+  width: 50rpx;
+  height: 50rpx;
+  border-radius: 50%;
+  background-color: rgba(249, 249, 249, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.img {
+  width: 20rpx;
+  height: 30rpx;
+  transform: rotate(-180deg);
+}
+
+.navText {
+  font-size: 37rpx;
+  color: #FFFFFF;
+  font-weight: 500;
+}
+
+.backgroundImage {
+  width: 100%;
+}
+
+.van-nav-bar {
+  background-color: transparent !important;
+  position: fixed !important;
+  width: 100%;
+}
+
+.van-hairline--bottom:after {
+  border: 0rpx !important;
+}
+
+.LRP30 {
+  padding: 0 30rpx;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.swiper {
+  width: 100%;
+  padding: 30rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+  transform: translateY(-68px);
+}
+
+.header {
+  position: absolute;
+  top: 200rpx;
+  left: 30rpx;
+  width: calc(100vw - 60rpx);
+  gap: 30rpx;
+}
+
+.h_left {
+  align-items: flex-start;
+  flex-grow: 1;
+}
+
+.h_l_right {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.h_l_r_top {
+  font-size: 32rpx;
+  color: #FFFFFF;
+  line-height: 40rpx;
+  font-weight: 400;
+}
+
+.h_l_r_bottom {
+  font-size: 30rpx;
+  color: #FFFFFF;
+  line-height: 40rpx;
+  font-weight: 400;
+}
+
+.h_right {
+  height: 46rpx;
+  width: 48rpx;
+}
+
+.middle {
+  padding: 30rpx;
+  box-sizing: border-box;
+  margin-top: 15rpx;
+}
+
+.m_left {
+  gap: 10rpx;
+}
+
+.coin {
+  height: 62rpx;
+  width: 62rpx;
+}
+
+.m_l_right {
+  font-size: 24rpx;
+  color: #333333;
+  font-weight: 400;
+}
+
+.activeColor {
+  font-size: 42rpx;
+  color: #04C0D9;
+  font-weight: 400;
+}
+
+.Btn {
+  background-image: linear-gradient(270deg, #5DD5DE 3%, #4EACD3 100%);
+  border-radius: 8px;
+  height: 58rpx;
+  padding: 8rpx 24rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30rpx;
+  color: #FFFFFF;
+  font-weight: 400;
+}
+
+.content {
+  gap: 40rpx;
+  padding: 30rpx;
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.content_item {
+  padding-bottom: 20rpx;
+  box-sizing: border-box;
+  border-bottom: 1rpx solid #EEE;
+}
+
+.content_item:last-child {
+  border: none;
+  padding-bottom: 0rpx;
+}
+
+.c_left {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 32rpx;
+  color: #333333;
+  font-weight: 400;
+}
+
+.img_content {
+  height: 50rpx;
+  width: 50rpx;
+}
+
+.dot {
+  height: 32rpx;
+  width: 32rpx;
+  background-color: #E62E3D;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20rpx;
+  color: #FFFFFF;
+  text-align: center;
+  line-height: 20rpx;
+  font-weight: 400;
+}
+
+
+.overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.box_item {
+  width: 540rpx;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+}
+
+.p-title {
+  border-bottom: 0rpx;
+}
+
+.o_content {
+  padding: 30rpx;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  border-top: 1rpx solid #D8D8D8;
+  border-bottom: 1rpx solid #D8D8D8;
+}
+
+.o_text {
+  font-size: 32rpx;
+  color: #333333;
+  font-weight: 400;
+}
+
+.o_input {
+  border: 1px solid rgba(209, 209, 209, 1);
+  border-radius: 8rpx;
+  padding: 13rpx 0rpx 13rpx 20rpx;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28rpx 0rpx 30rpx 0rpx;
+  box-sizing: border-box;
+}
+
+.f_input {
+  background-image: linear-gradient(226deg, #5DD5DE 0%, #4EACD3 84%);
+  border-radius: 50rpx;
+  height: 78rpx;
+  width: 292rpx;
+  font-size: 32rpx;
+  color: #FFFFFF;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.grayText {
+  font-size: 26rpx;
+  color: #ceced1;
+  font-weight: 400;
+  text-align: center;
+}
+
+.sys {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  align-items: center;
+}
+
+.token {
+  position: fixed;
+  width: 100%;
+  bottom: 40rpx;
+}
+
+.field {
+  border: 1px solid rgba(209, 209, 209, 1);
+  border-radius: 8rpx;
+  padding: 13rpx 20rpx !important;
+}

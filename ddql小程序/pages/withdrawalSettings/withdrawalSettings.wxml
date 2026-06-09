@@ -1,0 +1,138 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">打卡提现设置</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <view class="box top">
+      <view class="flex t_top">
+        <text class="title">{{teamInfo.team.name}}</text>
+        <view class="Btn" bind:tap="open" data-name="showPopup" data-showPopupType="{{1}}">
+          <text class="">切换团体</text>
+          <image src="/assets/images/transform.svg" style="width: 31rpx;height: 24rpx;" mode="aspectFill" />
+        </view>
+      </view>
+      <view class="flex t_bottom">
+        <view class="t_b_left">
+          <image src="{{teamInfo.avatar}}" style="height:86rpx;width:86rpx;border-radius: 50%;" mode="aspectFill" />
+          <text class="coin">{{teamInfo.healthyCoin}}</text>
+          <text class="nomal_text">健康币</text>
+          <image src="/assets/images/black-rightArrow.svg" mode="aspectFill" style="height: 20rpx;width: 10rpx;" />
+        </view>
+        <!-- <view class="flex t_b_right">
+          <text class="title">提现记录</text>
+          <image src="/assets/images/black-rightArrow.svg" style="width:11rpx;height:20rpx;" mode="aspectFill" />
+        </view> -->
+      </view>
+    </view>
+    <view class="tag">
+      <view class="tags"></view>
+      <text class="title fw500">扫码打卡规则</text>
+    </view>
+    <view class="flex box">
+      <view class="flex gap">
+        <image src="/assets/images/clock.svg" mode="aspectFill" class="icon" />
+        <text class="box_title fw500">设置打卡时长</text>
+      </view>
+      <view class="flex box_right">
+        <view class="flex gap1">
+          <input value="{{hour}}" data-type="hour" bindinput="change" class="input box_title" type="number" />
+          <text class="title">时</text>
+        </view>
+        <view class="flex gap1">
+          <input value="{{minute}}" data-type="minute" bindinput="change" class="input box_title" type="number" />
+          <text class="title">分</text>
+        </view>
+      </view>
+    </view>
+    <view class="flex box">
+      <view class="flex gap">
+        <image src="/assets/images/jifenduihuan 2.svg" mode="aspectFill" class="icon" />
+        <text class="box_title">设置每次打卡可得健康币数量</text>
+      </view>
+      <view class="flex box_right">
+        <view class="flex gap1">
+          <input value="{{scanCodeHealthyCoin}}" data-type="scanCodeHealthyCoin" bindinput="change" class="input box_title" type="number" />
+          <text class="title">币</text>
+        </view>
+      </view>
+    </view>
+    <view class="tag">
+      <view class="tags"></view>
+      <text class="title fw500">步数打卡规则</text>
+    </view>
+    <view class="flex box">
+      <view class="flex gap" data-type="stepsOpen" bind:tap="changeRadio">
+        <view class="radio {{!stepsOpen && 'activeRadio'}}">
+          <image wx:if="{{!stepsOpen}}" src="/assets/images/chose.svg" mode="aspectFill" style="height: 20rpx;width: 20rpx;"/>
+        </view>
+        <text class="title">行走步数列入打卡</text>
+      </view>
+    </view>
+    <view wx:if="{{!stepsOpen}}" class="flex box">
+      <view class="flex gap">
+        <image src="/assets/images/zuji 2.svg" mode="aspectFill" class="icon" />
+        <text class="box_title">目标步数</text>
+      </view>
+      <view class="flex box_right">
+        <view class="flex gap1">
+          <input value="{{targetSteps}}" data-type="targetSteps" bindinput="change" class="input box_title" type="number" />
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{!stepsOpen}}" class="flex box">
+      <view class="flex gap">
+        <image src="/assets/images/jifenduihuan 2.svg" mode="aspectFill" class="icon" />
+        <text class="box_title">设置每次打卡可得健康币数量</text>
+      </view>
+      <view class="flex box_right">
+        <view class="flex gap1">
+          <input value="{{stepsHealthyCoin}}" data-type="stepsHealthyCoin" bindinput="change" class="input box_title" type="number" />
+          <text class="title">币</text>
+        </view>
+      </view>
+    </view>
+    <view class="tag">
+      <view class="tags"></view>
+      <text class="title fw500">提现规则</text>
+    </view>
+    <view class="flex box">
+      <view class="flex gap">
+        <image src="/assets/images/jifen 2.svg" mode="aspectFill" class="icon" />
+        <text class="box_title">最低提现金额</text>
+      </view>
+      <view class="flex box_right">
+        <view class="flex gap1">
+          <input value="{{lowestWithdrawalMoney}}" data-type="lowestWithdrawalMoney" bindinput="change" class="input box_title" type="number" />
+          <text class="title">元</text>
+        </view>
+      </view>
+    </view>
+    <view bind:tap="update" class="flex" style="justify-content: center;">
+      <view class="btn">确认修改</view>
+    </view>
+  </view>
+  <!-- 自定义弹出层 -->
+  <van-popup show="{{ showPopup }}" z-index="{{100}}" position="bottom" round data-name="showPopup" bind:close="onClose">
+    <view>
+      <view class="p-title flex">
+        <text class="p_avtiveText" bind:tap="onClose" data-name="showPopup">取消</text>
+        <text class="p-text">切换团体</text>
+        <text class="p_avtiveText" bind:tap="confirm" data-name="showPopup">确定</text>
+      </view>
+      <view class="p_connent">
+        <picker-view indicator-style="height: 50px;" style="width: 100%; height: 582rpx;" value="{{0}}" bindchange="bindChange">
+          <picker-view-column>
+            <view wx:for="{{teamList}}" wx:key="id" class="flex p_item">
+              <text class="title">{{item.team.name}}</text>
+              <view class="flex" style="gap: 10rpx;">
+                <text class="p_i_text">{{item.healthyCoin}}</text>
+                <view class="circle {{item.team.type == 0?'blue':item.team.type == 1?'green':item.team.type == 2?'red':'purple'}}"></view>
+              </view>
+            </view>
+          </picker-view-column>
+        </picker-view>
+      </view>
+    </view>
+  </van-popup>
+</view>

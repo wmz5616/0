@@ -1,0 +1,28 @@
+/* pages/screenPage/screenPage.wxss */
+
+.header{
+  width: 100%;
+  padding: 30rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20rpx;
+  background-color: #ffffff;
+}
+
+.hLeft{
+  color: #333;
+  font-size: 28rpx;
+}
+
+.hRight{
+  font-size: 28rpx;
+}
+
+.img{
+  width: 100%;
+  padding: 30rpx;
+  box-sizing: border-box;
+}

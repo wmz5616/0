@@ -1,0 +1,37 @@
+<!--pages/storeManage/storeManage.wxml-->
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">商家管理</text>
+  </van-nav-bar>
+  <scroll-view bindscrolltolower='onScroll' scroll-y class="swiper {{isIOS?'h338':''}}">
+    <view class="item" wx:for="{{merchantList}}" wx:key="id">
+      <van-swipe-cell async-close right-width="{{ 65 }}">
+        <view class="shadow left" bind:tap="jump" data-url="/pagesA/MerchantDetail/MerchantDetail?shopId={{item.id}}">
+          <view class="l_left">
+            <image src="{{item.coverImageUrl}}" mode="aspectFill" class="avatar" />
+            <text class="shopName">{{item.name}}</text>
+            <text class="nomal" style="color:{{item.qualificationCert==0?'#7F7F7F':item.qualificationCert==1?'#FB6C00':item.qualificationCert==2?'#04C0D9':item.qualificationCert==3?'#E62E3D':''}}">{{item.qualificationCert==0?'未认证':item.qualificationCert==1?'待审核':item.qualificationCert==2?'已认证':item.qualificationCert==3?'已驳回':''}}</text>
+          </view>
+          <image src="/assets/images/more.svg" mode="aspectFill" style="height: 28rpx;width: 16rpx" />
+        </view>
+        <view slot="right" class="slotRight">
+          <view bind:tap="open" data-name="showDialog" data-deleteId="{{item.id}}" class="baseSwipe delete btn_text">移除</view>
+        </view>
+      </van-swipe-cell>
+    </view>
+  </scroll-view>
+  <view class="Btn {{isIOS?'isIOS':''}}">
+    <view class="btn" bind:tap="jump" data-url="/pagesA/applySettlement/applySettlement">商家申请入驻</view>
+    <view class="btn activeBtn" bind:tap="jump" data-url="/pages/settlementRecord/settlementRecord">
+      申请入驻记录
+      <!-- <view class="badge">6</view> -->
+    </view>
+  </view>
+  <van-dialog use-slot use-title-slot show="{{ showDialog }}" showConfirmButton showCancelButton cancelButtonText="取消" confirmButtonText="确定" width="540rpx" bind:close="onClose" bind:confirm="dialogConfirm" bin data-name="showDialog" confirm-button-class="dialogBtn d_v_btn" cancle-button-class="dialogBtn">
+    <view slot="title">注销商家</view>
+    <view class="d_content">
+      是否确认注销白云煲仔饭，若要恢复注销的商家，请联系客服。
+    </view>
+  </van-dialog>
+</view>

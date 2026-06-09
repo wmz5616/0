@@ -1,0 +1,86 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="navLeft">
+      <image src="/assets/images/rightArrow.svg" class="img" mode="aspectFill" slot="left"></image>
+    </view>
+    <text slot="title" class="navText">个人中心</text>
+  </van-nav-bar>
+  <image src="/assets/images/backgroundImage.png" mode="aspectFill" class="backgroundImage" />
+  <view class="flex header" bind:tap="gologin">
+    <image style="height: 140rpx;width: 140rpx;border-radius: 50%;" src="{{userInfo.avatar}}" mode="aspectFill" />
+    <view class="flex h_left">
+      <view class="h_l_right">
+        <text class="h_l_r_top">{{token ? userInfo.nickname:'请先登录'}}</text>
+        <text class="h_l_r_bottom">{{hours<6?'凌晨好! ':hours<9?' 早上好! ':hours<12?' 上午好! ':hours<14?' 中午好! ':hours<17?' 下午好! ':hours<19?' 傍晚好! ':hours<22?' 晚上好! ':' 夜深了，早点休息 '}}</text>
+      </view>
+      <image bind:tap="jump" data-url="/pages/setting/setting" src="/assets/images/setting.svg" mode="aspectFill" class="h_right" />
+    </view>
+  </view>
+  <view class="swiper">
+    <view wx:if="{{token}}" class="flex box middle">
+      <view class="flex m_left" bind:tap="jump" data-url="/pages/goldCoin/goldCoin">
+        <image class="coin" src="/assets/images/goldCion.svg" mode="aspectFill" />
+        <view class="m_l_right">
+          <text class="activeColor">{{userInfo.goldCoin}}</text>
+          <text>金币</text>
+        </view>
+      </view>
+      <view class="flex m_left" bind:tap="jump" data-url="/pages/healthCoin/healthCoin">
+        <image class="coin" src="/assets/images/healthCoin.svg" mode="aspectFill" />
+        <view class="m_l_right">
+          <text class="activeColor">{{userInfo.healthCoin}}</text>
+          <text>健康币</text>
+        </view>
+      </view>
+      <view class="Btn" bind:tap="jump" data-url="/pages/onlineWithdrawal/onlineWithdrawal">在线提现</view>
+    </view>
+    <view class="box content">
+      <view wx:for="{{columns}}" wx:if="{{(token && item.need) || item.token}}" wx:key="index" class="flex content_item" data-url="{{item.url}}" bind:tap="jump" data-title="{{item.title}}">
+        <view class="c_left" style="flex:1;">
+          <image src="{{item.img}}" class="img_content" mode="aspectFit" />
+          <button style="border:none;font-weight:normal;padding:0;background-color:transparent;text-align:left;margin-left:10rpx;font-size:32rpx;width:100%;" wx:if="{{item.title=='联系客服'}}" open-type="contact">联系客服</button>
+          <text wx:else>{{item.title}}</text>
+        </view>
+        <view class="flex" style="gap: 30rpx;">
+          <!-- <view class="dot" wx:if="{{item.dot}}">{{item.dot}}</view> -->
+          <image src="/assets/images/gray-rightArrow.svg" mode="aspectFill" style="height: 28rpx;width: 16rpx;" />
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{token}}" class="sys">
+      <text class="grayText">{{version}}</text>
+      <text class="grayText">{{org_name}}</text>
+      <text class="grayText">{{miitbeian}}</text>
+    </view>
+  </view>
+  <view wx:if="{{!token}}" class="sys token">
+    <text class="grayText">{{version}}</text>
+    <text class="grayText">{{org_name}}</text>
+    <text class="grayText">{{miitbeian}}</text>
+  </view>
+  <!-- 申请加入 -->
+  <van-overlay show="{{ showOverlay }}" bind:click="onClickHide">
+    <view class="overlay">
+      <view class="box_item">
+        <view class="p-title">
+          <text class="p-text">申请加入</text>
+          <image bind:tap="onClose" data-name="showOverlay" src="/assets/images/close.png" class="p-close" mode="aspectFill" />
+        </view>
+        <view class="o_content">
+          <text class="o_text">团体名称：{{teamInfos.name}}</text>
+          <text class="o_text">姓名：</text>
+          <input value="{{name}}" bindinput="changename" class="o_input" type="text" placeholder="请输入" />
+          <text wx:if="{{isMultiDepartment}}" class="o_text">部门：</text>
+          <van-field wx:if="{{isMultiDepartment}}" disabled custom-class="field" value="{{ pickerData.text }}" clearable icon="arrow-down" placeholder="请选择" bind:click-icon="onClickIcon" bind:click-input="onClickIcon" placeholder-style="font-size:34rpx;color:#CCC;">
+          </van-field>
+        </view>
+        <view class="footer">
+          <view class="f_input" bind:tap="getSaveTeamApplicationRecord" data-name="showOverlay">确定</view>
+        </view>
+      </view>
+    </view>
+  </van-overlay>
+  <van-popup close-on-click-overlay position="bottom" round show="{{ showAreaPicker }}" bind:close="onClose" data-name="showAreaPicker">
+    <van-picker id="myPicker" toolbar-class="p_title" show-toolbar cancel-button-text="重置" title="请选择部门" columns="{{ departmentList }}" bind:confirm="onDConfirm" data-name="showAreaPicker" bind:cancel="reset" />
+  </van-popup>
+</view>

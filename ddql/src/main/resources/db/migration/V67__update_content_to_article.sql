@@ -1,0 +1,1 @@
+alter table `sys_article` MODIFY `content` LONGTEXT;

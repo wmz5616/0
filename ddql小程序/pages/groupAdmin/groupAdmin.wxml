@@ -1,0 +1,45 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">团体管理员</text>
+  </van-nav-bar>
+  <view class="rule box mlr">
+    <view class="flex1">
+      <view class="point"></view>
+      <text class="rule_text">管理员可协助创建者管理团体，拥有编辑成员信息、充值购币等能力。</text>
+    </view>
+    <view class="flex1">
+      <view class="point"></view>
+      <text class="rule_text">只有创建者具备设置管理员、解散团体的能力。</text>
+    </view>
+    <view class="flex1">
+      <view class="point"></view>
+      <text class="rule_text">最多可设置3个管理员</text>
+    </view>
+  </view>
+  <view class="swiper">
+    <!-- 移除 -->
+    <view wx:for="{{teamUserLists}}" wx:key="id" class="box item">
+      <view class="left flex">
+        <view class="l_left flex">
+          <image src="{{item.avatar}}" style="height: 106rpx;width: 106rpx;border-radius: 50%;" mode="aspectFill" />
+          <view class="f_l_r_top">
+            <view class="flex ffff">
+              <text class="tag">{{item.nickName}}</text>
+              <text class="name">{{item.userName}}</text>
+            </view>
+            <text class="gray_tag">{{item.phone}}</text>
+          </view>
+        </view>
+        <view bind:tap="open" data-deleteId="{{item.userId}}" data-name="showDialog" class="sbtn sbtn_text">移除</view>
+      </view>
+    </view>
+  </view>
+  <view class="Btn">
+    <view class="btn" bind:tap="jump" data-url="/pages/addGroupAdmin/addGroupAdmin?teamId={{teamId}}">添加管理员</view>
+  </view>
+  <!-- 弹出框 -->
+  <van-dialog custom-class="active4d" use-slot use-title-slot show="{{ showDialog }}" showConfirmButton showCancelButton confirmButtonText="移除" width="540rpx" bind:close="onClose" bind:confirm="dialogConfirm" bin data-name="showDialog" confirm-button-class="dialogBtn d_v_btn" cancle-button-class="dialogBtn">
+    <view slot="title">移除“梦想家”将无法管理团体</view>
+  </van-dialog>
+</view>

@@ -1,0 +1,28 @@
+<!--pages/notice/notice.wxml-->
+<view class="bc {{!noticeData.length?'white':''}}">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">通知公告</text>
+  </van-nav-bar>
+  <scroll-view class="List" scroll-y bindscrolltolower="scrollTolower">
+    <!-- 无数据时展示 -->
+    <view wx:if="{{!noticeData.length}}" style="width: 411rpx;height: 290rpx;margin: 0 auto;margin-top: 60rpx;">
+      <image src="/assets/images/empty.png" mode="aspectFill" style="width: 411rpx;height: 290rpx;" />
+      <view style="font-size: 33rpx;color: #999999;text-align: center;margin-top: 40rpx;">暂无数据～</view>
+    </view>
+
+    <!-- 通知列表 -->
+    <view wx:else style="margin:0 30rpx;">
+      <view wx:for="{{noticeData}}" class="ListItem" wx:key="id" data-id="{{item.id}}" bindtap="navigateToNoticeDetail">
+        <view>
+          <view style="font-size: 37rpx;">{{item.title}}</view>
+          <view style="font-size: 28rpx;color: #8B8B8D;margin-top: 20rpx;">{{item.publishTime}}</view>
+        </view>
+        <image src="/assets/images/more.svg" mode="aspectFill" style="width: 20rpx;height: 26rpx;" />
+        <view wx:if="{{item.isTop}}" class="zd">置顶</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

@@ -1,0 +1,22 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">退款申请</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <view class="boxShadow flex list">
+      <view class="flex" style="width: 100%;">
+        <text class="baseText">笔记本</text>
+        <text class="grayText">状态：已退款</text>
+      </view>
+      <text class="baseText activeText">18000金币</text>
+    </view>
+  </view>
+  <view class="Btn">
+    <view class="btn nomalBtn" bind:tap="jump" data-url="/pages/refundProgress/refundProgress">退款进度</view>
+    <view class="btn activeBtn" bind:tap="open" data-name="showDialog">再次购买</view>
+  </view>
+  <!-- <view class="Btn1">
+    <view class="btn1 activeBtn" bind:tap="open" data-name="showDialog">再次购买</view>
+  </view> -->
+</view>

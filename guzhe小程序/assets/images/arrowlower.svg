@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="15px" viewBox="0 0 30 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>路径</title>
+    <g id="小程序-商品订单" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="商品订单" transform="translate(-398, -155)" fill="#333333" fill-rule="nonzero">
+            <g id="导航-/-滑动导航-/-下拉" transform="translate(0, 117)">
+                <g id="编组-6" transform="translate(30, 25)">
+                    <path d="M383.995356,27.6232863 L397.584998,15.1976442 C398.471522,14.3868973 397.84369,13 396.589784,13 L369.410499,13 C368.1563,13 367.528469,14.3868973 368.414992,15.1976442 L382.004634,27.6232863 C382.554536,28.1255712 383.445161,28.1255712 383.995356,27.6232863 Z" id="路径"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.team.TeamApplicationRecordMapper">
+
+
+    <insert id="insert">
+        insert into team_application_record(team_id, user_id, department_id, user_name, user_phone, status, join_type, create_time, update_time,
+                                            delete_time)
+        values (#{data.teamId}, #{data.userId}, #{data.departmentId}, #{data.userName}, #{data.userPhone}, #{data.status}, #{data.joinType}, #{data.createTime},
+                #{data.updateTime}, #{data.deleteTime})
+    </insert>
+
+    <update id="update">
+        update team_application_record
+        <set>
+            <if test="data.status != null">
+                status = #{data.status}
+            </if>
+            <if test="data.departmentId != null">
+                ,department_id = #{data.departmentId}
+            </if>
+        </set>
+        where id = #{data.id}
+    </update>
+
+    <select id="selectList" resultType="com.zemcho.ddql.controller.wechat.team.vo.TeamApplicationRecordVo">
+        select a.*,
+               b.avatar as avatar,
+               b.nickname as nickName,
+               c.name as departmentName
+        from team_application_record as a
+        inner join cas_user as b on a.user_id = b.id
+        left join team_department as c on a.department_id = c.id and c.delete_time is null
+        <where>
+            <if test="param.searchId != null">
+                and a.team_id = #{param.searchId}
+            </if>
+            <if test="param.searchIntStatus != null">
+                and a.status = #{param.searchIntStatus}
+            </if>
+        </where>
+    </select>
+
+    <select id="checkUserCanApply" resultType="java.lang.Boolean">
+        select count(1)
+        from team_application_record
+        where team_id = #{teamId}
+        and user_id = #{userId}
+        and status in (0, 1)
+    </select>
+</mapper>

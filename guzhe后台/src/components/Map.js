@@ -1,0 +1,306 @@
+import React from 'react';
+import { TextField, Paper, MenuItem, Popper } from '@material-ui/core';
+import {
+  Form,
+  Input,
+  Button,
+  Table,
+  Select,
+  DatePicker,
+  Tabs,
+  Checkbox,
+  Upload,
+  Modal,
+} from 'antd';
+// 交通信息
+let value = '';
+let key = '7EZBZ-DNNWZ-L7HXL-TPRJ5-S5PJF-LBFEH';
+class Map extends React.Component {
+  formRef = React.createRef();
+  state = {
+    spinning: false,
+    pageNum: 1,
+    list: [],
+    fileList: [],
+    info: '',
+    lat: 23.021016,
+    lng: 113.751884,
+    asd: false,
+    searchList: [],
+    anchorEl: null,
+  };
+
+  componentDidMount() {
+    this.setState({
+      locationValue: this.props.locationInfo?.address || undefined,
+      lng: this.props.locationName?.split(',')[0] || 113.751884,
+      lat: this.props.locationName?.split(',')[1] || 23.021016,
+    });
+
+    this.initMap();
+  }
+
+  handleOk = () => {
+    const { handleCancel, addressDetails } = this.props;
+    addressDetails(this.state.info);
+    handleCancel();
+  };
+
+  handleCancel = () => {
+    const { handleCancel } = this.props;
+    handleCancel();
+  };
+
+  TMap = (key) => {
+    return new Promise(function (resolve, reject) {
+      window.init = function () {
+        resolve(qq);
+      };
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src =
+        'https://map.qq.com/api/js?v=2.exp&callback=init&key=' + key + '&libraries=place';
+
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  };
+
+  initMap = () => {
+    //设置中心坐标
+    this.TMap(key).then((qq) => {
+      var map = new qq.maps.Map(document.getElementById('containersd'), {
+        center: new qq.maps.LatLng(this.state.lat, this.state.lng),
+        zoom: 15,
+        city1: '东莞市', //城市
+      });
+      //实例化自动完成
+      var ap = new qq.maps.place.Autocomplete(document.getElementById('place'));
+
+      let markerlast = new qq.maps.Marker({
+        position: map.center,
+        map: map,
+      });
+
+      var keyword = '';
+      let markers = []; //用户搜索后显示的点的集合
+
+      //调用Poi检索类。用于进行本地检索、周边检索等服务。
+      var searchService = new qq.maps.SearchService({
+        complete: (results) => {
+          if (results.type === 'CITY_LIST') {
+            searchService.setLocation(results.detail.cities[0].cityName);
+            searchService.search(keyword);
+            return;
+          }
+          console.log(results);
+          var pois = results.detail.pois;
+          this.setState({
+            info: pois[0],
+            address: pois[0].address,
+            lat: pois[0].latLng.lat,
+            lng: pois[0].latLng.lng,
+            name: pois[0].name,
+          });
+
+          var latlngBounds = new qq.maps.LatLngBounds();
+          for (var i = 0, l = 1; i < l; i++) {
+            var poi = pois[i];
+            // console.log(poi);
+            latlngBounds.extend(poi.latLng);
+            var marker = new qq.maps.Marker({
+              map: map,
+              position: poi.latLng,
+              address: poi.latLng.address,
+            });
+
+            marker.setTitle(poi.name);
+            markers.push(marker);
+          }
+          map.fitBounds(latlngBounds);
+        },
+      });
+
+      this.markers = markers;
+
+      //添加监听事件
+      qq.maps.event.addListener(ap, 'confirm', function (res) {
+        keyword = res.value;
+        searchService.search(keyword);
+      });
+
+      qq.maps.event.addListener(map, 'click', (event) => {
+        // 清除初始化位置
+
+        markerlast.position = event.latLng;
+        markerlast.setMap(null);
+        // 获取经纬度位置
+
+        // 绘制点击的点
+        let marker = new qq.maps.Marker({
+          position: event.latLng,
+          map: map,
+        });
+
+        console.log(marker);
+        this.setState({
+          lat: marker.position.lat,
+          lng: marker.position.lng,
+        });
+        // 添加监听事件   获取鼠标单击事件
+        qq.maps.event.addListener(map, 'click', function (event) {
+          marker.setMap(null);
+        });
+        // 清空上一次搜索结果
+        Array.from(this.markers).forEach((marker) => {
+          marker.setMap(null);
+        });
+      });
+    });
+  };
+
+  handleAdress = (v) => {
+    console.log(v.target.value);
+    this.setState({
+      ccc: v.target.value,
+    });
+  };
+  yourCallbackName = (e) => {
+    console.log(e);
+  };
+  render() {
+    return (
+      <div style={{ display: 'flex', width: '100%' }}>
+        <div style={{ paddingTop: 8, flex: '0 0 100px', textAlign: 'right' }}>
+          <span style={{ color: 'red' }}>*</span>所在位置：
+        </div>
+        <div style={{ flex: 1 }}>
+          <Input
+            autoComplete="off"
+            placeholder={'请输入关键词搜索'}
+            value={this.state.locationValue}
+            onFocus={(e) => {
+              this.setState({ asd: true, anchorEl: e.target });
+            }}
+            // onBlur={handleClose}
+            onChange={(e) => {
+              this.setState({
+                locationValue: e.target.value,
+              });
+              fetch(
+                `/ws/place/v1/suggestion?key=7EZBZ-DNNWZ-L7HXL-TPRJ5-S5PJF-LBFEH&keyword=${e.target.value}`,
+                {
+                  method: 'GET',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Methods': 'GET,POST', // 设置允许跨域的域名
+                    'Access-Control-Allow-Origin': '*', // 设置允许跨域的域名
+                  },
+                },
+              )
+                .then((response) => response.json())
+                .then((data) => {
+                  this.setState(
+                    {
+                      searchList: data.data ? data.data : [],
+                    },
+                    () => {
+                      console.log(this.state.searchList);
+                    },
+                  );
+                  // 处理从服务端返回的数据
+                })
+                .catch((error) => {
+                  console.error(error);
+                });
+            }}
+          />
+          <Popper open={this.state.asd} anchorEl={this.state.anchorEl} style={{ zIndex: 9999999 }}>
+            <Paper>
+              {this.state.searchList.map((option, index) => (
+                <MenuItem
+                  key={index}
+                  // selected={option === selected}
+                  onClick={() => {
+                    option.name = option.title;
+                    this.setState(
+                      {
+                        asd: false,
+                        info: option,
+                        lat: option.location.lat,
+                        lng: option.location.lng,
+                        locationValue: option.address + option.title,
+                      },
+                      () => {
+                        this.initMap();
+                        if (this.props.onLocationChange) {
+                          this.props.onLocationChange(this.state.info);
+                        }
+                      },
+                    );
+                  }}
+                >
+                  {option.title}
+                  <span style={{ color: '#e0e0e0', fontSize: 15 }}>({option.address})</span>
+                </MenuItem>
+              ))}
+            </Paper>
+          </Popper>
+          {/* <Input
+              type="text"
+              // id="place"
+              placeholder="请输入地点名称"
+              value={this.state.name}
+              onChange={(e) => {
+                // $.ajax({
+                //   type: 'GET',
+                //   url: `https://apis.map.qq.com/ws/place/v1/suggestion?key=7EZBZ-DNNWZ-L7HXL-TPRJ5-S5PJF-LBFEH&keyword=${e.target.value}`,
+                //   dataType: 'jsonp',
+                //   jsonp: 'callback',
+                //   jsonpCallback: this.yourCallbackName, // 可选，指定回调函数名
+                //   success: function (result) {
+                //     console.log(result);
+                //   },
+                //   error: function (xhr, errorType, error) {
+                //     console.error(error);
+                //   },
+                // });
+                fetch(
+                  `/ws/place/v1/suggestion?key=7EZBZ-DNNWZ-L7HXL-TPRJ5-S5PJF-LBFEH&keyword=${e.target.value}`,
+                  {
+                    method: 'GET',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Access-Control-Allow-Methods': 'GET,POST', // 设置允许跨域的域名
+                      'Access-Control-Allow-Origin': '*', // 设置允许跨域的域名
+                    },
+                  },
+                )
+                  .then((response) => response.json())
+                  .then((data) => {
+                    console.log(data);
+                    // 处理从服务端返回的数据
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                  });
+              }}
+              suffix={
+                <SearchOutlined
+                  onClick={() => {
+                    this.setState({ lat: 23.021016, lng: 112.751884 }, () => {
+                      this.initMap();
+                    });
+                  }}
+                  style={{ color: '#ccc' }}
+                />
+              }
+            /> */}
+          <div id="containersd" style={{ height: 300, marginTop: 15 }} />
+        </div>
+      </div>
+    );
+  }
+}
+
+export default Map;

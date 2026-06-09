@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.equipment.EquipmentPosterMapper">
+
+    <insert id="insertBatch"
+            parameterType="java.util.List">
+        insert into equipment_poster (equipment_id, image, status, show_time, show_begin_time, show_end_time, sort)
+        values
+        <foreach collection="data" item="item" separator=",">
+            (#{item.equipmentId}, #{item.image}, #{item.status}, #{item.showTime}, #{item.showBeginTime},
+            #{item.showEndTime}, #{item.sort})
+        </foreach>
+    </insert>
+
+    <update id="updateBatch"
+            parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
+            update equipment_poster
+            <set>
+                <if test="item.equipmentId != null">
+                    equipment_id = #{item.equipmentId},
+                </if>
+                <if test="item.image != null">
+                    image = #{item.image},
+                </if>
+                <if test="item.status != null">
+                    status = #{item.status},
+                </if>
+                <if test="item.showTime != null">
+                    show_time = #{item.showTime},
+                </if>
+                <if test="item.showBeginTime != null">
+                    show_begin_time = #{item.showBeginTime},
+                </if>
+                <if test="item.showEndTime != null">
+                    show_end_time = #{item.showEndTime},
+                </if>
+                <if test="item.sort != null">
+                    sort = #{item.sort},
+                </if>
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="selectLists" resultType="com.zemcho.ddql.entity.equipment.EquipmentPoster">
+        SELECT *
+        FROM `equipment_poster`
+        <where>
+            <if test="param.searchId != null">AND equipment_id = #{param.searchId}</if>
+            <if test="param.searchIntStatus != null">AND status = #{param.searchIntStatus}</if>
+        </where>
+        order by sort asc,id asc
+    </select>
+
+    <delete id="deleteByIds">
+        DELETE FROM `equipment_poster`
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

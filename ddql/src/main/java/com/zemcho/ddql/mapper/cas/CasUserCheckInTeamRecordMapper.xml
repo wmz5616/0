@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.cas.CasUserCheckInTeamRecordMapper">
+    <sql id="field">
+        record_id,
+        team_id,
+        team_name,
+        team_type,
+        user_id,
+        place_id,
+        check_in_method,
+        `date`,
+        obtain_type,
+        health_coin,
+        `rank`,
+        create_time
+    </sql>
+
+    <insert id="insertAll">
+        INSERT INTO `cas_user_check_in_team_record`(
+        <include refid="field"></include>
+        )VALUES
+        <foreach collection="data" item="item" separator=",">
+            (
+            #{item.recordId},
+            #{item.teamId},
+            #{item.teamName},
+            #{item.teamType},
+            #{item.userId},
+            #{item.placeId},
+            #{item.checkInMethod},
+            #{item.date},
+            #{item.obtainType},
+            #{item.healthCoin},
+            #{item.rank},
+            #{item.createTime}
+            )
+        </foreach>
+    </insert>
+
+    <update id="update">
+        UPDATE `cas_user_check_in_team_record`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.healthCoin != null">`health_coin` = #{data.healthCoin},</if>
+            <if test="data.rank != null">`rank` = #{data.rank},</if>
+        </trim>
+        WHERE id = #{data.id}
+    </update>
+
+    <select id="selectLists" resultType="com.zemcho.ddql.entity.cas.CasUserCheckInTeamRecord">
+        SELECT *
+        FROM `cas_user_check_in_team_record`
+        <where>
+            <if test="param.searchId != null">AND record_id = #{param.searchId}</if>
+            <if test="param.searchIds != null and param.searchIds.size() > 0">
+                AND `record_id` IN
+                <foreach collection="param.searchIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.searchField1 != null">AND team_id = #{param.searchField1}</if>
+            <if test="param.searchIntList != null and param.searchIntList.size() > 0">
+                AND `team_id` IN
+                <foreach collection="param.searchIntList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.searchDate != null">AND `date` = #{param.searchDate}</if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+        ORDER BY `id` desc
+    </select>
+
+    <select id="selectUserCount" resultType="com.zemcho.ddql.controller.wechat.index.vo.UserCheckInRankCountVo">
+        SELECT a.user_id, SUM(a.health_coin) as health_coin, SUM(b.check_in_time) as check_in_time,
+               COUNT(1) as check_in_num, GROUP_CONCAT(b.place_id) AS place_ids
+        FROM `cas_user_check_in_team_record` as a
+        LEFT JOIN `cas_user_check_in_record` as b ON a.record_id = b.id
+        <where>
+            <if test="param.searchField1 != null">AND a.team_id = #{param.searchField1}</if>
+            <if test="param.searchDate != null">AND a.`date` = #{param.searchDate}</if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND a.`create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+        group by user_id
+    </select>
+</mapper>

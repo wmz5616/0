@@ -1,0 +1,162 @@
+page {
+  font-size: var(--font-size-32);
+  color: var(--default-color);
+  background-color: #F9F9F9;
+  --active-color: #E7494E;
+  --default-color: #333333;
+  --primary-color: #666666;
+  --secondary-text-color: #999999;
+  --button-bg-color: #E7494E;
+  --button-text-color: #FFFFFF;
+  --background-color: #FFFFFF;
+  --search-bar-bg-color: #F4F4F4;
+  --deep-background-color: #CCCCCC;
+  --border-color: #F0F0F0;
+  --grey-background-color: #F9F9F9;
+  --shadow-color: rgba(0, 0, 0, .2);
+  --warning-color: #F5A623;
+  --living-color: #F3240D;
+  --selected-color: #5BB878;
+  --font-size-24: 24rpx;
+  --font-size-26: 26rpx;
+  --font-size-28: 28rpx;
+  --font-size-30: 30rpx;
+  --font-size-32: 32rpx;
+  --font-size-34: 34rpx;
+  --font-size-36: 36rpx;
+  --font-size-40: 40rpx;
+  --font-size-42: 42rpx;
+  --font-size-48: 48rpx;
+  --font-size-50: 50rpx;
+  --font-size-60: 60rpx;
+  --font-size-62: 62rpx;
+  --font-size-76: 76rpx;
+}
+
+.Rflex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Cflex {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: center;
+}
+
+.box {
+  background: #FFFFFF;
+  box-shadow: 0rpx 2rpx 10rpx 0rpx rgba(0, 0, 0, 0.05);
+  border-radius: 18rpx;
+}
+
+.bc {
+  /* height: 100vh; */
+  background-color: #f9f9f9;
+  position: relative;
+  overflow: hidden;
+}
+
+.backLeft{
+  height: 100%;
+  padding-right: 60rpx;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.arrowBack {
+  height: 35rpx;
+  width: 20rpx;
+}
+
+.navText {
+  font-size: 37rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.p30 {
+  padding: 30rpx;
+  box-sizing: border-box;
+}
+
+.g30 {
+  gap: 30rpx;
+}
+
+.g20 {
+  gap: 20rpx;
+}
+
+.g10 {
+  gap: 10rpx;
+}
+
+.bottomview {
+  height: 140rpx;
+}
+
+.boxShadow {
+  background: #FFFFFF;
+  box-shadow: 0rpx 2rpx 10rpx 0rpx rgba(0, 0, 0, 0.1);
+  border-radius: 18rpx;
+}
+
+.box {
+  background: #FFFFFF;
+  border-radius: 18rpx;
+  padding: 30rpx;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.arrowleft {
+  width: 20rpx;
+  height: 35rpx;
+}
+
+.search-wrapper .search-icon::before {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 30rpx;
+  border: 4rpx solid var(--deep-background-color);
+  left: 0;
+  top: 0;
+}
+
+.search-wrapper .search-icon::after {
+  width: 16rpx;
+  height: 4rpx;
+  border-radius: 4rpx;
+  background-color: var(--deep-background-color);
+  transform: rotate(48deg);
+  bottom: 4rpx;
+  right: 2rpx;
+}
+
+.search-wrapper .search-icon::before,
+.search-wrapper .search-icon::after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+}
+
+.van-dialog__button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dialogBtn {
+  width: 100% !important;
+}
+
+.d_v_btn {
+  font-size: 32rpx !important;
+  color: #8153FC !important;
+  line-height: 42rpx !important;
+  font-weight: 400 !important;
+}

@@ -1,0 +1,44 @@
+<view class="bc">
+  <view class="swiper">
+    <view class="boxShadow flex list">
+      <image src="{{orderInfo.coverImage}}" mode="aspectFill" class="goodImage" />
+      <view class="left">
+        <view class="flex" style="align-items: flex-end;gap: 10rpx;">
+          <view class="l_r_t_left">
+            <text class="baseText elip">{{orderInfo.productName}}</text>
+          </view>
+          <text class="grayText">x{{orderInfo.num}}</text>
+        </view>
+        <text wx:if="{{orderInfo.isVirtual}}" class="title label">有效期至：{{orderInfo.deadline}}</text>
+        <view class="flex1">
+          <text class="grayTime">{{orderInfo.updateTime}}</text>
+          <view>合计：<text style="color:#333333;font-weight:bold;font-size:36rpx;">{{orderInfo.amount / 100}}元</text></view>
+        </view>
+      </view>
+    </view>
+    <view class="refundForm">
+      <view class="refundReason">
+        <view class="formTitle">退款原因</view>
+        <van-cell-group>
+          <van-field value="{{ message }}" type="textarea" bind:change="change" placeholder="请输入" autosize border="{{ false }}" />
+        </van-cell-group>
+      </view>
+      <view class="refundFormPic">
+        <view class="formTitle">
+          <view class="pic">
+            <text class="title">图片</text>
+            <text class="grayTextt">(选填)</text>
+          </view>
+          <view>{{images.length}}/4</view>
+        </view>
+        <view style="margin: 30rpx 0 0 20rpx;">
+          <van-uploader file-list="{{ images }}" deletable max-count="4" use-before-read bind:before-read="beforeRead" bind:after-read="afterRead" bind:delete="deleteRead" />
+        </view>
+      </view>
+    </view>
+
+    <button style="width: 630rpx;height: 92rpx;background-image: linear-gradient(167deg, #8153FC 0%, #6070FB 82%);border-radius: 46rpx;color: #fff;line-height: 48rpx;margin-top: 55rpx;display: flex;align-items: center;justify-content: center;font-size: 32rpx;font-weight: 400;" bind:tap="getProductOrderRefund">
+      提交申请
+    </button>
+  </view>
+</view>

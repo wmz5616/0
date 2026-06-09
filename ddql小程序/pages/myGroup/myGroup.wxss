@@ -1,0 +1,244 @@
+.bc {
+  height: 100vh;
+  background-color: rgba(249, 249, 249, 0.979);
+  position: relative;
+  overflow: hidden;
+}
+
+.LRP30 {
+  padding: 0 30rpx;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.swiper {
+  width: 100%;
+  height: calc(100vh - 298rpx);
+  padding: 30rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+  overflow-y: auto;
+}
+
+.item {
+  padding: 0rpx;
+}
+
+.left {
+  padding: 30rpx;
+  box-sizing: border-box;
+}
+
+.nomal {
+  margin: 0rpx 10rpx 0rpx 20rpx;
+  font-size: 32rpx;
+  color: #333333;
+  font-weight: 500;
+  width:280rpx;
+  word-break: break-all;
+}
+
+.blue {
+  color: #04C0D9;
+  font-size: 32rpx;
+  font-weight: 400;
+}
+
+.red {
+  color: #E62E3D;
+  font-size: 32rpx;
+  font-weight: 400;
+}
+
+.btn_text {
+  font-size: 30rpx;
+  color: #FFFFFF;
+  font-weight: 400;
+}
+
+.btn {
+  background-image: linear-gradient(270deg, #5DD5DE 3%, #4EACD3 100%);
+  border-radius: 8rpx;
+  height: 58rpx;
+  padding: 0rpx 24rpx;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete {
+  background: #E62E3D;
+  border-radius: 0rpx 18rpx 18rpx 0rpx;
+  height: 100%;
+  width: 120rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bottom {
+  position: fixed;
+  width: 100%;
+  padding: 0rpx 30rpx;
+  box-sizing: border-box;
+  bottom: 30rpx;
+}
+
+.base {
+  height: 90rpx;
+  width: 330rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32rpx;
+  border-radius: 60rpx;
+  box-sizing: border-box;
+}
+
+.nomalBtb {
+  border: 1rpx solid #5DD5DE;
+  color: #04C0D9;
+  background-color: #fff;
+}
+
+.activeBtb {
+  color: #fff;
+  background-image: linear-gradient(195deg, #5DD5DE 0%, #4EACD3 84%);
+}
+
+.overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.box_item {
+  width: 540rpx;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+}
+
+.p-title {
+  border-bottom: 0rpx;
+}
+
+.o_content {
+  position: relative;
+  padding: 30rpx;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  border-top: 1rpx solid #D8D8D8;
+  border-bottom: 1rpx solid #D8D8D8;
+}
+
+.o_text {
+  font-size: 32rpx;
+  color: #333333;
+  font-weight: 400;
+}
+
+.o_input {
+  border: 1px solid rgba(209, 209, 209, 1);
+  border-radius: 8rpx;
+  padding: 13rpx 0rpx 13rpx 20rpx;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28rpx 0rpx 30rpx 0rpx;
+  box-sizing: border-box;
+}
+
+.f_input {
+  background-image: linear-gradient(226deg, #5DD5DE 0%, #4EACD3 84%);
+  border-radius: 50rpx;
+  height: 78rpx;
+  width: 292rpx;
+  font-size: 32rpx;
+  color: #FFFFFF;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.angle {
+  display: block;
+  height: 1rpx;
+  border: 15rpx solid #fff;
+  border-color: transparent transparent #fff transparent;
+  position: absolute;
+  z-index: 2;
+  bottom: 172rpx;
+  left: 78rpx;
+}
+.iconImage{
+  height: 30rpx;
+  width: 40rpx;
+}
+.detail {
+  position: absolute;
+  max-width: 488rpx;
+  height: 334rpx;
+  overflow: scroll;
+  left: 50rpx;
+  bottom: -163rpx;
+  z-index: 2;
+  background: #FFFFFF;
+  box-shadow: 0rpx 5rpx 32rpx 0rpx rgba(51, 51, 51, 0.25);
+  border-radius: 18rpx;
+  display: flex;
+  flex-direction: column;
+  padding-top: 30rpx;
+  box-sizing: border-box;
+}
+.locationItem {
+  padding: 30rpx;
+  border-bottom: 1rpx solid #D8D8D8;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 11rpx;
+}
+
+.locationItem:last-child {
+  border-bottom: none;
+}
+
+.title {
+  font-size: 34rpx;
+  color: #333333;
+  font-weight: 400;
+  position: relative;
+  flex-shrink: 0;
+}
+.ellipsis{
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.info {
+  font-size: 28rpx;
+  color: #333333;
+  line-height: 41rpx;
+  font-weight: 400;
+}
+
+.field {
+  border: 1px solid rgba(209, 209, 209, 1);
+  border-radius: 8rpx;
+  padding: 13rpx 20rpx !important;
+}

@@ -1,0 +1,110 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">商圈详情</text>
+  </van-nav-bar>
+  <view class="swiperr">
+    <view class="header">
+      <swiper bindchange="swiperChange" class="swiper" autoplay interval='3000'>
+        <block wx:for="{{type==1?imgUrlsList:shangquanInfo.logoImageUrlList}}" wx:key="index">
+          <swiper-item>
+            <image class="swiper-image" src="{{item}}" mode="aspectFill"></image>
+          </swiper-item>
+        </block>
+      </swiper>
+      <view class="dots-wrapper">
+        <view class="dot {{swiperCurrent == index ? 'active-dot' : 'normal-dot'}}" wx:for="{{type==1?imgUrlsList:shangquanInfo.logoImageUrlList}}" wx:key="index"></view>
+      </view>
+    </view>
+    <view class="location1">
+      <view class="l_left">
+        <text class="title">{{type==1?title:shangquanInfo.name}}</text>
+        <view class="l_text" bind:tap="openlocations">
+          <image src="/assets/images/address.svg" mode="aspectFill" style="height: 28rpx;width: 24rpx;margin-right: 10rpx;" />
+          <text>{{type==1?shopData.address:shangquanInfo.locationName}}</text>
+          <image src="/assets/images/gray-rightArrow.svg" mode="aspectFill" style="height: 20rpx;width: 25rpx;margin-left: 5rpx;" />
+        </view>
+      </view>
+      <button open-type="share" class="l_right" data-name="showPopup" bind:tap="showComponent" style="width:200rpx;background-color:#fff;padding:0;margin:0;">
+        <image src="/assets/images/wechat.svg" mode="aspectFill" style="height: 32rpx;width: 38rpx;"></image>
+        <text>分享</text>
+      </button>
+    </view>
+    <view wx:if="{{type == 1}}" class="middle">
+      <text class="title">所属商圈：{{text}}</text>
+      <view class="m_bottom">
+        <text>联系人：{{shopData.userName}}</text>
+        <text>联系电话：{{shopData.phone}}</text>
+      </view>
+    </view>
+    <view class="introduce">
+      <text class="title">{{type==1?'店铺':'商圈'}}介绍</text>
+      <!-- <text class="i_content">{{shopData.description}}</text> -->
+      <rich-text wx:if="{{type==1}}" class="i_content" nodes="{{shopData.description}}"></rich-text>
+      <rich-text wx:if="{{type==2}}" class="i_content" nodes="{{shangquanInfo.description}}"></rich-text>
+    </view>
+    <view wx:if="{{type == 2}}" class="c_list">
+      <viwe class="c_lists" wx:for="{{ctrieList}}" wx:key="index" data-type="1" data-id="{{item.id}}">
+        <image src="{{item.coverImageUrl}}" mode="aspectFill" style="height: 216rpx;width:280rpx;flex-shrink:0;" />
+        <view class="c_l_right">
+          <text class="c_title">{{item.name}}</text>
+          <view class="tags flex start">
+            <view wx:key="index" wx:for="{{item.circleList}}" wx:for-item="circleItem" class="tag_item" data-type="2" data-id="{{circleItem.circleId}}">{{circleItem.circleName}}</view>
+          </view>
+          <view class="c_bottom flex start">
+            <image src="/assets/images/businessHours.svg" mode="aspectFill" style="height: 20rpx;width: 20rpx;" />
+            <text>营业时间：{{item.startTime?item.startTime+'-'+item.endTime:'暂无'}}</text>
+          </view>
+          <view class="c_bottom flex start" catch:tap="openlocationsd" data-item="{{item}}">
+            <image src="/assets/images/address.svg" mode="aspectFill" style="height: 20rpx;width: 19rpx;" />
+            <text class="location">{{item.address}}</text>
+            <view class="btn" style="padding-left:10rpx;padding-right:10rpx;">
+              <image src="/assets/images/airplane.svg" style="height:25rpx;width:22rpx;" mode="aspectFill" />
+              <text>{{item.distance}}km</text>
+            </view>
+          </view>
+        </view>
+      </viwe>
+    </view>
+  </view>
+  <!-- 自定义弹出层 -->
+  <!-- <van-popup show="{{ showPopup }}" z-index="{{100}}" position="bottom" round data-name="showPopup" bind:close="onClose">
+    <view class="p-title">
+      <text class="p-text">分享</text>
+      <image bind:tap="onClose" data-name="showPopup" class="p-close" src="/assets/images/close.png" mode="" />
+    </view>
+    <view class="p-connent">
+      
+      <view class="p_btn">
+        <view class="Btn avtiveBtn">
+          <image src="/assets/images/white-wechat.svg" mode="aspectFill" style="height:30rpx;width:37rpx;"></image>
+          <text>微信好友</text>
+        </view>
+        <view class="Btn unAvtiveBtn">
+          <image src="/assets/images/pyq.svg" mode="aspectFill" style="height: 36rpx;width:36rpx;"></image>
+          <text>微信朋友圈</text>
+        </view>
+      </view>
+    </view>
+  </van-popup> -->
+  <van-popup show="{{ showPopup}}" position="bottom" round data-name="showPopup" bind:close="onClose" custom-class="pop">
+    <view class="p-title">
+      <text class="p-text">分享</text>
+      <image bind:tap="onClose" data-name="showPopup" class="p-close" src="/assets/images/close.png" mode="" />
+    </view>
+    <view class="share-wrapper" style="padding:30rpx;">
+      <view style="color:#04C0D9;font-weight:bold;font-size:42rpx;padding-top:40rpx;">分享到微信朋友圈操作指引</view>
+      <view style="height:268rpx;border:1rpx solid #5DD5DE;border-radius:18rpx;margin-top:30rpx;padding-left:30rpx;">
+        <view class="step-one" style="display:flex;margin-top:60rpx;margin-bottom:30rpx;align-items:center;">
+          <view style="background-image: linear-gradient(192deg, #5DD5DE 0%, #4EACD3 84%);width:200rpx;height:60rpx;color:#fff;text-align:center;font-weight:bold;border-radius:26rpx;line-height:60rpx;">STEP 01</view>
+          <view style="color:#333333;font-weight:bold;padding-left:30rpx;">点击右上角“...”</view>
+        </view>
+        <view class="step-two" style="display:flex;align-items:center;">
+          <view style="background-image: linear-gradient(192deg, #5DD5DE 0%, #4EACD3 84%);width:200rpx;height:60rpx;color:#fff;text-align:center;font-weight:bold;border-radius:26rpx;line-height:60rpx;">STEP 02</view>
+          <view style="color:#333333;font-weight:bold;padding-left:30rpx;">选择分享到朋友圈</view>
+          <image src="/assets/images/timeline.svg" mode="aspectFit" style="height:45rpx;width:45rpx;padding-left:15rpx;" />
+        </view>
+      </view>
+    </view>
+  </van-popup>
+</view>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.equipment.EquipmentMapper">
+
+    <insert id="insert" parameterType="com.zemcho.ddql.entity.equipment.Equipment">
+        insert into equipment(check_in_place_id, serial_number, online_status, enable_status, contact_phone, sort,
+                              remark, create_time)
+        values (#{data.checkInPlaceId}, #{data.serialNumber}, #{data.onlineStatus}, #{data.enableStatus},
+                #{data.contactPhone}, #{data.sort}, #{data.remark}, #{data.createTime})
+    </insert>
+
+    <update id="update" parameterType="com.zemcho.ddql.entity.equipment.Equipment">
+        update equipment
+        <set>
+            <if test="data.checkInPlaceId != null">
+                check_in_place_id = #{data.checkInPlaceId},
+            </if>
+            <if test="data.serialNumber != null">
+                serial_number = #{data.serialNumber},
+            </if>
+            <if test="data.onlineStatus != null">
+                online_status = #{data.onlineStatus},
+            </if>
+            <if test="data.enableStatus != null">
+                enable_status = #{data.enableStatus},
+            </if>
+            <if test="data.contactPhone != null">
+                contact_phone = #{data.contactPhone},
+            </if>
+            <if test="data.sort != null">
+                sort = #{data.sort},
+            </if>
+            <if test="data.remark != null">
+                remark = #{data.remark},
+            </if>
+            <if test="data.versionId != null">
+                version_id = #{data.versionId},
+            </if>
+            <if test="data.versionSerialNumber != null">
+                version_serial_number = #{data.versionSerialNumber},
+            </if>
+            <if test="data.release != null">
+                `release` = #{data.release},
+            </if>
+            <if test="data.appRequireTime != null">
+                app_require_time = #{data.appRequireTime},
+            </if>
+        </set>
+        where id = #{data.id}
+    </update>
+
+    <select id="select" resultType="com.zemcho.ddql.controller.equipment.vo.EquipmentVo"
+            parameterType="com.zemcho.ddql.common.param.SearchParam">
+        select e.id,
+        e.check_in_place_id,
+        e.serial_number,
+        e.online_status,
+        e.enable_status,
+        e.contact_phone,
+        e.sort,
+        e.remark,
+        e.create_time,
+        e.update_time,
+        e.delete_time,
+        cp.name as check_in_place_name
+        from equipment e left join check_in_place cp on e.check_in_place_id = cp.id
+        <where>
+            <if test="param.keyword != null and param.keyword != ''">
+                and e.serial_number like concat('%', #{param.keyword}, '%')
+            </if>
+            <if test="param.searchIntStatus != null">
+                and e.online_status = #{param.searchIntStatus}
+            </if>
+            <if test="param.searchType != null">
+                and cp.check_in_type_id = #{param.searchType}
+            </if>
+            <if test="param.searchStrField1 != null and param.keyword != ''">
+                and cp.name like concat('%', #{param.searchStrField1}, '%')
+            </if>
+            <if test="param.searchField1 != null">
+                and e.enable_status = #{param.searchField1}
+            </if>
+            <if test="param.startTime != null">
+                and e.create_time >= #{param.startTime}
+            </if>
+            <if test="param.endTime != null">
+                and #{param.endTime} >= e.create_time
+            </if>
+            and e.delete_time is null
+        </where>
+    </select>
+
+    <update id="delete" parameterType="java.util.List">
+        update equipment
+        set delete_time = now()
+        where id in
+        <foreach item="item" collection="deleteIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectBySerialNumber" resultType="com.zemcho.ddql.entity.equipment.Equipment">
+        SELECT *
+        FROM `equipment`
+        WHERE serial_number = #{serialNumber}
+          AND delete_time IS NULL
+    </select>
+
+    <select id="selectById" resultType="com.zemcho.ddql.entity.equipment.Equipment">
+        SELECT *
+        FROM `equipment`
+        WHERE id = #{id}
+          AND delete_time IS NULL
+    </select>
+
+    <select id="selectOffList" resultType="com.zemcho.ddql.entity.equipment.Equipment">
+        SELECT *
+        FROM `equipment`
+        WHERE online_status = 0
+          AND app_require_time &lt;= #{checkTime}
+          AND delete_time IS NULL
+    </select>
+
+    <update id="updateStatusByIds">
+        UPDATE `equipment`
+        SET status = #{status}
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND delete_time is null
+    </update>
+
+    <select id="selectByPlaceId" resultType="com.zemcho.ddql.entity.equipment.Equipment">
+        SELECT *
+        FROM `equipment`
+        WHERE check_in_place_id = #{placeId}
+          AND delete_time IS NULL
+        limit 1
+    </select>
+
+    <select id="selectByPlaceIds" resultType="com.zemcho.ddql.entity.equipment.Equipment">
+        SELECT *
+        FROM `equipment`
+        WHERE check_in_place_id IN
+        <foreach collection="placeIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+          AND delete_time IS NULL
+    </select>
+</mapper>

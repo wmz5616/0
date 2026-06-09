@@ -1,0 +1,48 @@
+<wxs module="format" src="../../pages/myOrder/myOrder.wxs"></wxs>
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">退款申请</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <view class="boxShadow flex list">
+      <image src="{{orderInfo.coverImage}}" mode="aspectFill" class="goodImage" />
+      <view class="left">
+        <view class="flex" style="align-items: flex-end;gap: 10rpx;">
+          <view class="l_r_t_left">
+            <text class="baseText elip">{{orderInfo.productName}}</text>
+            <text class="baseText activeText">{{orderInfo.amount}}金币</text>
+          </view>
+          <text class="grayText">{{format.formatStatus(orderInfo.status)}}</text>
+        </view>
+        <view class="flex1">
+          <text class="grayTime">{{orderInfo.updateTime}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="refundForm">
+      <view class="refundReason">
+        <view class="formTitle">退款原因</view>
+        <van-cell-group>
+          <van-field value="{{ message }}" type="textarea" bind:change="change" placeholder="请输入" autosize border="{{ false }}" />
+        </van-cell-group>
+      </view>
+      <view class="refundFormPic">
+        <view class="formTitle">
+          <view class="pic">
+            <text class="title">图片</text>
+            <text class="grayTextt">(选填)</text>
+          </view>
+          <view>0/4</view>
+        </view>
+        <view style="margin: 30rpx 0 0 20rpx;">
+          <van-uploader file-list="{{ images }}" deletable max-count="4" use-before-read bind:before-read="beforeRead" bind:after-read="afterRead" bind:delete="deleteRead" />
+        </view>
+      </view>
+    </view>
+
+    <button style="width: 630rpx;height: 92rpx;background-image: linear-gradient(270deg, #5DD5DE 3%, #4EACD3 100%);border-radius: 46rpx;color: #fff;line-height: 48rpx;margin-top: 55rpx;display: flex;align-items: center;justify-content: center;font-size: 32rpx;font-weight: 400;"  bind:tap="getProductExchangeRefund">
+      提交申请
+    </button>
+  </view>
+</view>

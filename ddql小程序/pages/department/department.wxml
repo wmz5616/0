@@ -1,0 +1,95 @@
+<!--pages/department/department.wxml-->
+<wxs module="show" src="./department.wxs"></wxs>
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">{{name}}</text>
+  </van-nav-bar>
+  <view class="search showDepartment">
+    <van-search value="{{ keyword }}" bind:search="onSearch" bind:clear="onCancel" shape="round" background="#fff" placeholder="请输入姓名、昵称、手机号搜索" left-icon='' right-icon='search' placeholder-style="font-size: 30rpx;color:#CCC;" style="flex-grow: 1;" />
+    <image bind:tap="batchEdit" src="{{isbatch?'/assets/images/activeEditDepartment.svg':'/assets/images/editDepartment.svg'}}" mode="aspectFill" style="height: 52rpx;width: 45rpx;" />
+  </view>
+  <scroll-view class="swiper {{!isbatch?'nomal':''}}" scroll-y bindscrolltolower='onScroll'>
+    <van-swipe-cell wx:for="{{teamUserLists}}" disabled="{{ isAdmin && userInfo.id != item.userId}}" wx:key="id" bind:close="onClose" class="box item" right-width="{{ 125 }}" async-close>
+      <view class="left" bind:tap="selectBatch" data-id="{{item.id}}">
+        <image src="{{item.avatar}}" style="height: 106rpx;width: 106rpx;border-radius: 50%;" mode="aspectFill" />
+        <view class="f_left">
+          <view class="flex f_l_r_top">
+            <view class="flex ffff">
+              <text class="tag">{{item.nickName}}</text>
+              <text class="name">{{item.userName}}</text>
+            </view>
+            <text class="name">{{item.userPhone?item.userPhone:''}}</text>
+          </view>
+          <text class="gray_tag">{{item.type==0?'创建者':item.type==1?'管理员':''}}</text>
+        </view>
+        <image wx:if="{{isbatch}}" src="{{show.includes(isSelectList,item.id)?'/assets/images/aSelect.svg':'/assets/images/select.svg'}}" mode="aspectFill" style="width: 36rpx;height: 36rpx;margin-left: 10rpx;" />
+      </view>
+      <view slot="right" class="slotRight">
+        <view bind:tap="open" data-name="showOverlay" data-selectTeam="{{item}}" class="baseSwipe edit btn_text">编辑</view>
+        <view bind:tap="open" data-name="showDialog" data-selectTeam="{{item}}" class="baseSwipe delete btn_text">移除</view>
+      </view>
+    </van-swipe-cell>
+    <view style="height: 30rpx;width: 100%;"></view>
+  </scroll-view>
+  <view wx:if="{{isbatch}}" class="Btn">
+    <view class="btn" style="width: 452rpx;" catch:tap="openBatch">批量编辑</view>
+    <view class="allSelect" catch:tap="selectBatch" data-id="all">
+      <text class="selectText">全选</text>
+      <image src="{{show.includes(isSelectList,'all')?'/assets/images/aSelect.svg':'/assets/images/select.svg'}}" mode="aspectFill" style="height:36rpx;width:36rpx;" />
+    </view>
+  </view>
+  <!-- 编辑成员信息 -->
+  <van-overlay show="{{ showOverlay }}">
+    <view class="overlay">
+      <view class="box_item">
+        <view class="p-title">
+          <text class="p-text">编辑成员部门</text>
+        </view>
+        <view class="o_content">
+          <text class="o_text">成员姓名：</text>
+          <input class="o_input" value="{{editName}}" data-type="editName" type="text" placeholder="请输入" bindinput="changeInput" />
+          <text class="o_text">手机号码：</text>
+          <input class="o_input" value="{{editPhone}}" data-type="editPhone" type="text" placeholder="请输入" bindinput="changeInput" />
+          <block>
+            <text class="o_text">部门：</text>
+            <van-field disabled custom-class="field1" value="{{ editDepartmentName }}" clearable icon="arrow-down" placeholder="请选择" bind:click-icon="onEditDepartmentClickIcon" bind:click-input="onEditDepartmentClickIcon" placeholder-style="font-size:34rpx;color:#CCC;">
+            </van-field>
+          </block>
+        </view>
+        <view class="footer">
+          <view class="f_base cancle" bind:tap="onClose" data-name="showOverlay">取消</view>
+          <view class="f_line"></view>
+          <view class="f_base comfirm" bind:tap="getSetUserDepartment" data-name="showOverlay">确认</view>
+        </view>
+      </view>
+    </view>
+  </van-overlay>
+  <!-- 批量编辑部门 -->
+  <van-overlay show="{{ showDOverlay1 }}">
+    <view class="overlay">
+      <view class="box_item">
+        <view class="p-title">
+          <text class="p-text">批量编辑部门</text>
+        </view>
+        <view class="o_content">
+          <text class="o_text">部门：</text>
+          <van-field disabled custom-class="field1" value="{{ departmentName }}" clearable icon="arrow-down" placeholder="请选择" bind:click-icon="onClickIcon" bind:click-input="onClickIcon" placeholder-style="font-size:34rpx;color:#CCC;">
+          </van-field>
+        </view>
+        <view class="footer">
+          <view class="f_base cancle" bind:tap="onClose" data-name="showDOverlay1">取消</view>
+          <view class="f_line"></view>
+          <view class="f_base comfirm" bind:tap="getMoreUpdateDepartment" data-name="showDOverlay1">确认</view>
+        </view>
+      </view>
+    </view>
+  </van-overlay>
+  <!-- 选中部门 -->
+  <van-popup close-on-click-overlay position="bottom" round show="{{ showAreaPicker }}" bind:close="onClose" data-name="showAreaPicker">
+    <van-picker id="myPicker" toolbar-class="p_title" show-toolbar cancel-button-text="重置" va title="请选择部门" columns="{{ departmentList }}" bind:confirm="onDConfirm" data-name="showAreaPicker" bind:cancel="reset" default-index="{{defaultIndex}}" />
+  </van-popup>
+  <van-dialog use-slot use-title-slot show="{{ showDialog }}" showConfirmButton showCancelButton cancelButtonText="取消" confirmButtonText="确定" width="540rpx" bind:close="onClose" bind:confirm="getSetUserDepartment" bin data-name="showDialog" confirm-button-class="dialogBtn d_v_btn" cancle-button-class="dialogBtn">
+    <view slot="title">确认要删除吗</view>
+  </van-dialog>
+</view>

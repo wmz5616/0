@@ -1,0 +1,37 @@
+<!--component/cusTime/cusTime.wxml-->
+<wxs module="format" src="./cusTime.wxs"></wxs>
+
+<!-- 展示区域：显示 displayStartTime / displayEndTime -->
+<view class="g20 hBom" bind:tap="showTimePopup">
+  <view class="hbLeft">
+    <view class="time">{{format.formatter(displayStartTime,'.')}}</view>
+    <view class="time">至</view>
+    <view class="time">{{format.formatter(displayEndTime,'.')}}</view>
+  </view>
+  <image src="/assets/images/downd.svg" mode="aspectFill" class="hbRight {{showTime?'up':''}}" />
+</view>
+
+<van-popup round show="{{showTime}}" data-type="showTime" position="bottom" bind:close="close" lock-scroll>
+  <view class="p30 tHeader">
+    <view class="taText" bind:tap="reset">重置</view>
+    <view class="tTitle">选择时间</view>
+    <view class="taText" bind:tap="confirm">确定</view>
+  </view>
+  <view class="p_box">
+    <view class="p_top">
+      <!-- 弹窗内显示临时时间 tempStartTime / tempEndTime -->
+      <view bind:tap="changeTime" data-index="1" class="basebox {{activeTime == 1 ? 'activeBox' : ''}}">{{format.formatter(tempStartTime)}}</view>
+      <text class="zhi">至</text>
+      <view bind:tap="changeTime" data-index="2" class="basebox {{activeTime == 2 ? 'activeBox' : ''}}">{{format.formatter(tempEndTime)}}</view>
+    </view>
+    <van-datetime-picker
+      show-toolbar="{{false}}"
+      type="date"
+      value="{{ time }}"
+      min-date="{{ minDate }}"
+      max-date="{{ maxDate }}"
+      bind:input="onInput"
+      formatter="{{ formatter }}"
+    />
+  </view>
+</van-popup>

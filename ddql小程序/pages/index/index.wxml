@@ -1,0 +1,297 @@
+<!--index.wxml-->
+<wxs module="filters" src="./index.wxs"></wxs>
+<view class="bc">
+  <view class="swipper">
+    <van-nav-bar bind:click-left="goBack" fixed="{{false}}">
+      <image src="/assets/images/whiteLogo.png" class="img" mode="aspectFit" slot="left"></image>
+      <text slot="title" class="navText">首页</text>
+    </van-nav-bar>
+    <image src="/assets/images/backgroundImage.png" mode="aspectFill" class="backgroundImage"></image>
+    <view class="header">
+      <swiper bindchange="swiperChange" class="swiper" autoplay interval='3000'>
+        <block wx:for="{{showList}}" wx:key="index">
+          <swiper-item>
+            <image bind:tap="jump" data-item="{{item}}" class="swiper-image" src="{{item.pic}}" mode="aspectFill"></image>
+          </swiper-item>
+        </block>
+      </swiper>
+      <view class="dots-wrapper">
+        <view class="dot {{swiperCurrent == index ? 'active-dot' : 'normal-dot'}}" wx:for="{{imgUrlsList}}" wx:key="index"></view>
+      </view>
+    </view>
+    <view class="bottom">
+      <view wx:if="{{noticeList.length}}" class="guanggao">
+        <view class="left">
+          <image src="/assets/images/laba.png" mode="aspectFit" class="laba"></image>
+        </view>
+        <swiper vertical autoplay interval="3000" circular style="height: 38rpx;flex-grow: 1;">
+          <block wx:for="{{noticeList}}" wx:key="id">
+            <swiper-item>
+              <text class="swiperText">{{item.title}}</text>
+            </swiper-item>
+          </block>
+        </swiper>
+        <view class="more" bind:tap="jumpNotice">更多</view>
+      </view>
+      <view class="b_middle">
+        <view class="top_coin">
+          <view class="coin">
+            <view class="l_coin">
+              <image src="/assets/images/healthCoin.svg" mode="aspectFill" class="coin-image" />
+              <view bind:tap="go" data-src="/pages/healthCoin/healthCoin" class="coin-content blueImage">
+                <text class="count">{{userinfo.healthCoin || 0}}</text>
+                <text class="c_text">团体健康币(可提现)</text>
+                <image src="/assets/images/rightArrow.svg" mode="aspectFill" class="rightArrow"></image>
+              </view>
+              <view class="info">
+                <image src="/assets/images/warning.svg" mode="aspectFill" class="warning" bind:tap="showInfo" data-name="showInfo1" data-timer="timer1"></image>
+                <view wx:if="{{showInfo1}}" class="toast">
+                  <view style="width:337rpx">
+                    <view class="toast_text">
+                      完成运动打卡即可获得团体健康币
+                    </view>
+                  </view>
+                </view>
+              </view>
+            </view>
+            <view class="tag" data-src="/pages/clockRecord/clockRecord" bind:tap="go">
+              <tex class="tag_text">打卡记录</tex>
+            </view>
+          </view>
+          <view class="coin" style="align-items: flex-start;">
+            <view class="l_coin">
+              <image src="/assets/images/goldCion.svg" mode="aspectFill" class="coin-image" />
+              <view bind:tap="go" data-src="/pages/goldCoin/goldCoin" class="coin-content orangeImage">
+                <text class="count">{{userinfo.goldCoin || 0}}</text>
+                <text class="c_text">平台金币</text>
+                <image src="/assets/images/rightArrow.svg" mode="aspectFill" class="rightArrow"></image>
+              </view>
+              <view class="info">
+                <image src="/assets/images/warning.svg" mode="aspectFill" class="warning" bind:tap="showInfo" data-name="showInfo2" data-timer="timer2"></image>
+                <view wx:if="{{showInfo2}}" class="toast">
+                  <view style="width:318rpx">
+                    <view class="toast_text">
+                      每天完成{{targetRecord.targetSteps}}步奖励{{targetRecord.stepsGoldCoin}}金币，完成团体打卡奖励{{targetRecord.scanCodeGoldCoin}}金币
+                    </view>
+                  </view>
+                </view>
+              </view>
+            </view>
+            <view class="tag" data-src="/pages/clockPoint/clockPoint" bind:tap="go">
+              <tex class="tag_text">附近打卡点</tex>
+            </view>
+          </view>
+        </view>
+        <circle targetSteps="{{targetSteps}}" bind:canvasReady="canvasReady" draw='circwewle1' per="{{pre}}" r='240' stepNum="{{sportInfo.stepNum}}" />
+        <view class="bottom_coin">
+          <!-- <text class="grayText" wx:if="{{!noLocation}}">您可选择设备进行扫码打卡或根据距离直接打卡</text> -->
+          <text bind:tap="showLocation" style="color:#1890FF;" class="grayText" wx:if="{{noLocation}}">授权位置信息获取附近打卡场地>></text>
+          <view style="display: flex;flex-direction: column;gap: 30rpx;width: 100%;">
+            <view class="btn avtiveBtn {{runInfo.checkInMethod===1?'disable-btn':''}}" bind:tap="change">
+              <image src="/assets/images/code.svg" mode="aspectFill" style="height:31rpx;width:31rpx;"></image>
+              <text>{{runInfo.placeId?'离场打卡':'室内扫码打卡'}}</text>
+            </view>
+            <view class="btn unAvtiveBtn {{alloWSiteData.length==0 || runInfo.checkInMethod===0?'disable-btn':''}}" data-src="/pages/clock/clock" bind:tap="showMos">
+              <image src="{{alloWSiteData.length==0?'/assets/images/whiteRule.svg':'/assets/images/whiteRule.svg'}}" mode="aspectFill" style="height:26rpx;width:39rpx;"></image>
+              <text>{{runInfo.placeId?'离场打卡':'户外场地打卡'}}</text>
+            </view>
+          </view>
+          <text wx:if="{{runInfo.placeId}}" class="grayText">离开打卡场地自动取消打卡</text>
+          <text wx:if="{{alloWSiteData.length==0}}" class="grayText">附近无符合距离的打卡场地</text>
+        </view>
+        <view class="site-type" style="display:flex;flex-wrap: wrap;margin-top:30rpx;margin-left:-15rpx;margin-right:-15rpx;">
+          <view wx:key="index" wx:for="{{checkiinTypeList}}" style="padding-left:15rpx;padding-right:15rpx;margin-bottom:18rpx;">
+            <image src="{{item.images}}" mode="aspectFit" style="width:64rpx;height:64rpx" />
+          </view>
+        </view>
+        <view class="line"></view>
+      </view>
+      <view class="b_footer">
+        <view class="location">
+          <view class="l_left" bind:tap="{{noLocation?'showLocation':''}}">
+            <image src="/assets/images/location.svg" mode="aspectFill" style="width: 35rpx;height: 30rpx;" />
+            <text style="max-width:400rpx;">当前位置：{{locationName}}</text>
+          </view>
+          <view class="l_right" data-name="showPopup" bind:tap="showComponent">
+            <image src="/assets/images/wechat.svg" mode="aspectFill" style="height: 32rpx;width: 38rpx;"></image>
+            <text>分享</text>
+          </view>
+        </view>
+        <view class="time">
+          <view class="time_count">
+            {{runInfo.placeId?checkInTimesds:sportInfo.checkInTimes}}
+          </view>
+          <text class="time_text">打卡时长</text>
+        </view>
+        <view class="f_content" wx:for="{{teamList}}" wx:key="index">
+          <text data-type="{{item.type == 2}}" bind:tap="gobaseInfo" data-url="/pages/baseInfo/baseInfo?teamId={{item.team.id}}" class="f_title">{{item.team.name}}<text style="color:#AAAAAA;font-size:22rpx;">（团体剩余健康币数：{{item.team.healthyCoin}}）</text></text>
+          <view class="f_c_middle">
+            <view class="progress_step gray_progress">
+            </view>
+            <view class="progress_step blue_progress activeProgress" style="width:{{min/item.teamCheckInSettings.scanCodeTime>=1?378:378*min/item.teamCheckInSettings.scanCodeTime}}rpx;">
+            </view>
+            <text class="present">{{filters.toFix((min/item.teamCheckInSettings.scanCodeTime)*100)>100?100:filters.toFix((min/item.teamCheckInSettings.scanCodeTime)*100)}}%</text>
+            <text class="present">{{item.teamCheckInSettings.scanCodeTime}}分钟</text>
+          </view>
+          <text class="presentText">{{min/item.teamCheckInSettings.scanCodeTime>=1?'已达标':'再坚持'+filters.toFixs(item.teamCheckInSettings.scanCodeTime-min)+'分钟'}}，{{min/item.teamCheckInSettings.scanCodeTime>=1?'已获得':'可获'}}{{item.teamCheckInSettings.scanCodeHealthyCoin}}健康币{{item.teamCheckInSettings.targetSteps>0?'；'+'到达'+item.teamCheckInSettings.targetSteps+'步，'+'可获得'+item.teamCheckInSettings.stepsHealthyCoin+'健康币':''}}</text>
+        </view>
+        <!-- <view class="f_content">
+          <text class="f_title">政府</text>
+          <view class="f_c_middle">
+            <view class="progress_step gray_progress">
+            </view>
+            <view class="progress_step green_progress activeProgress" style="width: 100rpx;">
+            </view>
+            <text class="present" style="margin-right: 30rpx;">60%</text>
+            <text class="present">20分钟</text>
+          </view>
+          <text class="presentText">再坚持20分钟可获得20币</text>
+        </view> -->
+        <!-- <view class="f_content">
+          <text class="f_title">蓝天集团</text>
+          <view class="f_c_middle">
+            <view class="progress_step gray_progress">
+            </view>
+            <view class="progress_step yellow_progress activeProgress" style="width: 300rpx;">
+            </view>
+            <text class="present" style="margin-right: 30rpx;">20%</text>
+            <text class="present">20分钟</text>
+          </view>
+          <text class="presentText">再坚持40分钟可获得20币</text>
+        </view> -->
+      </view>
+    </view>
+  </view>
+  <!-- 自定义弹出层 -->
+  <van-popup show="{{ showPopup }}" position="bottom" round data-name="showPopup" bind:close="onClose" custom-class="pop">
+    <view class="p-title">
+      <text class="p-text">分享</text>
+      <image bind:tap="onClose" data-name="showPopup" class="p-close" src="/assets/images/close.png" mode="" />
+    </view>
+    <view class="p-connent">
+      <circle targetSteps="{{targetSteps}}" bind:canvasReady="canvasReady" draw='circwewle1' per="{{pre}}" r='240' stepNum="{{sportInfo.stepNum}}" />
+      <view class="time" style="margin-bottom: 0rpx;">
+        <view class="time_count">
+          {{sportInfo.checkInTimes}}
+        </view>
+        <text class="time_text">打卡时长</text>
+      </view>
+      <view class="p_img">
+        <image src="/assets/images/logo.png" class="p-logo" mode="aspectFit" />
+        <image src="/assets/images/p_code.png" class="p-code" mode="aspectFit" />
+      </view>
+      <view class="p_btn">
+        <button class="Btn avtiveBtn" style="font-weight:normal;" open-type="share">
+          <image src="/assets/images/white-wechat.svg" mode="aspectFill" style="height:30rpx;width:37rpx;"></image>
+          <text>微信好友</text>
+        </button>
+        <button class="Btn unAvtiveBtn" style="font-weight:normal;" bind:tap="sharefriend">
+          <image src="/assets/images/pyq.svg" mode="aspectFill" style="height: 36rpx;width:36rpx;"></image>
+          <text>微信朋友圈</text>
+        </button>
+      </view>
+    </view>
+  </van-popup>
+  <van-popup show="{{ showPopup1}}" position="bottom" round data-name="showPopup1" bind:close="onClose" custom-class="pop">
+    <view class="p-title">
+      <text class="p-text">分享</text>
+      <image bind:tap="onClose" data-name="showPopup1" class="p-close" src="/assets/images/close.png" mode="" />
+    </view>
+    <view class="share-wrapper" style="padding:30rpx;">
+      <view style="color:#04C0D9;font-weight:bold;font-size:42rpx;padding-top:40rpx;">分享到微信朋友圈操作指引</view>
+      <view style="height:268rpx;border:1rpx solid #5DD5DE;border-radius:18rpx;margin-top:30rpx;padding-left:30rpx;">
+        <view class="step-one" style="display:flex;margin-top:60rpx;margin-bottom:30rpx;align-items:center;">
+          <view style="background-image: linear-gradient(192deg, #5DD5DE 0%, #4EACD3 84%);width:200rpx;height:60rpx;color:#fff;text-align:center;font-weight:bold;border-radius:26rpx;line-height:60rpx;">STEP 01</view>
+          <view style="color:#333333;font-weight:bold;padding-left:30rpx;">点击右上角“...”</view>
+        </view>
+        <view class="step-two" style="display:flex;align-items:center;">
+          <view style="background-image: linear-gradient(192deg, #5DD5DE 0%, #4EACD3 84%);width:200rpx;height:60rpx;color:#fff;text-align:center;font-weight:bold;border-radius:26rpx;line-height:60rpx;">STEP 02</view>
+          <view style="color:#333333;font-weight:bold;padding-left:30rpx;">选择分享到朋友圈</view>
+          <image src="/assets/images/timeline.svg" mode="aspectFit" style="height:45rpx;width:45rpx;padding-left:15rpx;" />
+        </view>
+      </view>
+    </view>
+  </van-popup>
+  <!-- 审核提醒 -->
+  <van-overlay show="{{ showAudit }}">
+    <view class="overlay">
+      <view class="oBox">
+        <view class="obHeader">
+          <view class="obTitle">审核提醒</view>
+        </view>
+        <view class="closeImg" bind:tap="closeOver">
+          <image src="/assets/images/close.png" mode="aspectFill" style="height: 30rpx;width: 30rpx;" />
+        </view>
+        <view class="auditList">
+          <view wx:for="{{4}}" wx:key="index" class="auditItem">
+            <image src="/assets/images/message.svg" mode="aspectFill" style="height:36rpx;width:36rpx;flex-shrink: 0;" />
+            <view class="Cflex">
+              <view class="Rflex">
+                <view class="obText">【A-Boom】李小明申请加入【广东科创新材料信息科技有限公司】，请审核。</view>
+                <image src="/assets/images/more.svg" mode="aspectFill" style="height: 28rpx;width: 14rpx;flex-shrink: 0;" />
+              </view>
+              <view class="obTime">2026-01-22 18:07</view>
+            </view>
+          </view>
+        </view>
+        <view class="obBottom">
+          <view style="display: flex;align-items: center;gap: 10rpx;" bind:tap="selected">
+            <view wx:if="{{!checked}}" class="round"></view>
+            <image wx:else="" src="/assets/images/selected.svg" mode="aspectFill" style="height: 40rpx;width: 40rpx;" />
+            <view class="tis">三天内不再弹出</view>
+          </view>
+          <view class="hasRead">一键已读</view>
+        </view>
+      </view>
+    </view>
+  </van-overlay>
+  <!-- 弹出框 -->
+  <van-dialog use-slot use-title-slot show="{{ showDialog }}" showConfirmButton confirmButtonText="知道了" width="540rpx" bind:close="onClose" data-name="showDialog" confirm-button-class="dialogBtn d_v_btn">
+    <text slot="title">超出计时范围</text>
+    <view class="d_content">请回到计时范围内，否则3秒后自动取消打卡。</view>
+  </van-dialog>
+  <view class="mask-wrapper" wx:if="{{modalVisible}}">
+    <view class="models" style="width:100%;">
+      <view class="top">
+        <view style="display:flex;justify-content:center;align-items:center;">
+          <view class="title" style="font-weight:bold;color:#333333;text-align:center;">距离打卡</view>
+          <image bind:tap="closesgin" class="close-icon" mode="aspectFit" src="/assets/images/close.png" style="width:40rpx;height:40rpx;position:absolute;right:25rpx;" />
+        </view>
+        <view class="tip" style="color:#7F7F7F;font-size:24rpx;padding-top:20rpx;">您可选择一个场地进行距离打卡</view>
+        <view class="c_list" bind:tap="jump" data-type="1">
+          <viwe class="c_lists" wx:for="{{alloWSiteData}}" wx:key="index" bind:tap="usecheck" data-placeId="{{item.id}}">
+            <image src="{{item.img}}" mode="aspectFill" style="height: 216rpx;width:280rpx" />
+            <view class="c_l_right">
+              <view class="c_title" style="text-align:left;">{{item.name}}</view>
+              <view class="c_bottom flex start">
+                <image src="/assets/images/businessHours.svg" mode="aspectFill" style="height: 20rpx;width: 20rpx;" />
+                <text>打卡方式：距离打卡 </text>
+              </view>
+              <view class="c_bottom flex start">
+                <image src="/assets/images/phone.svg" mode="aspectFill" style="height: 20rpx;width: 20rpx;" />
+                <text>联系电话：{{item.contactPhone}} </text>
+              </view>
+              <view class="c_bottom flex start">
+                <image src="/assets/images/address.svg" mode="aspectFill" style="height: 20rpx;width: 19rpx;" />
+                <text class="locations">{{item.address}}</text>
+                <view class="btns">
+                  <text>距离打卡</text>
+                </view>
+              </view>
+            </view>
+          </viwe>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{isOpen}}" class="showLocation">
+    <view class="s_top">
+      <text class="s_t_top">开启运动步数</text>
+      <text class="s_t_bottom">开启后，可获取运动步数</text>
+    </view>
+    <view class="s_bottom">
+      <view class="nopositonbtn" bind:tap="showOpenSetting">开启步数</view>
+      <image bind:tap="onclose" src="/assets/images/close.svg" style="height: 20rpx;width: 20rpx;" mode="aspectFill" />
+    </view>
+  </view>
+</view>

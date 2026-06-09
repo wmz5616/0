@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.cas.CasUserCoinLogMapper">
+    <sql id="field">
+        txn_type,
+        txn_id,
+        coin_type,
+        num_type,
+        coin_num,
+        user_id,
+        phone,
+        nick_name,
+        team_id,
+        team_name,
+        team_type,
+        remark,
+        create_time
+    </sql>
+
+    <insert id="insertAll">
+        INSERT INTO `cas_user_coin_log`(
+        <include refid="field"></include>
+        )VALUES
+        <foreach collection="data" item="item" separator=",">
+            (
+            #{item.txnType},
+            #{item.txnId},
+            #{item.coinType},
+            #{item.numType},
+            #{item.coinNum},
+            #{item.userId},
+            #{item.phone},
+            #{item.nickName},
+            #{item.teamId},
+            #{item.teamName},
+            #{item.teamType},
+            #{item.remark},
+            #{item.createTime}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectLists" resultType="com.zemcho.ddql.entity.cas.CasUserCoinLog">
+        SELECT *
+        FROM `cas_user_coin_log`
+        <where>
+            <if test="param.userId != null">AND user_id = #{param.userId}</if>
+            <if test="param.teamIds != null and param.teamIds.size() > 0">
+                AND `team_id` IN
+                <foreach collection="param.teamIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.teamId != null">AND team_id = #{param.teamId}</if>
+            <if test="param.txnType != null">AND txn_type = #{param.txnType}</if>
+            <if test="param.txnTypes != null and param.txnTypes.size() > 0">
+                AND `txn_type` IN
+                <foreach collection="param.txnTypes" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.txnId != null">AND txn_id = #{param.txnId}</if>
+            <if test="param.coinType != null">AND coin_type = #{param.coinType}</if>
+            <if test="param.numType != null">AND num_type = #{param.numType}</if>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND (phone LIKE CONCAT('%',#{param.keyword},'%') OR nick_name LIKE CONCAT('%',#{param.keyword},'%'))
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+        ORDER BY `id` desc
+    </select>
+
+    <select id="selectUserCount" resultType="com.zemcho.ddql.controller.wechat.index.vo.UserCoinCountVo">
+        SELECT user_id, coin_type, SUM(coin_num) as coin_num
+        FROM `cas_user_coin_log`
+        <where>
+            <if test="param.userId != null">AND user_id = #{param.userId}</if>
+            <if test="param.teamIds != null and param.teamIds.size() > 0">
+                AND `team_id` IN
+                <foreach collection="param.teamIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.teamId != null">AND team_id = #{param.teamId}</if>
+            <if test="param.txnType != null">AND txn_type = #{param.txnType}</if>
+            <if test="param.txnTypes != null and param.txnTypes.size() > 0">
+                AND `txn_type` IN
+                <foreach collection="param.txnTypes" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.txnId != null">AND txn_id = #{param.txnId}</if>
+            <if test="param.coinType != null">AND coin_type = #{param.coinType}</if>
+            <if test="param.numType != null">AND num_type = #{param.numType}</if>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND (phone LIKE CONCAT('%',#{param.keyword},'%') OR nick_name LIKE CONCAT('%',#{param.keyword},'%'))
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+        GROUP BY `user_id`,`coin_type`
+    </select>
+
+    <select id="selectCount" resultType="com.zemcho.ddql.controller.statistic.vo.CoinCountVo">
+        SELECT coin_type, SUM(coin_num) as coin_num
+        FROM `cas_user_coin_log`
+        <where>
+            <if test="param.userId != null">AND user_id = #{param.userId}</if>
+            <if test="param.teamIds != null and param.teamIds.size() > 0">
+                AND `team_id` IN
+                <foreach collection="param.teamIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.teamId != null">AND team_id = #{param.teamId}</if>
+            <if test="param.txnType != null">AND txn_type = #{param.txnType}</if>
+            <if test="param.txnTypes != null and param.txnTypes.size() > 0">
+                AND `txn_type` IN
+                <foreach collection="param.txnTypes" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.txnId != null">AND txn_id = #{param.txnId}</if>
+            <if test="param.coinType != null">AND coin_type = #{param.coinType}</if>
+            <if test="param.numType != null">AND num_type = #{param.numType}</if>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND (phone LIKE CONCAT('%',#{param.keyword},'%') OR nick_name LIKE CONCAT('%',#{param.keyword},'%'))
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+        GROUP BY `coin_type`
+    </select>
+
+    <insert id="insert">
+
+    </insert>
+</mapper>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.order.RechargeOrderMapper">
+    <sql id="field">
+        order_no,
+        user_id,
+        phone,
+        nick_name,
+        team_id,
+        team_name,
+        team_type,
+        act_id,
+        give_amount,
+        amount,
+        pay_type,
+        status,
+        create_time
+    </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `recharge_order`(
+        <include refid="field"></include>
+        )VALUES (
+        #{data.orderNo},
+        #{data.userId},
+        #{data.phone},
+        #{data.nickName},
+        #{data.teamId},
+        #{data.teamName},
+        #{data.teamType},
+        #{data.actId},
+        #{data.giveAmount},
+        #{data.amount},
+        #{data.payType},
+        #{data.status},
+        #{data.createTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `recharge_order`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.wxTransactionNo != null">wx_transaction_no = #{data.wxTransactionNo},</if>
+            <if test="data.payType != null">pay_type = #{data.payType},</if>
+            <if test="data.status != null">status = #{data.status},</if>
+            <if test="data.payTime != null">pay_time = #{data.payTime},</if>
+            <if test="data.refundNo != null">refund_no = #{data.refundNo},</if>
+            <if test="data.refundAmount !=null">refund_amount = #{data.refundAmount},</if>
+            <if test="data.refundTime !=null">refund_time = #{data.refundTime},</if>
+            <if test="data.refundRemark !=null">refund_remark = #{data.refundRemark},</if>
+        </trim>
+        WHERE id = #{data.id}
+    </update>
+
+    <select id="selectById" resultType="com.zemcho.ddql.entity.order.RechargeOrder">
+        SELECT *
+        FROM `recharge_order`
+        WHERE `id` = #{id}
+    </select>
+
+    <select id="selectByOrderNo" resultType="com.zemcho.ddql.entity.order.RechargeOrder">
+        SELECT *
+        FROM `recharge_order`
+        WHERE `order_no` = #{orderNo}
+    </select>
+
+    <select id="selectLists" resultType="com.zemcho.ddql.entity.order.RechargeOrder">
+        SELECT *
+        FROM `recharge_order`
+        <where>
+            <if test="param.searchField1 != null">AND user_id = #{param.searchField1}</if>
+            <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+                AND nick_name LIKE CONCAT('%',#{param.searchStrField1},'%')
+            </if>
+            <if test="param.searchIntList != null and param.searchIntList.size() > 0">
+                AND `team_id` IN
+                <foreach collection="param.searchIntList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.searchField2 != null">AND team_id = #{param.searchField2}</if>
+            <if test="param.searchField3 != null">AND act_id = #{param.searchField3}</if>
+            <if test="param.searchIntStatus != null">AND `status` = #{param.searchIntStatus}</if>
+            <if test="param.searchStatusList != null and param.searchStatusList.size() > 0">
+                AND `status` IN
+                <foreach collection="param.searchStatusList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND (order_no LIKE CONCAT('%',#{param.keyword},'%') OR phone LIKE CONCAT('%',#{param.keyword},'%'))
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+            <if test="param.limitTime != null">
+                AND create_time &lt;= #{param.limitTime}
+            </if>
+        </where>
+        ORDER BY `id` desc
+    </select>
+
+    <select id="selectCount" resultType="com.zemcho.ddql.controller.wechat.index.vo.RechargeOrderCountVo">
+        SELECT count(1) as order_num, sum(amount) as amount, sum(give_amount) as give_amount, sum(refund_amount) as refund_amount
+        FROM `recharge_order`
+        <where>
+            <if test="param.searchField1 != null">AND user_id = #{param.searchField1}</if>
+            <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+                AND nick_name LIKE CONCAT('%',#{param.searchStrField1},'%')
+            </if>
+            <if test="param.searchIntList != null and param.searchIntList.size() > 0">
+                AND `team_id` IN
+                <foreach collection="param.searchIntList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.searchField2 != null">AND team_id = #{param.searchField2}</if>
+            <if test="param.searchField3 != null">AND act_id = #{param.searchField3}</if>
+            <if test="param.searchIntStatus != null">AND `status` = #{param.searchIntStatus}</if>
+            <if test="param.searchStatusList != null and param.searchStatusList.size() > 0">
+                AND `status` IN
+                <foreach collection="param.searchStatusList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND (order_no LIKE CONCAT('%',#{param.keyword},'%') OR phone LIKE CONCAT('%',#{param.keyword},'%'))
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+            <if test="param.limitTime != null">
+                AND create_time &lt;= #{param.limitTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectActCount" resultType="com.zemcho.ddql.controller.wechat.index.vo.RechargeOrderActCountVo">
+        SELECT act_id, count(1) as order_num
+        FROM `recharge_order`
+        <where>
+            <if test="param.searchField1 != null">AND user_id = #{param.searchField1}</if>
+            <if test="param.searchField2 != null">AND team_id = #{param.searchField2}</if>
+            <if test="param.searchField3 != null">AND act_id = #{param.searchField3}</if>
+            <if test="param.searchIntStatus != null">AND `status` = #{param.searchIntStatus}</if>
+            <if test="param.searchStatusList != null and param.searchStatusList.size() > 0">
+                AND `status` IN
+                <foreach collection="param.searchStatusList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+        group by act_id
+    </select>
+</mapper>

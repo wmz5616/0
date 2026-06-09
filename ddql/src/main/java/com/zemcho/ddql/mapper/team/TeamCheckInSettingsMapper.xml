@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.team.TeamCheckInSettingsMapper">
+
+    <insert id="insert" parameterType="com.zemcho.ddql.entity.team.TeamCheckInSettings">
+        INSERT INTO team_check_in_settings
+        (team_id, scan_code_time, scan_code_healthy_coin, steps_open, target_steps, steps_healthy_coin,
+         lowest_withdrawal_money)
+        VALUES (#{data.teamId}, #{data.scanCodeTime}, #{data.scanCodeHealthyCoin}, #{data.stepsOpen},
+                #{data.targetSteps}, #{data.stepsHealthyCoin}, #{data.lowestWithdrawalMoney})
+    </insert>
+
+    <update id="updateByTeamId" parameterType="com.zemcho.ddql.entity.team.TeamCheckInSettings">
+        UPDATE team_check_in_settings
+        <set>
+            <if test="data.scanCodeTime != null">
+                scan_code_time = #{data.scanCodeTime},
+            </if>
+            <if test="data.scanCodeHealthyCoin != null">
+                scan_code_healthy_coin = #{data.scanCodeHealthyCoin},
+            </if>
+            <if test="data.stepsOpen != null">
+                steps_open = #{data.stepsOpen},
+            </if>
+            <if test="data.targetSteps != null">
+                target_steps = #{data.targetSteps},
+            </if>
+            <if test="data.stepsHealthyCoin != null">
+                steps_healthy_coin = #{data.stepsHealthyCoin},
+            </if>
+            <if test="data.lowestWithdrawalMoney != null">
+                lowest_withdrawal_money = #{data.lowestWithdrawalMoney},
+            </if>
+        </set>
+        WHERE team_id = #{data.teamId}
+    </update>
+
+    <select id="selectByTeamIds" resultType="com.zemcho.ddql.entity.team.TeamCheckInSettings">
+        select * from team_check_in_settings
+        where team_id in
+        <foreach item="item" collection="teamIds" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

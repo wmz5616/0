@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.recharge.RechargeActivityMapper">
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `recharge_activity` (
+        recharge_amount,
+        enable_gift,
+        gift_amount,
+        recharge_count,
+        `sort`,
+        create_time,
+        update_time
+        ) VALUES
+        <foreach collection="data" item="item" separator=",">
+            (
+            #{item.rechargeAmount},
+            #{item.enableGift},
+            #{item.giftAmount},
+            #{item.rechargeCount},
+            #{item.sort},
+            #{item.createTime},
+            #{item.updateTime}
+            )
+        </foreach>
+    </insert>
+    <update id="updateBatch">
+        <foreach collection="data" item="item" index="index" open="" close="" separator=";">
+            update recharge_activity
+            SET
+            recharge_amount = #{item.rechargeAmount},
+            enable_gift = #{item.enableGift},
+            gift_amount = #{item.giftAmount},
+            recharge_count = #{item.rechargeCount},
+            `sort` = #{item.sort}
+            WHERE id = #{item.id}
+        </foreach>
+    </update>
+    <update id="updateSortAfterDelete">
+        UPDATE `recharge_activity`
+        SET `sort` = `sort` - 1
+        WHERE `sort` > #{deletedSort}
+    </update>
+    <delete id="deleteById">
+        DELETE FROM `recharge_activity`
+        WHERE id = #{id}
+    </delete>
+
+    <select id="selectList" resultType="com.zemcho.ddql.entity.recharge.RechargeActivity">
+        SELECT *
+        FROM `recharge_activity`
+        <where>
+            <if test="param.searchId != null">
+                AND id = #{param.searchId}
+            </if>
+        </where>
+        order by sort
+    </select>
+
+</mapper>

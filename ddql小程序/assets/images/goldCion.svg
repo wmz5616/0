@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="42px" height="42px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 11</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="47.2313217%" y2="84.0134838%" id="linearGradient-1">
+            <stop stop-color="#FCB643" offset="0%"></stop>
+            <stop stop-color="#FFCB71" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="36%" x2="50%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#FBF1CD" offset="0%"></stop>
+            <stop stop-color="#FBECBE" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="6.46796013%" x2="50%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#F6A90E" offset="0%"></stop>
+            <stop stop-color="#FFE8A5" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-4">
+            <stop stop-color="#E3CEFF" offset="0%"></stop>
+            <stop stop-color="#D8BBFF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="1.86383441%" x2="50%" y2="100%" id="linearGradient-5">
+            <stop stop-color="#FFE39C" offset="0%"></stop>
+            <stop stop-color="#F0AE19" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="个人中心" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="金币记录" transform="translate(-60, -177)" fill-rule="nonzero">
+            <g id="编组" transform="translate(30, 147)">
+                <g id="编组-11" transform="translate(30, 30)">
+                    <g id="_08-精英">
+                        <g id="编组" fill="url(#linearGradient-1)">
+                            <circle id="椭圆_544-2" cx="21" cy="21" r="21"></circle>
+                        </g>
+                        <g id="编组" transform="translate(4, 4)">
+                            <ellipse id="椭圆_541-2" fill="url(#linearGradient-2)" cx="17.0000766" cy="16.9998468" rx="16.9999234" ry="16.9998468"></ellipse>
+                            <g transform="translate(0, 0.0003)" fill="url(#linearGradient-3)" id="椭圆_541-3">
+                                <ellipse cx="16.9999234" cy="16.9998468" rx="16.9999234" ry="16.9998468"></ellipse>
+                            </g>
+                        </g>
+                        <g id="编组" transform="translate(6, 6)">
+                            <ellipse id="椭圆_542-2" fill="url(#linearGradient-4)" cx="15.0000758" cy="14.9998485" rx="14.9999242" ry="14.9998485"></ellipse>
+                            <g transform="translate(0, 0.0003)" fill="url(#linearGradient-5)" id="椭圆_542-3">
+                                <ellipse cx="14.9999242" cy="14.9998485" rx="14.9999242" ry="14.9998485"></ellipse>
+                            </g>
+                        </g>
+                    </g>
+                    <g id="wodejifen" transform="translate(10, 10)">
+                        <polygon id="路径" fill="#C05A00" points="7.56343527 11.6416974 11.5648109 7.66669876 15.5661864 11.6416974 11.5646221 15.6165085"></polygon>
+                        <path d="M11.749996,0.5 C5.53679475,0.5 0.499999915,5.53679961 0.499999915,11.750002 C0.499999915,17.9632043 5.53679475,23 11.749996,23 C17.9631973,23 22.9999999,17.9632043 22.9999999,11.750002 C23.0024823,8.76555428 21.818018,5.9026262 19.7076944,3.79230227 C17.5973708,1.68197834 14.7344432,0.497513765 11.749996,0.5 L11.749996,0.5 Z M17.2622635,12.0779375 L12.078638,17.260743 C11.7594607,17.5797523 11.2420967,17.5797523 10.9229195,17.260743 L5.73929396,12.076037 C5.4202341,11.7569103 5.4202341,11.2396281 5.73929396,10.9205014 L10.9229195,5.73769593 C11.242956,5.42076802 11.7586015,5.42076802 12.078638,5.73769593 L17.2622635,10.9205014 C17.5792415,11.2404872 17.5792415,11.7560511 17.2622635,12.076037 L17.2622635,12.0779375 Z" id="形状" fill="#C05A00"></path>
+                        <polygon id="路径" fill="#FFFFFF" points="7.32230006 11.263373 11.331977 7.28031557 15.341654 11.263373 11.331977 15.2466311"></polygon>
+                        <path d="M11.3392548,0 C5.07675732,0 0,5.04305357 0,11.2639754 C0,17.4848973 5.07675732,22.5279508 11.3392548,22.5279508 C17.6017524,22.5279508 22.6785097,17.4848973 22.6785097,11.2639754 C22.6785097,5.04305357 17.6017524,0 11.3392548,0 L11.3392548,0 Z M17.0725632,11.8343033 L11.9053078,16.9592213 C11.7534709,17.1112921 11.5467841,17.1968298 11.3311684,17.1968298 C11.1155527,17.1968298 10.9088658,17.1112921 10.7570289,16.9592213 L5.59785998,11.8343033 C5.44477284,11.6834744 5.35866351,11.4781597 5.35866351,11.2639754 C5.35866351,11.0497912 5.44477284,10.8444764 5.59785998,10.6936475 L10.7570289,5.5767623 C10.9088658,5.42469148 11.1155527,5.33915381 11.3311684,5.33915381 C11.5467841,5.33915381 11.7534709,5.42469148 11.9053078,5.5767623 L17.0644767,10.7016803 C17.3780083,11.0149891 17.3780083,11.5209945 17.0644767,11.8343033 L17.0725632,11.8343033 Z" id="形状" fill="#FFFFFF"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

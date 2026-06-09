@@ -1,0 +1,350 @@
+<!--pages/applySettlement/applySettlement.wxml-->
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">{{shopname}}-{{shopId?'编辑商品':'新增商品'}}</text>
+  </van-nav-bar>
+  <view class="swiper {{isIOS?'h336':''}}">
+    <view class="box Cflex" wx:if="{{shopId}}">
+      <view class="titles" style="display:flex;justify-content:space-between;">
+        <text>商品编号：</text>
+        <text>{{productNo}}</text>
+      </view>
+    </view>
+    <view class="box Cflex">
+      <view class="title require">商品封面图</view>
+      <van-uploader class="pic" image-fit="aspectFit" file-list="{{ fileList }}" deletable max-count="1" use-before-read preview-file bind:before-read="beforeRead" upload-icon="plus" bind:after-read="afterRead" bind:delete="deleteRead" data-type="fileList" />
+    </view>
+    <view class="box Cflex">
+      <view class="title require">商品轮播图（最多可上传6张图片）</view>
+      <van-uploader multiple="{{true}}" class="banner" image-fit="aspectFit" file-list="{{ bannerList }}" deletable max-count="6" use-before-read preview-file bind:before-read="beforeRead" upload-icon="plus" bind:after-read="afterRead" bind:delete="deleteRead" data-type="bannerList" />
+    </view>
+    <view class="box Cflex">
+      <view class="field">
+        <view class="title require">商品名称：</view>
+        <input bind:input="getInputValue" value="{{name}}" data-type="name" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field">
+        <view class="title">规格：</view>
+        <input bind:input="getInputValue" value="{{specification}}" data-type="specification" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field">
+        <view class="title require">单位：</view>
+        <input bind:input="getInputValue" value="{{unit}}" data-type="unit" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field">
+        <view class="title require">原价（元）：</view>
+        <input bind:input="getInputValue" value="{{price}}" data-type="price" class="input" type="digit" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+        <view class="opsum" style="display:flex;flex-direction: column;gap: 10rpx;">
+          <view class="trianglelower"></view>
+          <view class="triangleupper"></view>
+        </view>
+      </view>
+      <view style="border-bottom:1rpx solid rgba(238, 238, 238, 1);padding-bottom:25rpx;">
+        <view class="field" style="border:none;padding:0;">
+          <view class="title require">折扣：</view>
+          <van-radio-group data-type="openDiscount" value="{{openDiscount}}" bind:change="onChange" direction="horizontal">
+            <van-radio name="0" checked-color="#8153FC ">关闭</van-radio>
+            <van-radio name="1" checked-color="#8153FC ">开启</van-radio>
+          </van-radio-group>
+        </view>
+        <view style="color:#F86E21;font-size:24rpx;padding-top:30rpx;">开启折扣请输入大于0，小于10的数字，支持输入1位小数</view>
+        <view wx:if="{{openDiscount==1}}" class="field" style="padding-top:10rpx;">
+          <!-- 折扣输入框 -->
+          <view class="title"></view>
+          <input bind:input="getInputValue" value="{{discountNum}}" data-type="discountNum" class="input" type="digit" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+          <!-- <view class="opsum" style="display:flex;flex-direction: column;gap: 10rpx;">
+          <view class="trianglelower"></view>
+          <view class="triangleupper"></view>
+        </view> -->
+        </view>
+      </view>
+      <view wx:if="{{openDiscount==1}}" style="border-bottom:1rpx solid rgba(238, 238, 238, 1);padding-bottom:25rpx;">
+        <view class="field" style="border:none;padding:0;">
+          <view class="title require">折扣倒计时：</view>
+          <van-radio-group data-type="openDiscountTime" value="{{ openDiscountTime}}" bind:change="onChange" direction="horizontal">
+            <van-radio name="0" checked-color="#8153FC ">关闭</van-radio>
+            <van-radio name="1" checked-color="#8153FC ">开启</van-radio>
+          </van-radio-group>
+        </view>
+        <view style="color:#F86E21;font-size:24rpx;padding-top:30rpx;">仅用于展示</view>
+        <view class="gap15" bind:tap="openTimed" wx:if="{{openDiscountTime==1}}">
+          <view wx:if="{{discountTimeText}}">{{discountTimeText}}</view>
+          <view wx:else class="grayText">请选择</view>
+          <image src="/assets/images/time.svg" mode="aspectFill" style="height: 30rpx;width: 35rpx;" />
+        </view>
+      </view>
+      <view class="field">
+        <view class="title">售价（元）：</view>
+        <input disabled bind:input="getInputValue" value="{{amount}}" data-type="amount" class="input" type="digit" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field">
+        <view class="title require">商品分类</view>
+        <view bind:tap="openPop" class="gap42" data-pickertype="categoryIds" style="flex:1;">
+          <view wx:if="{{categoryIds.length}}" class="list">
+            <view catch:tap="clearItem" data-value="{{item.value}}" data-pickertype="categoryIds" wx:for="{{categoryIds}}" wx:key="index" class="item badge">{{item.text}}</view>
+          </view>
+          <view wx:else class="grayText">请选择</view>
+          <image src="/assets/images/pullDown.svg" mode="aspectFill" style="height: 17rpx;width: 28rpx;" />
+        </view>
+        <view bind:tap="showtypemodel" style="background-image: linear-gradient(174deg, #8153FC 0%, #6070FB 82%);width:168rpx;height:58rpx;border-radius:8rpx;text-align:center;line-height:58rpx;text-align:center;color:#fff;font-size:30rpx;" class="addtype-btn">新增分类</view>
+      </view>
+      <view style="border-bottom:1rpx solid rgba(238, 238, 238, 1);padding-bottom:25rpx;">
+        <view class="field" style="border:none;padding:0;">
+          <view class="title">排序：</view>
+          <input bind:input="getInputValue" value="{{sort}}" data-type="sort" class="input" type="number" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+          <view class="opsum" style="display:flex;flex-direction: column;gap:14rpx;">
+            <view class="trianglelower"></view>
+            <view class="triangleupper"></view>
+          </view>
+        </view>
+        <view style="color:#F86E21;font-size:24rpx;padding-top:16rpx;">默认为0，数值大的排在前面</view>
+      </view>
+      <view style="border-bottom:1rpx solid rgba(238, 238, 238, 1);padding-bottom:25rpx;">
+        <view class="field" style="border:none;padding:0;">
+          <view class="title require" style="flex-shrink:0;">上架状态：</view>
+          <van-radio-group data-type="status" value="{{ status }}" bind:change="onChange" direction="horizontal">
+            <van-radio name="1" checked-color="#8153FC ">上架</van-radio>
+            <van-radio name="2" checked-color="#8153FC ">下架</van-radio>
+            <van-radio name="3" checked-color="#8153FC ">定时上架</van-radio>
+          </van-radio-group>
+        </view>
+        <view class="gap15" bind:tap="openTime" wx:if="{{status==3}}">
+          <view wx:if="{{scheduledTime}}">{{scheduledTime}}</view>
+          <view wx:else class="grayText">请选择定时上架的时间</view>
+          <image src="/assets/images/time.svg" mode="aspectFill" style="height: 30rpx;width: 35rpx;" />
+        </view>
+      </view>
+      <view style="border-bottom:1rpx solid rgba(238, 238, 238, 1);padding-bottom:25rpx;">
+        <view class="field" style="border:none;padding:0;">
+          <view class="title require">是否是虚拟商品：</view>
+          <van-radio-group disabled="{{shopId}}" data-type="isVirtual" value="{{ isVirtual }}" bind:change="onChange" direction="horizontal">
+            <van-radio name="0" checked-color="#8153FC ">否</van-radio>
+            <van-radio name="1" checked-color="#8153FC ">是</van-radio>
+          </van-radio-group>
+        </view>
+        <view style="color:#F86E21;font-size:24rpx;padding-top:30rpx;">优惠券等需要获取券码去核销的商品</view>
+      </view>
+      <view style="border-bottom:1rpx solid rgba(238, 238, 238, 1);padding-bottom:25rpx;" wx:if="{{isVirtual==1}}">
+        <view class="field" style="border:none;padding:0;">
+          <view class="title require">有效期（天）：</view>
+          <input bind:input="getInputValue" value="{{timeLimit}}" data-type="timeLimit" class="input" type="number" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+          <view class="opsum" style="display:flex;flex-direction: column;gap:14rpx;">
+            <view class="trianglelower"></view>
+            <view class="triangleupper"></view>
+          </view>
+        </view>
+        <view style="color:#F86E21;font-size:24rpx;padding-top:30rpx;">商品券码到有效期后不可核销</view>
+      </view>
+      <!-- <view class="field">
+        <view class="title require">营业时间：</view>
+        <view class="gap15" bind:tap="openTime">
+          <view wx:if="{{showStartTime}}">{{showStartTime}}~{{showEndTime}}</view>
+          <view wx:else class="grayText">开始时间~结束时间</view>
+          <image src="/assets/images/time.svg" mode="aspectFill" style="height: 30rpx;width: 35rpx;" />
+        </view>
+      </view> -->
+      <view class="box Cflex">
+        <view class="title require">商品详情</view>
+        <!-- <van-uploader file-list="{{ bannerList }}" deletable max-count="6" use-before-read preview-file bind:before-read="beforeRead" upload-icon="plus" bind:after-read="afterRead" bind:delete="deleteRead" data-type="bannerList" /> -->
+        <!-- <textarea value="{{detail}}" bind:input="getInputValue" data-type="detail" auto-height class="textarea" placeholder="请输入" placeholder-style="color: #CCCCCC;" /> -->
+        <van-uploader multiple="{{true}}" image-fit="aspectFill" file-list="{{ defailfilelist }}" deletable max-count="6" use-before-read preview-file bind:before-read="beforeRead" upload-icon="plus" bind:after-read="afterRead" bind:delete="deleteRead" data-type="defailfilelist" />
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{false}}" class="Btn1 {{isIOS?'isIOS':''}}">
+    <view class="btn1">提交</view>
+  </view>
+  <view wx:if="{{true}}" class="Btn1 {{isIOS?'isIOS':''}}" style="gap:60rpx;">
+    <view class="btn1 twbtn {{shopId?'':'single'}}" bind:tap="saveshot">{{shopId?'保存':'提交'}}</view>
+    <view wx:if="{{shopId && isVirtual=='0'}}" bind:tap="editStroage" class="btn1 twbtn bordert">更改库存</view>
+    <view wx:if="{{shopId && isVirtual=='1'}}" bind:tap="addcode" class="btn1 twbtn bordert">添加劵码</view>
+  </view>
+  <view wx:if="{{classtypemodal}}" class="mark-table">
+    <!-- 新增分类弹窗 -->
+    <view class="table-warpper">
+      <view bind:tap="closetypemodel" class="close-icon">
+        <image mode="aspectFit" src="/assets/images/closed.svg" style="width:40rpx;height:40rpx;position:absolute;right:30rpx;top:30rpx;" />
+      </view>
+      <view class="head-title" style="color:#333333;font-size:36rpx;font-weight:bold;padding-bottom:30rpx;text-align:center;">
+        新增分类
+      </view>
+      <view class="head-title" style="background-color:#FDFCEC;height:72rpx;padding-left:30rpx;line-height:72rpx;color:#F86E21;font-size:28rpx;margin-left:-30rpx;margin-right:-30rpx">
+        按住拖拽可调整展示顺序
+      </view>
+      <view class="table-container">
+        <view class="table-header">
+          <view class="header-cell" style="flex:0 0 20%;">序号</view>
+          <view class="header-cell" style="flex:0 0 40%;">分类名称</view>
+          <view class="header-cell" style="flex:0 0 20%;">操作</view>
+        </view>
+        <view class="table-body">
+          <block wx:for="{{categoryLists}}" wx:key="index">
+            <view class="table-row" data-index="{{index}}" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd">
+              <view class="table-cell" style="flex:0 0 20%;">{{index+1}}</view>
+              <view class="table-cell" style="flex:0 0 40%;"><input data-index="{{index}}" bindinput="writeTable" placeholder-style="color:#cccc" value="{{item.name}}" placeholder="请输入" /></view>
+              <view style="flex:0 0 20%;" data-ids="{{item.id}}" data-indexs="{{index}}" bind:tap="closeType" class="table-cell" style="color:#E62E3D;">删1除</view>
+            </view>
+          </block>
+        </view>
+      </view>
+      <view class="add-btn" bind:tap="addshopptype">+ 添加商品分类</view>
+      <view class="btm-btn">
+        <view bind:tap="closetypemodel" style="flex:1;text-align:center;border-right:1rpx solid #E5E5E5;height:100%;">取消</view>
+        <view bind:tap="submittypemodel" style="flex:1;text-align:center;height:100%;color:#8153FC;">确定</view>
+      </view>
+    </view>
+  </view>
+  <van-popup close-on-click-overlay position="bottom" round show="{{ showPop }}" bind:close="onClose" data-name="showPop">
+    <van-picker id="myPicker" toolbar-class="p_title" show-toolbar cancel-button-text="取消" title="商品分类" columns="{{ columns }}" bind:confirm="onConfirm" data-name="showPop" bind:cancel="onClose" />
+  </van-popup>
+  <!-- 时间筛选 -->
+  <van-popup position="bottom" round show="{{ showPop1 }}" bind:close="onClose" data-name="showPop1">
+    <view>
+      <view class="pickerTime flex">
+        <text class="p_avtiveText" bind:tap="onClose" data-name="showPop1">取消</text>
+        <text class="p_text">选择时间</text>
+        <text class="p_avtiveText" bind:tap="comfrimDate" data-name="showPop1">确定</text>
+      </view>
+      <van-datetime-picker show-toolbar="{{false}}" type="datetime" data-field="scheduledTime" value="{{ currentDate  }}" min-hour="{{ minHour}}" max-hour="{{ maxHour}}" bind:input="onInput" formatter="{{ forma }}" />
+      <!-- <van-datetime-picker show-toolbar="{{false}}" type="time" data-field="endTime" value="{{ endTime }}" min-hour="{{ minHour  }}" max-hour="{{ maxHour   }}" bind:input="onInput" formatter="{{ forma }}" /> -->
+    </view>
+  </van-popup>
+  <!-- 倒计时时间筛选 -->
+  <van-popup position="bottom" round show="{{ disshowPop1 }}" bind:close="onClose" data-name="showPop1">
+    <view>
+      <view class="pickerTime flex">
+        <text class="p_avtiveText" bind:tap="onClose" data-name="disshowPop1">取消</text>
+        <text class="p_text">选择时间</text>
+        <text class="p_avtiveText" bind:tap="comfrimDate" data-name="disshowPop1">确定</text>
+      </view>
+      <!-- <van-datetime-picker show-toolbar="{{false}}" type="time" data-field="discountTime" min-hour="{{ minHour}}" max-hour="{{ maxHour}}" bind:input="ondisInput" formatter="{{ forma }}" /> -->
+      <picker-view indicator-style="height: 50px;" style="width: 100%; height: 300px;" value="{{discountTimevalue}}" bindchange="bindChange">
+        <picker-view-column>
+          <view wx:for="{{hours}}" wx:key="index" style="line-height: 50px; text-align: center;">{{item.values}}</view>
+        </picker-view-column>
+        <picker-view-column>
+          <view wx:for="{{minutes}}" wx:key="index" style="line-height: 50px; text-align: center;">{{item.values}}</view>
+        </picker-view-column>
+        <picker-view-column>
+          <view wx:for="{{seconds}}" wx:key="index" style="line-height: 50px; text-align: center;">{{item.values}}</view>
+        </picker-view-column>
+      </picker-view>
+    </view>
+  </van-popup>
+  <view wx:if="{{classtypemodal}}" class="mark-table">
+    <!-- 新增分类弹窗 -->
+    <view class="table-warpper">
+      <view bind:tap="closetypemodel" class="close-icon">
+        <image mode="aspectFit" src="/assets/images/closed.svg" style="width:40rpx;height:40rpx;position:absolute;right:30rpx;top:30rpx;" />
+      </view>
+      <view class="head-title" style="color:#333333;font-size:36rpx;font-weight:bold;padding-bottom:30rpx;text-align:center;">
+        新增分类
+      </view>
+      <view class="head-title" style="background-color:#FDFCEC;height:72rpx;padding-left:30rpx;line-height:72rpx;color:#F86E21;font-size:28rpx;margin-left:-30rpx;margin-right:-30rpx">
+        按住分类名称拖拽可调整展示顺序
+      </view>
+      <view class="table-container">
+        <view class="table-header">
+          <view class="header-cell" style="flex:0 0 20%;">序号</view>
+          <view class="header-cell" style="flex:0 0 40%;">分类名称</view>
+          <view class="header-cell" style="flex:0 0 20%;">操作</view>
+        </view>
+        <scroll-view class="table-body" scroll-y scroll-into-view="{{scrollToRow}}" scroll-with-animation>
+          <block wx:for="{{categoryLists}}" wx:key="index">
+            <view id="row-{{index}}" class="table-row">
+              <view class="table-cell" style="flex:0 0 20%;">{{index+1}}</view>
+              <view data-index="{{index}}" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" class="table-cell" style="flex:0 0 40%;">
+                <input focus="{{focusIndex===index}}" data-index="{{index}}" bindinput="writeTable" placeholder-style="color:#cccc" value="{{item.name}}" placeholder="请输入" />
+              </view>
+              <view style="flex:0 0 20%;" data-id="{{item.id}}" data-indexs="{{index}}" bind:tap="closeType" class="table-cell" style="color:#E62E3D;">删除</view>
+            </view>
+          </block>
+        </scroll-view>
+      </view>
+      <view class="add-btn" bind:tap="addshopptype">+ 添加商品分类</view>
+      <view class="btm-btn">
+        <view bind:tap="closetypemodel" style="flex:1;text-align:center;border-right:1rpx solid #E5E5E5;height:100%;">取消</view>
+        <view bind:tap="submittypemodel" style="flex:1;text-align:center;height:100%;color:#8153FC;">确定</view>
+      </view>
+    </view>
+  </view>
+  <van-popup show="{{ showRefund }}" position="center" bind:close="onClose" data-name="showRefund" custom-style="width: 664rpx;overflow:hidden;border-radius: 12rpx;">
+    <view class="popup-content">
+      <view class="tit">
+        <text class="rtitle">更改库存-{{shopname}}</text>
+        <view style="position: absolute;right: 0rpx;top: 0;height: 108rpx;width: 108rpx;display: flex;align-items: center;justify-content: center;" bind:tap="onClose" data-name="showRefund">
+          <image src="/assets/images/closed.svg" mode="aspectFill" style="height: 36rpx;width: 36rpx;" />
+        </view>
+      </view>
+      <view class="p_center">
+        <view class="p_item">
+          <view class="p_text" style="display: flex;align-items: center;">
+            <text style="color: red;">*</text>
+            商品库存
+          </view>
+          <view class="step">
+            <input class="p_input" type="digit" value="{{refundPrice}}" bindinput="changePrice" placeholder="请输入" />
+            <view class="s-item">
+              <view class="step-item up1 {{ flag && 'active1'}}" data-add="{{step}}" bind:tap="calc"></view>
+              <view class="step-item down {{ !flag && 'active2'}}" data-add="{{-step}}" bind:tap="calc"></view>
+            </view>
+          </view>
+        </view>
+        <view class="origtnstroage">原库存：{{stock}}</view>
+      </view>
+      <view class="footer">
+        <view class="f_base cancle" bind:tap="onClose" data-name="showRefund">取消</view>
+        <view class="f_line"></view>
+        <view class="f_base comfirm" bind:tap="getRefund" data-name="showDOverlay">确认</view>
+      </view>
+    </view>
+  </van-popup>
+
+  <!-- 导出-确认弹窗 -->
+  <van-popup show="{{ showExport }}" position="center" bind:close="onClose" data-name="showExport" custom-style="width: 658rpx;overflow:hidden;border-radius: 12rpx;">
+    <view class="popup-content">
+      <view class="tit">
+        <text class="rtitle">添加券码</text>
+        <view style="position: absolute;right: 0rpx;top: 0;height: 108rpx;width: 108rpx;display: flex;align-items: center;justify-content: center;" bind:tap="onClose" data-name="showExport">
+          <image src="/assets/images/closed.svg" mode="aspectFill" style="height: 36rpx;width: 36rpx;" />
+        </view>
+      </view>
+      <view class="tis">批量导入请<text style="color: #8153FC;" bind:tap="getUnDispatchedExport">点击下载模板</text>，填写后上传文件批量导入。</view>
+      <view class="p_center">
+        <view class="p_item" style="align-items: flex-start;">
+          <view class="e_text">
+            导入文件：
+          </view>
+          <view style="display: flex;flex-direction: column;gap: 10rpx;">
+            <view class="upload" bind:tap="uploadfile">
+              <image src="/assets/images/upload.svg" mode="aspectFill" style="height: 40rpx;width: 40rpx;" />
+              <view class="grayText">上传文件</view>
+            </view>
+            <view class="extentText" style="color:#666666;font-size:26rpx;">支持扩展名：.xlsx .xls</view>
+          </view>
+        </view>
+      </view>
+      <view class="p_center">
+        <view class="p_item" style="align-items: flex-start;">
+          <view class="e_text">
+            查看已上传的券码：
+          </view>
+          <view bind:tap="getProductOrderExport" style="display: flex;flex-direction: column;gap: 10rpx;">
+            <view class="upload">
+              <image src="/assets/images/download.svg" mode="aspectFill" style="height: 40rpx;width: 40rpx;" />
+              <view class="grayText">下载文件</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="footer">
+        <view class="f_base cancle" bind:tap="onClose" data-name="showExport">取消</view>
+        <view class="f_line"></view>
+        <view class="f_base comfirm" bind:tap="onClose" data-name="showExport">确认</view>
+      </view>
+    </view>
+  </van-popup>
+</view>

@@ -1,0 +1,28 @@
+<!--pages/refundPolicy/refundPolicy.wxml-->
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="navLeft">
+      <image src="/assets/images/arrow-back-white.svg" class="img" mode="aspectFill" slot="left"></image>
+    </view>
+    <text slot="title" class="navText">退款须知</text>
+  </van-nav-bar>
+
+  <image src="/assets/images/Back.png" mode="aspectFilt" style="width: 750rpx;height: 333rpx;"/>
+  <view class="text">
+    <view style="margin-top: 20rpx;">
+      办会员卡充值消费属于预付式消费，未用完的充值卡可以退还。消费者需保留好转账记录和消费记录，通过合法途径申请退款首先尝试与理发店沟通，表明退款意愿并提供相关证据，如合同、支付凭证等。退款金额将根据顾客实际消费情况计算。
+    </view>
+    <view style="margin-top: 20rpx;display: flex;">
+      <image src="/assets/images/storeImage.png" mode="aspectFill" style="width: 630rpx;height: 410rpx;border-radius: 18rpx;"/>
+    </view>
+    <view style="margin-top: 20rpx;">
+      退款将通过银行转账方式支付至顾客指定的银行账户，退款处理时间为收到申请后的5个工作日内。顾客在享受服务时，应合理使用服务，避免恶意退款或滥用退款政策。
+    </view>
+    <button 
+      style="width: 100%;height: 92rpx;background-image: linear-gradient(270deg, #5DD5DE 3%, #4EACD3 100%);border-radius: 46rpx;color: #fff;line-height: 48rpx;margin-top: 55rpx;display: flex;align-items: center;justify-content: center;font-weight: 400;" 
+      bindtap="jump" data-url="/pages/refundRequest/refundRequest?searchId={{searchId}}"
+    >
+      已阅读并同意
+    </button>
+  </view>
+</view>

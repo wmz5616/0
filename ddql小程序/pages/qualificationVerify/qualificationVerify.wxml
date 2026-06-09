@@ -1,0 +1,44 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">资质认证</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <view style="display: flex;flex-direction: column;gap: 30rpx;width: 100%;">
+      <view class="box upload">
+        <text class="title require">上传（营业执照或法人证书）</text>
+        <van-uploader max-count="1" file-list="{{ fileList }}" data-type="fileList" use-before-read bind:before-read="beforeRead" bind:after-read="afterRead" bind:delete="deleteRead" upload-icon="plus" />
+        <image src="/assets/images/{{verificationData.status ===0 ?'underReview':verificationData.status ===1?'resolve':verificationData.status ===2 ?'rejected':'unverified'}}.svg" class="bigIcon" mode="aspectFill" />
+      </view>
+      <view class="box upload">
+        <text class="title">其他附件（最多可上传6张图片）</text>
+        <van-uploader max-count="6" file-list="{{ otherList }}" data-type="otherList" use-before-read bind:before-read="beforeRead" bind:after-read="afterRead" bind:delete="deleteRead" upload-icon="plus" />
+      </view>
+      <van-cell-group>
+        <van-field value="{{ contactPhone }}" clearable placeholder="请输入" data-type="contactPhone" bind:change="inputChange" placeholder-style="font-size:34rpx;color:#CCC;">
+          <view slot="label" class="label">
+            <text class="title require">联系电话：</text>
+          </view>
+        </van-field>
+        <van-field value="{{ contactEmail }}" data-type="contactEmail" bind:change="inputChange" clearable placeholder="请选择" placeholder-style="font-size:34rpx;color:#CCC;">
+          <view slot="label" class="label">
+            <text class="title">邮箱：</text>
+          </view>
+        </van-field>
+        <van-field custom-class="field" use-input-slot>
+          <view slot="label" class="label">
+            <text class="title require">进团是否审核：</text>
+          </view>
+          <van-radio-group slot="input" value="{{ isUserAuth }}" data-type="isUserAuth" bind:change="inputChange" direction="horizontal">
+            <van-radio name="是">是</van-radio>
+            <van-radio name="否">否</van-radio>
+          </van-radio-group>
+        </van-field>
+      </van-cell-group>
+      <view wx:if="{{verificationData.status === 2 && verificationData.rejectReason}}" class="box" style="color:red; font-size:28rpx;">
+        驳回原因：{{verificationData.rejectReason}}
+      </view>
+    </view>
+    <view class="btn" bind:tap="comfirm">提交</view>
+  </view>
+</view>

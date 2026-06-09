@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS `order_divide_log` (
+    `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
+    `shop_id` int NOT NULL DEFAULT 0 COMMENT '商家id',
+    `shop_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '商家名称',
+    `order_type` tinyint NOT NULL DEFAULT 0 COMMENT '订单类型',
+    `order_id` int UNSIGNED NOT NULL DEFAULT 0 COMMENT '对应类型的id',
+    `order_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '订单编号',
+    `amount` int NOT NULL DEFAULT 0 COMMENT '订单金额（分）',
+    `merchant_no` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '商家-商户编号',
+    `merchant_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '商家-商户名称',
+    `divide_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '分账单号',
+    `divide_amount` int NOT NULL DEFAULT 0 COMMENT '分账金额（分）',
+    `handling_rate` decimal(5, 1) NOT NULL DEFAULT 0.0 COMMENT '通莞费率(%)',
+    `handling_charge` int NOT NULL DEFAULT 0 COMMENT '通莞手续费（分）',
+    `platform_merchant_no` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '平台收费商户号',
+    `platform_merchant_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '平台收费商户名称',
+    `platform_rate` decimal(5, 1) NOT NULL DEFAULT 0.0 COMMENT '平台费率(%)',
+    `platform_charge` int NOT NULL DEFAULT 0 COMMENT '平台收费（分）',
+    `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    primary key (id),
+    INDEX `idx_shop`(`shop_id`) USING BTREE
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT '订单分账记录表' ROW_FORMAT = DYNAMIC;

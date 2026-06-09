@@ -1,0 +1,439 @@
+<!--pages/MerchantDetail/MerchantDetail.wxml-->
+<import src="../../wxParse/wxParse.wxml" />
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">壹里咖啡店</text>
+  </van-nav-bar>
+  <van-tabs swipe-threshold="{{4}}" active="{{ active }}" bind:change="onChange" custom-class="tab" swipeable>
+    <van-tab tab-class="baseTab" title="商家信息">
+      <view class="swiper h264 p30">
+        <view class="box Cflex">
+          <view class="title require">商家logo</view>
+          <van-uploader class="logo" image-fit="aspectFit" file-list="{{ fileList }}" deletable max-count="1" use-before-read preview-file bind:before-read="beforeRead" upload-icon="plus" bind:after-read="afterRead" bind:delete="deleteRead" data-type="fileList" />
+        </view>
+        <view class="box Cflex">
+          <view class="title require">商家轮播图（最多可上传6张图片）</view>
+          <van-uploader multiple="{{true}}" class="banner" image-fit="aspectFit" file-list="{{ bannerList }}" deletable max-count="6" use-before-read preview-file bind:before-read="beforeRead" upload-icon="plus" bind:after-read="afterRead" bind:delete="deleteRead" data-type="bannerList" />
+        </view>
+        <view class="box Cflex">
+          <view class="field">
+            <view class="title require">商家名称：</view>
+            <input value="{{name}}" bind:input="getInputValue" data-type="name" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+          </view>
+          <view class="field">
+            <view class="title require">店长：</view>
+            <input value="{{userName}}" bind:input="getInputValue" data-type="userName" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+          </view>
+          <view class="field">
+            <view class="title require">联系电话：</view>
+            <input value="{{phone}}" bind:input="getInputValue" data-type="phone" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+          </view>
+          <view class="field">
+            <view class="title">营业时间：</view>
+            <input value="{{businessTime}}" bind:input="getInputValue" data-type="businessTime" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+            <!-- <view class="gap15" bind:tap="openTime">
+          <view wx:if="{{showStartTime}}">{{showStartTime}}~{{showEndTime}}</view>
+          <view wx:else class="grayText">开始时间~结束时间</view>
+          <image src="/assets/images/time.svg" mode="aspectFill" style="height: 30rpx;width: 35rpx;" />
+        </view> -->
+          </view>
+          <view class="field">
+            <view class="title require" style="flex-shrink:0;">店铺地址：</view>
+            <view class="gap30" bind:tap="jumpmap">
+              <view wx:if="{{!selectAddress.title}}" class="grayText">请输入位置</view>
+              <view wx:else class="selectText">{{selectAddress.title}}</view>
+              <view class="btn" style="flex-shrink:0;">选择位置</view>
+            </view>
+          </view>
+          <view class="field">
+            <view class="title require">行业类别：</view>
+            <view class="gap42" data-pickertype="typeList">
+              <view wx:if="{{typeList.length}}" class="list">
+                <view catch:tap="clearItem" data-value="{{item.value}}" data-pickertype="typeList" wx:for="{{typeList}}" wx:key="index" class="item badge">{{item.text}}</view>
+              </view>
+              <view wx:else class="grayText">请选择类别</view>
+              <image src="/assets/images/pullDown.svg" mode="aspectFill" style="height: 17rpx;width: 28rpx;" />
+            </view>
+          </view>
+          <view class="field">
+            <view class="title require">所属商圈：</view>
+            <view bind:tap="openPop" class="gap42" data-pickertype="circleList">
+              <view wx:if="{{circleList.length}}" class="list">
+                <view catch:tap="clearItem" data-value="{{item.value}}" data-pickertype="circleList" wx:for="{{circleList}}" wx:key="index" class="item badge">{{item.text}}</view>
+              </view>
+              <view wx:else class="grayText">请选择商圈</view>
+              <image src="/assets/images/pullDown.svg" mode="aspectFill" style="height: 17rpx;width: 28rpx;" />
+            </view>
+          </view>
+          <!-- <view class="vetical">
+        <view class="title require">商家介绍：</view>
+        <textarea auto-height class="textarea" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+      </view> -->
+          <view class="field">
+            <view class="title">客服电话：</view>
+            <input value="{{customerPhone}}" bind:input="getInputValue" data-type="customerPhone" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+          </view>
+          <view class="field">
+            <view class="title require" style="flex-shrink:0;">商家介绍：</view>
+            <textarea value="{{description}}" bind:input="getInputValue" data-type="description" auto-height class="textarea" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+          </view>
+        </view>
+        <view class="box Rflex">
+          <text class="zizhi">资质认证</text>
+          <view class="gap12">
+            <text class="nomal red">未认证</text>
+            <image src="/assets/images/more.svg" mode="aspectFill" style="height: 28rpx;width: 16rpx;" />
+          </view>
+        </view>
+        <view class="box Cflex" style="margin-top: 20rpx;">
+          <view class="title require">合同照片</view>
+          <van-uploader multiple="{{true}}" class="contract" image-fit="aspectFit" file-list="{{ contractList }}" deletable max-count="9" use-before-read preview-file bind:before-read="beforeRead" upload-icon="plus" bind:after-read="afterRead" bind:delete="deleteRead" data-type="contractList" />
+          <view class="Btn1" bind:tap="submitContract" style="margin-top:20rpx;">
+            <view class="btn1" style="height:70rpx;line-height:70rpx;">保存合同照片</view>
+          </view>
+        </view>
+      </view>
+    </van-tab>
+    <van-tab tab-class="baseTab" title="用币规则">
+      <view class="swiper h800 p30">
+        <view class="box Cflex">
+          <view class="field">
+            <view class="title require">起始金额（元）：</view>
+            <input value="{{beginAmount}}" data-type="beginAmount" bindinput="getconinvalue" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+          </view>
+          <view class="field1">
+            <view style="display: flex;align-items: center;">
+              <view class="title require">每满：</view>
+              <input value="{{threshold}}" data-type="threshold" bindinput="getconinvalue" class="input1" type="number" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+              <view class="title">元，可抵扣：</view>
+              <input value="{{deduct}}" data-type="deduct" bindinput="getconinvalue" class="input1" type="number" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+              <view class="title">金币</view>
+            </view>
+            <text class="yellowtext">不可输入小于等于0的数</text>
+          </view>
+          <view class="field">
+            <view class="title require">最高抵扣（金币）：</view>
+            <input value="{{maxDeduct}}" data-type="maxDeduct" bindinput="getconinvalue" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+          </view>
+          <view class="vetical">
+            <view class="title">抵扣规则说明：</view>
+            <textarea value="{{remark}}" data-type="remark" bindinput="getconinvalue" auto-height class="textarea" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+          </view>
+        </view>
+      </view>
+      <view class="Btn1" bind:tap="submitconin">
+        <view class="btn1">保存</view>
+      </view>
+    </van-tab>
+    <van-tab tab-class="baseTab" title="收款二维码">
+      <view class="h384 p30">
+        <view class="bgImg">
+          <image src="{{bgImgList[0]}}" mode="aspectFill" style="height: 1511rpx;width: 690rpx;" />
+          <image src="{{gQrcode}}" mode="" class="qrCode" />
+          <view class="bgText">壹里咖啡店</view>
+          <template is="wxParse" data="{{wxParseData:newsDetail.contentHtml.nodes}}" />
+        </view>
+        <view style="height: 30rpx;width: 100%;"></view>
+      </view>
+      <view class="Btn1">
+        <view class="btn1" bind:tap="startCustomDraw">下载二维码</view>
+      </view>
+    </van-tab>
+    <van-tab tab-class="baseTab" title="数据统计">
+      <view class="swiper p30">
+        <c-cusTime bind:onChange="timeConfirm" startTime="{{startTime1}}" endTime="{{endTime1}}" minDate="{{minDate}}" maxDate="{{maxDate}}"></c-cusTime>
+        <view class="Rflex itemBox gap30">
+          <view class="itemB">
+            <image src="/assets/images/bMoney.png" mode="aspectFill" class="bg" />
+            <text class="activePrice">营业额</text>
+            <text class="price">￥{{businessData.revenue ||0}}</text>
+          </view>
+          <view class="itemB">
+            <image src="/assets/images/bOrder.png" mode="aspectFill" class="bg" />
+            <text class="activePrice">订单数</text>
+            <text class="price">{{businessData.orderCount || 0}}</text>
+          </view>
+          <view class="itemB">
+            <image src="/assets/images/bClock.png" mode="aspectFill" class="bg" />
+            <text class="activePrice">待结算金额</text>
+            <text class="price">￥{{businessData.pendingAmount || 0}}</text>
+          </view>
+        </view>
+      </view>
+    </van-tab>
+    <van-tab tab-class="baseTab" title="交易记录">
+      <view class="pup">
+        <c-cusTime bind:onChange="timeConfirm" startTime="{{startTime1}}" endTime="{{endTime1}}" minDate="{{minDate}}" maxDate="{{maxDate}}"></c-cusTime>
+        <view bind:tap="showSearch" style="height: 100%;display: flex;align-items: center;justify-content: center;">
+          <image src="{{showDOverlay?'/assets/images/activeSearch.svg':'/assets/images/conditionalSearch.svg'}}" mode="aspectFill" style="height: 42rpx;width: 53rpx;" />
+        </view>
+      </view>
+      <view class="tis">共{{transaStat.totalNum || 0}}笔，实付金额￥{{orderStat.totalPayAmount || 0}}元</view>
+      <scroll-view class="swiper1 {{isIOS?'h616':''}}" scroll-y bindscrolltolower="scrollTolower" scroll-into-view="{{scrollToOrderId}}" scroll-with-animation="true">
+        <view bind:tap="jump" data-url="/pagesA/merchantOrderDetail/merchantOrderDetail" data-item="{{item}}" wx:for="{{transaLitst}}" wx:key="index" id="order-{{item.id}}" class="Ditem">
+          <view class="Dheader">
+            <text class="Dtitle">{{item.createTime}}</text>
+            <view class="gap24">
+              <text class="Dnomal" style="color: {{statusList[item.status].color}}">{{statusList[item.status].text}}</text>
+              <image src="/assets/images/more.svg" mode="aspectFill" style="height: 25rpx;width: 16rpx" />
+            </view>
+          </view>
+          <view class="Dinfo">
+            <view class="flex Dtext">
+              <text>实付金额</text>
+              <text>￥{{item.amount / 100 || 0}}</text>
+            </view>
+            <view class="flex Dtext">
+              <text>抵扣金币数</text>
+              <text>180</text>
+            </view>
+            <view class="flex Dtext">
+              <text>下单人</text>
+              <text>{{item.nickName}}</text>
+            </view>
+            <view class="flex Dtext">
+              <text>订单号</text>
+              <text>{{item.orderNo}}</text>
+            </view>
+            <view class="flex Dtext">
+              <text>退款原因</text>
+              <text>{{item.reason}}</text>
+            </view>
+          </view>
+          <view style="display: flex;justify-content: flex-end;align-items: center;">
+            <view catch:tap="showRefund" class="DbaseBtn DrefundBtn" data-orderitem="{{item}}">退款</view>
+          </view>
+          <view style="display: flex;justify-content: flex-end;align-items: center;">
+            <view catch:tap="jump" class="DbaseBtn DrefundAudit">仅退金币</view>
+          </view>
+        </view>
+        <view style="height: 30rpx;width: 100%;"></view>
+      </scroll-view>
+      <view class="Dfooter1 {{isIOS?'isIOS':''}}">
+        <view class="DBtn" bind:tap="showExport">
+          <text class="DbtnText">导出</text>
+        </view>
+      </view>
+    </van-tab>
+    <van-tab tab-class="baseTab" title="结算记录">
+      <view class="pup">
+        <c-cusTime bind:onChange="timeConfirm" startTime="{{startTime1}}" endTime="{{endTime1}}" minDate="{{minDate}}" maxDate="{{maxDate}}"></c-cusTime>
+      </view>
+      <view class="tis">共{{totalCount}}笔，实付金额￥{{totalAmount}}元</view>
+      <view class="swiper2">
+        <view class="table">
+          <view class="tHeader">
+            <view class="hText">计算日期</view>
+            <view class="hText">结算金额</view>
+            <view class="hText">费率</view>
+            <view class="hText">营业额</view>
+          </view>
+          <view class="tBody">
+            <!-- 无数据时展示 -->
+            <view wx:if="{{!list.length}}" style="width: 411rpx;margin: 0 auto;margin-top: 60rpx;padding-bottom: 30rpx;">
+              <image src="/assets/images/empty.png" mode="aspectFill" style="width: 411rpx;height: 290rpx;" />
+              <view style="font-size: 33rpx;color: #999999;text-align: center;margin-top: 30rpx;">暂无数据～</view>
+            </view>
+            <view class="tItem" wx:for="{{list}}" wx:key="index">
+              <view class="hText fw400">{{item.settlementTime}}</view>
+              <view class="hText fw400">{{item.settlementAmount}}</view>
+              <view class="hText fw400">{{item.rate}}</view>
+              <view class="hText fw400">{{item.turnover}}</view>
+            </view>
+          </view>
+          <view wx:if="{{list.length}}" class="p30 tFooter">
+            <van-button custom-class="btn2" bind:click="prevPage">上一页</van-button>
+            <view class="total">
+              <text class="basePage purple">{{pageNum}}</text>
+              <text class="basePage">/{{pages}}</text>
+            </view>
+            <van-button custom-class="btn2" bind:click="nextPage">下一页</van-button>
+          </view>
+        </view>
+      </view>
+      <view class="Dfooter1 {{isIOS?'isIOS':''}}">
+        <view class="DBtn" bind:tap="handleExport">
+          <text class="DbtnText">导出</text>
+        </view>
+      </view>
+    </van-tab>
+    <van-tab tab-class="baseTab" title="权限管理">
+      <view class="swiper3" wx:if="{{!showSearch}}" style="padding: 30rpx;display: flex;flex-direction: column;gap: 30rpx;box-sizing: border-box;">
+        <view class="flex transfer" bind:tap="changeSelect">
+          <text class="title">店长管理权转让</text>
+          <image src="/assets/images/more.svg" class="gray_right" mode="aspectFill" />
+        </view>
+        <view class="flex transfer" bind:tap="jump" data-url="/pages/merchantAdmin/merchantAdmin?id={{shopId}}">
+          <text class="title">商家管理员</text>
+          <image src="/assets/images/more.svg" class="gray_right" mode="aspectFill" />
+        </view>
+      </view>
+      <view wx:else style="width: 100%;padding-top: 30rpx;">
+        <view class="search">
+          <van-search value="{{ keyword }}" bind:change="onInput1" bind:clear="onCancel" bind:search="onSearch" shape="round" background="#fff" placeholder="请输入完整的手机号搜索" left-icon='' use-right-icon-slot placeholder-style="font-size: 30rpx;color:#CCC;">
+            <view slot="right-icon" style="display: flex;align-items: center;" bind:tap="onSearch">
+              <image src="/assets/images/search.svg" mode="aspectFill" style="height: 44rpx;width: 43rpx;" />
+            </view>
+          </van-search>
+        </view>
+        <scroll-view class="swiper h284" bindscrolltolower='onScroll' scroll-y>
+          <view wx:for="{{list}}" wx:key="id" class="box left flex item2" data-name="{{item.nickname}}" data-id="{{item.id}}" data-index="{{index}}" bind:tap="choseMember">
+            <view class="g20 Rflex">
+              <view class="Rflex" style="gap: 16rpx;">
+                <image src="{{item.avatar}}" style="height: 106rpx;width: 106rpx;border-radius: 50%;" mode="aspectFill" />
+                <text class="tag">{{item.name}}</text>
+              </view>
+              <view class="g20 Rflex">
+                <text class="name">{{item.userName}}</text>
+                <text class="name">{{item.phone}}</text>
+              </view>
+            </view>
+            <view class="radio {{index === selectRadio && 'activeRadio'}}">
+              <image wx:if="{{index === selectRadio}}" src="/assets/images/select.svg" mode="aspectFill" style="height: 36rpx;width: 36rpx;" />
+            </view>
+          </view>
+          <view style="height: 30rpx;width: 100%;"></view>
+        </scroll-view>
+      </view>
+    </van-tab>
+  </van-tabs>
+  <van-popup close-on-click-overlay position="bottom" round show="{{ showPop }}" bind:close="onClose" data-name="showPop">
+    <van-picker id="myPicker" toolbar-class="p_title" show-toolbar cancel-button-text="取消" title="{{pickertype == 'typeList'?'行业类别':'所属商圈'}}" columns="{{ columns }}" bind:confirm="onConfirm" data-name="showPop" bind:cancel="onClose" />
+  </van-popup>
+  <!-- 时间筛选 -->
+  <van-popup position="bottom" round show="{{ showPop1 }}" bind:close="onClose" data-name="showPop1">
+    <view>
+      <view class="pickerTime flex">
+        <text class="p_avtiveText" bind:tap="onClose" data-name="showPop1">取消</text>
+        <text class="p_text">选择时间</text>
+        <text class="p_avtiveText" bind:tap="comfrimDate" data-name="showPop1">确定</text>
+      </view>
+      <van-datetime-picker show-toolbar="{{false}}" type="time" data-field="startTime" value="{{ startTime }}" min-hour="{{ minHour  }}" max-hour="{{ maxHour   }}" bind:input="onInput" formatter="{{ forma }}" />
+      <van-datetime-picker show-toolbar="{{false}}" type="time" data-field="endTime" value="{{ endTime }}" min-hour="{{ minHour  }}" max-hour="{{ maxHour   }}" bind:input="onInput" formatter="{{ forma }}" />
+    </view>
+  </van-popup>
+  <canvas type="2d" id="myCanvas" style="width: 1125rpx; height: 2138rpx;position:absolute;top:-99999rpx;"></canvas>
+  <view id="my-canvas" class="bgImg bgBox">
+    <image id="bgimg" src="{{bgImgList[1]}}" data-url="{{bgImgList[1]}}" mode="aspectFill" style="height: 2138rpx;width: 1125rpx;" />
+    <image id="qrcode" src="{{dQrcode}}" mode="" class="qrCode1" />
+    <view id="bgText1" class="bgText1">壹里咖啡店</view>
+    <template id="bgInfo" is="wxParse" data="{{wxParseData:newsDetail.contentHtml.nodes}}" style="position: absolute;" />
+  </view>
+  <!-- 筛选 -->
+  <van-overlay show="{{ showDOverlay }}">
+    <view class="overlay">
+      <view class="box_item">
+        <view class="p-title">
+          <text class="p-text">筛选</text>
+          <view style="position: absolute;right: 0rpx;top: 0;height: 108rpx;width: 108rpx;display: flex;align-items: center;justify-content: center;" bind:tap="onClose" data-name="showDOverlay">
+            <image src="/assets/images/close.png" mode="aspectFill" style="height: 36rpx;width: 36rpx;" />
+          </view>
+        </view>
+        <view class="o_content">
+          <text class="o_text">下单人：</text>
+          <input class="o_input" value="{{applyUser}}" data-type="applyUser" type="text" placeholder="请输入" bindinput="changeInput" placeholder-style="color: #c8c9cc" />
+          <text class="o_text">订单号：</text>
+          <input class="o_input" value="{{orderNo}}" data-type="orderNo" type="text" placeholder="请输入" bindinput="changeInput" placeholder-style="color: #c8c9cc" />
+          <text class="o_text">类型：</text>
+          <van-field disabled custom-class="field1" value="{{ typeName }}" clearable icon="arrow-down" placeholder="请选择" bind:click-icon="onClickIcon" bind:click-input="onClickIcon" placeholder-style="font-size:32rpx;color:#CCC;">
+          </van-field>
+        </view>
+        <view class="footer">
+          <view class="f_base cancle" bind:tap="reset1">重置</view>
+          <view class="f_line"></view>
+          <view class="f_base comfirm" bind:tap="onConfirm1" data-name="showDOverlay">确认</view>
+        </view>
+      </view>
+    </view>
+  </van-overlay>
+  <!-- 状态 -->
+  <van-popup z-index="{{2001}}" close-on-click-overlay position="bottom" round show="{{ showAreaPicker }}" bind:close="onClose" data-name="showAreaPicker">
+    <van-picker id="myPicker" toolbar-class="p_title" show-toolbar cancel-button-text="重置" title="请选择类型" columns="{{ typeList1 }}" bind:confirm="onDConfirm" data-name="showAreaPicker" bind:cancel="onClose" />
+  </van-popup>
+  <!-- 图像验证码 -->
+  <van-overlay show="{{ showDOverlay1 }}">
+    <view class="overlay">
+      <view class="box_item" style="width: 570rpx;">
+        <view class="p-title">
+          <text class="p-text">请输入下方图形验证码</text>
+          <view style="position: absolute;right: 0rpx;top: 0;height: 108rpx;width: 108rpx;display: flex;align-items: center;justify-content: center;" bind:tap="onClose" data-name="showDOverlay">
+            <image src="/assets/images/close.png" mode="aspectFill" style="height: 36rpx;width: 36rpx;" />
+          </view>
+        </view>
+        <view class="o_content" style="border-bottom: none;">
+          <view class="flex g40">
+            <input class="o_input1" value="{{checkCode}}" data-type="checkCode" type="text" placeholder="请输入验证码" bindinput="changeInput" placeholder-style="color: #c8c9cc" />
+            <image src="/assets/images/empty.png" mode="aspectFill" style="height: 72rpx;width: 138rpx;" />
+          </view>
+          <view class="checkText">看不清？</view>
+        </view>
+        <view class="footer1">
+          <view class="aBtn" bind:tap="onConfirm1" data-name="showDOverlay1">确认</view>
+        </view>
+      </view>
+    </view>
+  </van-overlay>
+  <!-- 退款 -->
+  <van-popup show="{{ showRefund }}" position="center" custom-style="width: 664rpx;overflow:hidden;border-radius: 12rpx;">
+    <view class="popup-content">
+      <view class="tit">
+        <text class="rtitle">退款</text>
+        <view style="position: absolute;right: 0rpx;top: 0;height: 108rpx;width: 108rpx;display: flex;align-items: center;justify-content: center;" bind:tap="onClose" data-name="showRefund">
+          <image src="/assets/images/close.png" mode="aspectFill" style="height: 36rpx;width: 36rpx;" />
+        </view>
+      </view>
+      <view class="tis">一个订单只能操作退款一次，请谨慎操作！</view>
+      <view class="p_center">
+        <view class="p_item">
+          <view class="p_text" style="display: flex;align-items: center;">
+            <text style="color: red;">*</text>
+            退款金额：
+          </view>
+          <view class="Cflex gap10">
+            <view class="step">
+              <input class="p_input" type="digit" value="{{refundPrice / 100}}" bindchange="changePrice" placeholder="请输入" />
+              <view class="s-item">
+                <view class="step-item up1 {{ flag && 'active1'}}" data-add="{{step}}" bind:tap="calc"></view>
+                <view class="step-item down {{ !flag && 'active2'}}" data-add="{{-step}}" bind:tap="calc"></view>
+              </view>
+            </view>
+            <view class="grayText1">实付款：￥350.00</view>
+          </view>
+        </view>
+        <view class="p_item">
+          <view class="p_text" style="display: flex;align-items: center;">
+            <text style="color: red;">*</text>
+            退回币额：
+          </view>
+          <view class="Cflex gap10">
+            <view class="step">
+              <input class="p_input" type="digit" value="{{refundPrice / 100}}" bindchange="changePrice" placeholder="请输入" />
+              <view class="s-item">
+                <view class="step-item up1 {{ flag && 'active1'}}" data-add="{{step}}" bind:tap="calc"></view>
+                <view class="step-item down {{ !flag && 'active2'}}" data-add="{{-step}}" bind:tap="calc"></view>
+              </view>
+            </view>
+            <view class="grayText1">抵扣金币数：350</view>
+          </view>
+        </view>
+        <view class="p_item1">
+          <view class="p_text" style="display: flex;align-items: center;">
+            <text style="color: red;">*</text>
+            退款原因：
+          </view>
+          <textarea class="p_textarea" value="{{refundReason}}" bindinput="changeReason" placeholder="请输入" />
+        </view>
+      </view>
+      <view class="footer">
+        <view class="f_base cancle" bind:tap="onClose" data-name="showRefund">取消</view>
+        <view class="f_line"></view>
+        <view class="f_base comfirm" bind:tap="getRefund" data-name="showDOverlay">确认</view>
+      </view>
+    </view>
+  </van-popup>
+  <van-dialog use-slot use-title-slot show="{{ showDialog }}" showConfirmButton showCancelButton cancelButtonText="取消" confirmButtonText="确定" width="540rpx" bind:close="onClose" bind:confirm="dialogConfirm" bin data-name="showDialog" confirm-button-class="dialogBtn d_v_btn" cancle-button-class="dialogBtn">
+    <view slot="title">确定选择“{{tearnuserName}}”为新创建者，你将自动放弃创建者身份
+    </view>
+  </van-dialog>
+</view>

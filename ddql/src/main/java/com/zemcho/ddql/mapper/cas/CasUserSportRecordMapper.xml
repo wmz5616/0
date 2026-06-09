@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.cas.CasUserSportRecordMapper">
+    <sql id="field">
+        user_id,
+        date,
+        step_num,
+        check_in_time,
+        create_time
+    </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `cas_user_sport_record`(
+        <include refid="field"></include>
+        )VALUES (
+        #{data.userId},
+        #{data.date},
+        #{data.stepNum},
+        #{data.checkInTime},
+        #{data.createTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `cas_user_sport_record`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.userId != null">user_id = #{data.userId},</if>
+            <if test="data.date != null">date = #{data.date},</if>
+            <if test="data.stepNum != null">step_num = #{data.stepNum},</if>
+            <if test="data.checkInTime != null">check_in_time = #{data.checkInTime},</if>
+        </trim>
+        WHERE id = #{data.id}
+    </update>
+
+    <select id="selectByUserIdAndDate" resultType="com.zemcho.ddql.entity.cas.CasUserSportRecord">
+        SELECT *
+        FROM `cas_user_sport_record`
+        WHERE `user_id` = #{userId}
+          AND `date` = #{date}
+    </select>
+</mapper>

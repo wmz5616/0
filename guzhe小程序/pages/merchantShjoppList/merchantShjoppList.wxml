@@ -1,0 +1,68 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">{{name}}-商品管理</text>
+  </van-nav-bar>
+  <view class="mar-searchwrapper">
+    <view class="search-wrapper">
+      <input bindinput="getSearchvalue" value="{{searchText}}" bindconfirm="searchsubmit" placeholder-class='placeholder-style' class="input" placeholder="请搜索商品名称" />
+      <view bind:tap="searchsubmit" class="search-icon"></view>
+    </view>
+    <view bind:tap="showtypemodal" class="type-shopp" style="display:flex;align-items:center;flex:auto;padding-left:30rpx;">
+      <text style="color:#333333;padding-right:8rpx;font-size:30rpx;">{{typename?typename:'商品分类'}}</text>
+      <image mode="aspectFit" src="/assets/images/arrowlower.svg" style="width:30rpx;height:15rpx;" />
+    </view>
+    <!-- <view class="mang" style="display:flex;flex-direction: column;align-items:center;">
+      <image mode="aspectFit" src="/assets/images/management.svg" style="width:42rpx;height:42rpx;" />
+      <text style="color:#333333;padding-top:8rpx;font-size:24rpx;">管理</text>
+    </view> -->
+  </view>
+  <view class="container-wrapper">
+    <scroll-view bindscrolltolower='onScroll' scroll-y class="swiper {{isIOS?'h338':''}}">
+      <!-- 列表容器 -->
+      <van-swipe-cell wx:key="id" wx:for="{{listData}}" bind:close="onClose" right-width="{{ 65 }}" async-close>
+        <view class="cell-wrapper" bind:tap="godetail" data-id="{{item.id}}">
+          <view class="card">
+            <image class="thumb" src="{{item.coverImage}}" mode="aspectFit" />
+            <view class="content">
+              <text class="title">{{item.name}}</text>
+              <view class="info-wrap">
+                <view wx:if="{{item.openDiscount==1}}" class="tag">限时{{item.discountNum}}折</view>
+                <text class="countdown">已售:{{item.stoc || 0}}</text>
+              </view>
+              <view class="price-wrap">
+                <text class="price">¥{{item.amount/100 || 0}}</text>
+                <text wx:if="{{item.openDiscount}}" class="orig-price">¥{{item.price/100}}</text>
+              </view>
+              <view class="sell">库存：<text class="{{!item.stock?'red':''}}">{{item.stock}}</text></view>
+            </view>
+            <view data-status="{{1}}" data-id="{{item.id}}" catch:tap="setstatus" class="operupper-btn" wx:if="{{item.status!=1}}">
+              上架
+            </view>
+            <view data-status="{{2}}" data-id="{{item.id}}" catch:tap="setstatus" wx:else class="operupper-btn xiajia-btn">
+              下架
+            </view>
+          </view>
+        </view>
+        <view data-id="{{item.id}}" bind:tap="showComponent" data-teamInfo="{{item}}" data-name="showDialog" slot="right" class="delete btn_text">删除</view>
+      </van-swipe-cell>
+      <view style="height:60rpx;"></view>
+    </scroll-view>
+  </view>
+  <view bind:tap="closem" class="classshopp-mask" wx:if="{{clsModelvisible}}">
+    <!--商品分类蒙层 -->
+    <view class="tabs-wrapper" catch:tap="noclose">
+      <view class="type-shopp" style="display:flex;align-items:center;flex:auto;padding-left:30rpx;justify-content:center;">
+        <text style="color:#333333;padding-right:8rpx;font-size:30rpx;">{{typename?typename:'商品分类'}}</text>
+        <image mode="aspectFit" src="/assets/images/arrowlower.svg" style="width:30rpx;height:15rpx;" />
+      </view>
+      <view class="tabs-w" style="display:flex;flex-wrap:wrap;gap:20rpx;padding-top:30rpx;">
+        <view bind:tap="selectType" data-id="0" class="tabs-item {{keyId==0?'classactivity':''}}">全部</view>
+        <view bind:tap="selectType" data-name="{{item.name}}" data-id="{{item.id}}" class="tabs-item {{keyId==item.id?'classactivity':''}}" wx:for="{{productClassList}}" wx:key="index">{{item.name}}</view>
+      </view>
+    </view>
+  </view>
+  <view class="addshop-btn" bind:tap="jumpAddshop">新增商品</view>
+</view>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.log.PayLogMapper">
+
+    <insert id="insert">
+        INSERT INTO sys_pay_log(
+            order_type, order_id, user_id, out_trade_no, wx_transaction_no, wx_result, total_fee, status, created_at
+        ) VALUE (
+            #{data.orderType},
+            #{data.orderId},
+            #{data.userId},
+            #{data.outTradeNo},
+            #{data.wxTransactionNo},
+            #{data.wxResult},
+            #{data.totalFee},
+            #{data.status},
+            #{data.createTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `sys_pay_log`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.status != null">status = #{data.status},</if>
+            <if test="data.refundTradeNo != null and data.refundTradeNo != ''">refund_trade_no = #{data.refundTradeNo},</if>
+            <if test="data.refundPrice != null">refund_price = #{data.refundPrice},</if>
+            <if test="data.refundTime != null">refund_time = #{data.refundTime},</if>
+        </trim>
+        WHERE id = #{data.id}
+    </update>
+
+    <select id="selectByOrderId" resultType="com.zemcho.guzhe.entity.log.PayLog">
+        SELECT *
+        FROM sys_pay_log
+        WHERE order_type = #{orderType}
+            AND order_id = #{orderId}
+        <if test="status != null">
+            AND `status` = #{status}
+        </if>
+    </select>
+
+</mapper>

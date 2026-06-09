@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="45px" height="47px" viewBox="0 0 45 47" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>search2</title>
+    <g id="个人中心" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="我的团体-团体管理-团体管理员-添加管理员超过三个提示" transform="translate(-645, -437)">
+            <g id="编组" transform="translate(30, 421)">
+                <g id="search2" transform="translate(617, 18)">
+                    <ellipse id="Oval" stroke="#CCCCCC" stroke-width="4" cx="17.3913043" cy="18.2222222" rx="17.3913043" ry="18.2222222"></ellipse>
+                    <path d="M28.0531401,34.0628019 L41.4082126,34.3743961 C42.6539567,34.4034612 43.6569252,35.4064297 43.6859903,36.6521739 C43.7133639,37.8254193 42.7844513,38.7987134 41.6112059,38.826087 C41.5781675,38.8268578 41.5451157,38.8268578 41.5120773,38.826087 L28.1570048,38.5144928 C26.9112607,38.4854276 25.9082922,37.4824591 25.8792271,36.236715 C25.8518534,35.0634696 26.7807661,34.0901755 27.9540115,34.0628019 C27.9870499,34.0620311 28.0201017,34.0620311 28.0531401,34.0628019 Z" id="Rectangle-3" fill="#CCCCCC" transform="translate(34.7826, 36.4444) rotate(45) translate(-34.7826, -36.4444)"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,17 @@
+<import src="../../wxParse/wxParse.wxml" />
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack" z-index="{{101}}">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">屏幕店租用合约</text>
+  </van-nav-bar>
+
+  <!-- 文本区域 -->
+  <view class="swiper">
+    <view class="ListItem">
+      <template is="wxParse" data="{{wxParseData:newsDetail.contentHtml.nodes}}" />
+    </view>
+    <view style="height: 30rpx;width: 100%;"></view>
+  </view>
+</view>

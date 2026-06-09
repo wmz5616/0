@@ -1,0 +1,162 @@
+.bc {
+  height: 100vh;
+  background-color: rgba(249, 249, 249, 0.979);
+  position: relative;
+  overflow: hidden;
+}
+
+.LRP30 {
+  padding: 0 30rpx;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tab .van-tabs__line {
+  width: 188rpx !important;
+}
+
+.swiper {
+  width: 100%;
+  height: calc(100vh - 180rpx);
+  padding: 42rpx 30rpx 30rpx 30rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 60rpx;
+  overflow-y: auto;
+}
+
+.code {
+  padding: 60rpx 105rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30rpx;
+  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.2);
+}
+
+.c_header {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  align-items: center;
+}
+
+.title {
+  font-size: 42rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.gray_text {
+  font-size: 28rpx;
+  color: #999999;
+  font-weight: 400;
+  text-align: center;
+  width: 448rpx;
+}
+
+.codeImg {
+  height: 480rpx;
+  width: 480rpx;
+}
+
+.iconList {
+  justify-content: center;
+  gap: 130rpx;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.text {
+  font-size: 28rpx;
+  color: #5D5C61;
+  font-weight: 400;
+}
+
+.icon {
+  height: 62rpx;
+  width: 62rpx;
+}
+
+
+.overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.box_item {
+  width: 540rpx;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+}
+
+.p-title {
+  border-bottom: 0rpx;
+}
+
+.o_content {
+  padding: 30rpx;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  border-top: 1rpx solid #D8D8D8;
+  border-bottom: 1rpx solid #D8D8D8;
+}
+
+.o_text {
+  font-size: 32rpx;
+  color: #333333;
+  font-weight: 400;
+}
+
+.o_input {
+  border: 1px solid rgba(209, 209, 209, 1);
+  border-radius: 8rpx;
+  padding: 13rpx 0rpx 13rpx 20rpx;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28rpx 0rpx 30rpx 0rpx;
+  box-sizing: border-box;
+}
+
+.f_input {
+  background-image: linear-gradient(226deg, #5DD5DE 0%, #4EACD3 84%);
+  border-radius: 50rpx;
+  height: 78rpx;
+  width: 292rpx;
+  font-size: 32rpx;
+  color: #FFFFFF;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shareCanvas{
+  height: 600rpx;
+  width: 600rpx;
+}
+
+.myCanvas{
+  height: 720rpx;
+  width: 690rpx;
+}

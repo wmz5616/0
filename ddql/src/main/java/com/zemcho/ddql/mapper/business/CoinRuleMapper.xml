@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zemcho.ddql.mapper.business.CoinRuleMapper">
+
+    <!-- 根据ID查询 -->
+    <select id="selectById" resultType="com.zemcho.ddql.entity.business.CoinRule">
+        SELECT *
+        FROM `coin_rule`
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据商家ID查询 -->
+    <select id="selectByShopId" resultType="com.zemcho.ddql.entity.business.CoinRule">
+        SELECT *
+        FROM `coin_rule`
+        WHERE shop_id = #{shopId}
+        LIMIT 1
+    </select>
+
+    <!-- 新增 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="param.id">
+        INSERT INTO `coin_rule` (
+            begin_amount,
+            threshold,
+            deduct,
+            max_deduct,
+            shop_id,
+            remark,
+            create_time
+        ) VALUES (
+            #{param.beginAmount},
+            #{param.threshold},
+            #{param.deduct},
+            #{param.maxDeduct},
+            #{param.shopId},
+            #{param.remark},
+            NOW()
+        )
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update">
+        UPDATE `coin_rule`
+        <set>
+            <if test="param.beginAmount != null">
+                begin_amount = #{param.beginAmount},
+            </if>
+            <if test="param.threshold != null">
+                threshold = #{param.threshold},
+            </if>
+            <if test="param.deduct != null">
+                deduct = #{param.deduct},
+            </if>
+            <if test="param.maxDeduct != null">
+                max_deduct = #{param.maxDeduct},
+            </if>
+            <if test="param.shopId != null">
+                shop_id = #{param.shopId},
+            </if>
+            <if test="param.remark != null">
+                remark = #{param.remark},
+            </if>
+            update_time = NOW()
+        </set>
+        WHERE id = #{param.id}
+    </update>
+
+    <!-- 根据ID删除 -->
+    <delete id="deleteById">
+        DELETE FROM `coin_rule` WHERE id = #{id}
+    </delete>
+
+
+
+</mapper>

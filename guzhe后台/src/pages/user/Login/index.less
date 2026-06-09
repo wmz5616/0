@@ -1,0 +1,127 @@
+@main: #5182E4;
+
+.container {
+  width: 980px;
+  margin: 0 auto;
+  // border: 1px solid #000;
+  height: 553px;
+  background: #fff;
+  border-radius: 5px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  overflow: hidden;
+  transform: translate(-50%, -50%);
+}
+.loginForm {
+  text-align: center;
+  margin: 0 auto;
+  padding-top: 80px;
+}
+.forgetForm{
+  text-align: center;
+  margin: 0 auto;
+  padding-top: 50px; 
+}
+.mainTitle {
+  font-size: 32px;
+  font-weight: bold;
+  // padding-left:px;
+}
+.version {
+  background: #5182e4;
+  font-size: 12px;
+  font-weight: lighter;
+  color: #fff;
+  padding:10px;
+  border-top-left-radius:16px;
+  position: absolute;
+  bottom:0;
+  right:0;
+
+}
+.formStyle {
+  width: 324px;
+  margin: 0 auto;
+  margin-top: 30px;
+  :global {
+    .ant-input-affix-wrapper:focus,
+    .ant-input-affix-wrapper-focused {
+      box-shadow: none;
+    }
+    .ant-form-item{
+      margin: 0;
+    }
+  }
+}
+.inputStyle {
+  height: 58px;
+  border: none;
+  border-bottom: 1px solid #eee;
+}
+.forgetInput{
+  height: 48px;
+  border: none;
+  border-bottom: 1px solid #eee;
+}
+.loginBtn {
+  width: 100%;
+  border-radius: 4px;
+  background: @main;
+  height: 46px;
+  margin-top: 30px;
+}
+.forgetBtn{
+  width: 100%;
+  border-radius: 4px;
+  background: @main;
+  height: 46px;
+  margin-top: 10px;
+}
+.forget{
+  font-size: 14px;
+  color: @main;
+  cursor: pointer;
+}
+
+// 找回密码页面
+.foundTitle{
+  font-size: 28px;
+  color: @main;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: -20px;
+}
+.returnLogin{
+  width: 100%;
+  border-radius: 4px;
+  color: @main;
+  margin-top: 16px;
+  height: 46px;
+}
+.getCode{
+  border-radius: 16px;
+  color: #fff;
+  background: @main;
+  font-size: 12px;
+  padding: 6px 18px;
+  cursor: pointer;
+}
+.chooseType{
+  border-bottom: 1px solid #eee;
+  height: 48px;
+  line-height: 48px;
+}
+.tipText{
+  font-size: 12px;
+  color: @main;
+  text-align: center;
+  margin-top: 8px;
+}
+:global{
+  .forgetAccount{
+    & .ant-form-item-label > label{
+      height: 50px !important;
+    }
+  }
+}

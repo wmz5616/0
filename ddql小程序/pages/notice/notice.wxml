@@ -1,0 +1,35 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">通知公告</text>
+  </van-nav-bar>
+  <!-- <van-tabs active="{{ active }}" bind:change="onChange" custom-class="tab" swipeable animate="true">
+    <van-tab wx:for="{{tabList}}" wx:key="index" title="{{item.title}}"> -->
+      <view wx:if="{{!noticeList.length}}" class="empty">
+        <image src="/assets/images/empty.png" mode="aspectFill" style="height: 381rpx;width: 381rpx;" />
+      </view>
+      <view wx:else>
+        <scroll-view class="swiper {{ active && 'msg' }}" scroll-y bindscrolltolower='onScroll'>
+          <view wx:for="{{noticeList}}" wx:for-item="noticeItem" wx:key="index" class="list flex boxShadow gap34" bind:tap="jump" data-id="{{noticeItem.id}}">
+            <view class="ll">
+              <!-- <view class="iconList">
+              <image src="/assets/images/ld.png" mode="aspectFill" class="ld"/>
+              <image src="/assets/images/rp.png" mode="aspectFill" class="rp"/>
+            </view> -->
+              <view class="l_left">
+                <text class="title">{{noticeItem.title}}</text>
+                <text class="grayTime">{{noticeItem.createTime}}</text>
+              </view>
+            </view>
+            <image src="/assets/images/gray-rightArrow.svg" mode="aspectFill" class="rightIcon" />
+            <view wx:if="{{noticeItem.isTop}}" class="zd">置顶</view>
+          </view>
+          <view style="width: 100%;height: 30rpx;"></view>
+        </scroll-view>
+        <view wx:if="{{active == item.name}}" class="Btn1">
+          <view class="btn1">全部已读</view>
+        </view>
+      </view>
+    <!-- </van-tab>
+  </van-tabs> -->
+</view>

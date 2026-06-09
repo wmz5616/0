@@ -1,0 +1,19 @@
+<!--pages/refundPolicy/refundPolicy.wxml-->
+<import src="../../wxParse/wxParse.wxml" />
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">入驻前须知</text>
+  </van-nav-bar>
+
+  <image src="/assets/images/header.png" mode="aspectFill" style="width: 750rpx;height: 100vh;" />
+  <view class="text">
+    <template is="wxParse" data="{{wxParseData:newsDetail.contentHtml.nodes}}" />
+    <button style="width: 630rpx;height: 92rpx;background-image: linear-gradient(167deg, #8153FC 0%, #6070FB 82%);border-radius: 2rem;color: #fff;line-height: 64rpx;text-align: center;font-size: 32rpx;margin-top: 55rpx;" bindtap="jump">
+      已阅读并同意
+    </button>
+  </view>
+  <view class="padding"></view>
+</view>

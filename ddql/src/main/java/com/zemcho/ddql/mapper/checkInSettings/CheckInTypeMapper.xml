@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.checkInSettings.CheckInTypeMapper">
+
+    <insert id="insert" parameterType="com.zemcho.ddql.entity.checkInSettings.CheckInType">
+        insert into check_in_type(images, name, other_name, status, instruction, sort)
+        values (#{data.images}, #{data.name}, #{data.otherName}, #{data.status}, #{data.instruction}, #{data.sort})
+    </insert>
+
+    <update id="update" parameterType="com.zemcho.ddql.entity.checkInSettings.CheckInType">
+        update check_in_type
+        <set>
+            <if test="data.images != null">
+                images = #{data.images},
+            </if>
+            <if test="data.name != null">
+                name = #{data.name},
+            </if>
+            <if test="data.otherName != null">
+                other_name = #{data.otherName},
+            </if>
+            <if test="data.status != null">
+                status = #{data.status},
+            </if>
+            <if test="data.instruction != null">
+                instruction = #{data.instruction},
+            </if>
+            <if test="data.sort != null">
+                sort = #{data.sort},
+            </if>
+        </set>
+        where id = #{data.id}
+    </update>
+
+    <select id="selectList" resultType="com.zemcho.ddql.controller.checkInSettings.vo.CheckInTypeVo">
+        SELECT *
+        FROM `check_in_type`
+        <where>
+            <if test="param.searchIntStatus != null">
+                AND `status` = #{param.searchIntStatus}
+            </if>
+        </where>
+        order by `sort` asc, `id` asc
+    </select>
+
+    <delete id="delete" parameterType="java.util.List">
+        delete from check_in_type where id in
+        <foreach item="item" collection="deleteIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="selectById" resultType="com.zemcho.ddql.entity.checkInSettings.CheckInType">
+        SELECT *
+        FROM `check_in_type`
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectMaxSort" resultType="java.lang.Integer">
+        SELECT max(sort)
+        FROM `check_in_type`
+    </select>
+</mapper>

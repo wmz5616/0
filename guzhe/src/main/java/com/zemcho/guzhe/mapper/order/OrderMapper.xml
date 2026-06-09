@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.order.OrderMapper">
+    <sql id="field">
+        user_id,
+        phone,
+        nick_name,
+        shop_id,
+        order_type,
+        order_id,
+        order_no,
+        up_order_no,
+        price,
+        num,
+        amount,
+        status,
+        pay_time,
+        create_time
+    </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `order`(
+        <include refid="field"></include>
+        )VALUES (
+        #{data.userId},
+        #{data.phone},
+        #{data.nickName},
+        #{data.shopId},
+        #{data.orderType},
+        #{data.orderId},
+        #{data.orderNo},
+        #{data.upOrderNo},
+        #{data.price},
+        #{data.num},
+        #{data.amount},
+        #{data.status},
+        #{data.payTime},
+        #{data.createTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `order`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.status != null">status = #{data.status},</if>
+            <if test="data.refundAmount != null">refund_amount = #{data.refundAmount},</if>
+            <if test="data.refundTime != null">refund_time = #{data.refundTime},</if>
+            <if test="data.divideStatus != null">divide_status = #{data.divideStatus},</if>
+            <if test="data.divideAmount != null">divide_amount = #{data.divideAmount},</if>
+            <if test="data.divideTime != null">divide_time = #{data.divideTime},</if>
+        </trim>
+        WHERE id = #{data.id}
+    </update>
+
+    <update id="updateByOrderId">
+        UPDATE `order`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.status != null">status = #{data.status},</if>
+            <if test="data.refundAmount != null">refund_amount = #{data.refundAmount},</if>
+            <if test="data.refundTime != null">refund_time = #{data.refundTime},</if>
+        </trim>
+        WHERE order_type = #{data.orderType}
+        AND order_id = #{data.orderId}
+    </update>
+
+    <select id="selectByOrderId" resultType="com.zemcho.guzhe.entity.order.Order">
+        SELECT *
+        FROM `order`
+        WHERE order_type = #{orderType}
+          AND order_id = #{orderId}
+    </select>
+
+    <select id="selectLists" resultType="com.zemcho.guzhe.entity.order.Order">
+        SELECT *
+        FROM `order`
+        <where>
+            <if test="param.searchField1 != null">AND user_id = #{param.searchField1}</if>
+            <if test="param.searchTypeList != null and param.searchTypeList.size() > 0">
+                AND `order_type` IN
+                <foreach collection="param.searchTypeList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.searchStatusList != null and param.searchStatusList.size() > 0">
+                AND `status` IN
+                <foreach collection="param.searchStatusList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.searchIntStatus != null">AND `status` = #{param.searchIntStatus}</if>
+            <if test="param.searchField2 != null">AND `divide_status` = #{param.searchField2}</if>
+            <if test="param.searchField3 != null">AND `shop_id` = #{param.searchField3}</if>
+            <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+                AND `order_no` LIKE CONCAT('%', #{param.searchStrField1}, '%')
+            </if>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND (phone LIKE CONCAT('%',#{param.keyword},'%') OR nick_name LIKE CONCAT('%',#{param.keyword},'%'))
+            </if>
+            <if test="param.limitTime != null">
+                AND `pay_time` &lt;= #{param.limitTime}
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+        ORDER BY `id` desc
+    </select>
+
+    <select id="selectBusinessData" resultType="com.zemcho.guzhe.controller.wechat.shop.vo.BusinessDataVO">
+        SELECT
+        COUNT(DISTINCT o.order_no) AS orderCount,
+        IFNULL(SUM(o.amount), 0) AS revenue,
+        IFNULL((SELECT SUM(amount) FROM `order` WHERE shop_id = #{param.searchField4} AND divide_status = 0 AND status = 1), 0) AS pendingAmount
+        FROM `order` o
+        INNER JOIN `product_order` po ON o.order_no = po.order_no
+        WHERE o.shop_id = #{param.searchField4}
+        AND po.status IN (1, 2, 3, 4, 5, 7)
+        <if test="param.startTime != null and param.endTime != null">
+            AND o.create_time BETWEEN #{param.startTime} AND #{param.endTime}
+        </if>
+    </select>
+
+    <select id="selectMonitorOrderData" resultType="com.zemcho.guzhe.controller.wechat.shop.vo.BusinessDataVO">
+        SELECT
+        COUNT(CASE WHEN `status` IN (1, 2) THEN 1 END) AS orderCount,
+        IFNULL(SUM(CASE WHEN `status` IN (1, 2) THEN amount ELSE 0 END), 0) AS revenue,
+        IFNULL(SUM(CASE WHEN `status` = 2 THEN IFNULL(refund_amount, 0) ELSE 0 END), 0) AS refundAmount
+        FROM `order`
+        <where>
+            <if test="startTime != null and endTime != null">
+                `create_time` BETWEEN #{startTime} AND #{endTime}
+            </if>
+            AND `status` IN (1, 2)
+        </where>
+    </select>
+
+    <select id="selectCompletedOrderCount" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM `order` o
+        INNER JOIN `product_order` po ON o.order_no = po.order_no
+        WHERE po.status = 4
+        <if test="startTime != null and endTime != null">
+            AND o.create_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+    </select>
+
+    <select id="selectBusinessEquipment" resultType="com.zemcho.guzhe.controller.data.vo.BusinessEquipmentVO">
+        SELECT
+        e.id AS equipmentId,
+        e.remark AS remark,
+        s.name AS supermarketName,
+        e.serial_number AS serialNumber,
+        IFNULL((SELECT COUNT(*) FROM `order` o2
+        INNER JOIN `product_order` po2 ON o2.order_no = po2.order_no
+        WHERE po2.equipment_id = e.id
+        AND o2.status = 1
+        <if test="startTime != null and endTime != null">
+            AND o2.create_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        ), 0) AS orderNum,
+        IFNULL((SELECT COUNT(*) FROM `order` o_pd
+        INNER JOIN `product_order` po_pd ON o_pd.order_no = po_pd.order_no
+        WHERE po_pd.equipment_id = e.id
+        AND po_pd.status = 2
+        <if test="startTime != null and endTime != null">
+            AND o_pd.create_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        ), 0) AS pendingDeliveryNum,
+        IFNULL((SELECT COUNT(*) FROM `order` o_cp
+        INNER JOIN `product_order` po_cp ON o_cp.order_no = po_cp.order_no
+        WHERE po_cp.equipment_id = e.id
+        AND po_cp.status = 4
+        <if test="startTime != null and endTime != null">
+            AND o_cp.create_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        ), 0) AS completedNum,
+        IFNULL((SELECT SUM(o3.amount) FROM `order` o3
+        INNER JOIN `product_order` po3 ON o3.order_no = po3.order_no
+        WHERE po3.equipment_id = e.id
+        AND o3.status = 1
+        <if test="startTime != null and endTime != null">
+            AND o3.create_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        ), 0) AS orderIncome
+        FROM `equipment` e
+        LEFT JOIN `supermarket_info` s ON e.supermarket_id = s.id
+        WHERE e.status = 1
+        ORDER BY orderNum DESC
+    </select>
+
+    <select id="selectOrderListForReconciliation" resultType="com.zemcho.guzhe.entity.order.Order">
+        SELECT
+            id,
+            user_id as userId,
+            phone,
+            nick_name as nickName,
+            shop_id as shopId,
+            order_type as orderType,
+            order_id as orderId,
+            order_no as orderNo,
+            up_order_no as upOrderNo,
+            price,
+            num,
+            amount,
+            status,
+            pay_time as payTime,
+            refund_amount as refundAmount,
+            refund_time as refundTime,
+            divide_amount as divideAmount,
+            create_time as createTime,
+            update_time as updateTime
+        FROM `order`
+        WHERE order_type = 1 AND status IN (1, 2)
+          AND (
+            (pay_time &gt;= #{startTime} AND pay_time &lt;= #{endTime})
+                OR
+            (refund_time &gt;= #{startTime} AND refund_time &lt;= #{endTime})
+            )
+        ORDER BY id ASC
+    </select>
+
+    <select id="selectSystemOrderData" resultType="com.zemcho.guzhe.controller.wechat.shop.vo.BusinessDataVO">
+        SELECT
+        COUNT(1) AS orderCount,
+        IFNULL(SUM(o.amount), 0) AS revenue,
+        IFNULL(SUM(IFNULL(o.refund_amount, 0)), 0) AS refundAmount
+        FROM `order` o
+        INNER JOIN `product_order` po ON o.order_no = po.order_no
+        <where>
+            <if test="startTime != null and endTime != null">
+                o.create_time BETWEEN #{startTime} AND #{endTime}
+            </if>
+            <!-- 统计：待使用(1)、待发货(2)、已发货(3)、已完成(4)、退款中(5)、已过期(7) -->
+            AND po.status IN (1, 2, 3, 4, 5, 7)
+        </where>
+    </select>
+</mapper>

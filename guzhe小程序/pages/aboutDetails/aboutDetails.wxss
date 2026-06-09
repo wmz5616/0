@@ -1,0 +1,45 @@
+/* pages/refundPolicy/refundPolicy.wxss */
+.bc {
+  position: relative;
+  overflow-y: scroll;
+  height: 100vh;
+  background-color: #efedec;
+}
+
+.van-nav-bar {
+  background-color: transparent !important;
+  position: fixed !important;
+  width: 100%;
+}
+
+.van-hairline--bottom:after {
+  border: 0rpx !important;
+}
+
+.navLeft{
+  width: 50rpx;
+  height: 50rpx;
+  border-radius: 50%;
+  background-color: rgba(249, 249, 249, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.text {
+  position: absolute;
+  width: 610rpx;
+  background-color: #fff;
+  top: 200rpx;
+  left: 30rpx;
+  border-radius: 16rpx;
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 400;
+  padding: 20rpx 40rpx;
+  line-height: 50rpx;
+}
+
+.padding{
+  height: 30rpx;
+  width: 100%;
+}

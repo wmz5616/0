@@ -1,0 +1,96 @@
+<wxs module="priceFormat" src="../../utils/formatPrice.wxs"></wxs>
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">消费</text>
+  </van-nav-bar>
+  <view class="consumption">
+    <view bind:tap="selectTypeActive" class="Titem {{typeActive == index?'typeActive':''}}" wx:for="{{typeActiveList}}" wx:key="id" data-index="{{index}}">{{item.title}}</view>
+    <view class="line" style="transform: translateX({{248*typeActive}}rpx);"></view>
+    <view class="scan" bind:tap="scan">
+      <image src="/assets/images/scan.svg" mode="aspectFill" style="height:32rpx;width: 32rpx;" />
+      <view>抵扣支付</view>
+    </view>
+  </view>
+  <view>
+    <view style="position:relative;padding-right:20rpx;">
+      <van-search clearable="{{false}}" bind:change="search" bind:chan left-icon='' bind:change="search" bind:search="onSearch" shape="round" bind:clear="onCancel" value="{{ name }}" placeholder="{{typeActive == 0?'请输入商家名称':'请输入您要搜索的内容'}}" use-action-slot placeholder-style="font-size:30rpx">
+        <view slot="action" bind:tap="comfrimsearch" style="position:absolute;right:42rpx;top:32rpx;z-index:9999;">
+          <image src="/assets/images/search.svg" mode="aspectFit" style="width:40rpx;height:40rpx;" />
+        </view>
+      </van-search>
+    </view>
+  </view>
+  <view wx:if="{{typeActive}}">
+    <view class="header flex">
+      <view class="h_left">
+        <image src="/assets/images/goldCion.svg" style="height: 42rpx;width: 42rpx;" mode="aspectFill" />
+        <text class="coinText">{{userInfo.goldCoin}}</text>
+        <text class="h_text">金币</text>
+      </view>
+      <view class="h_right" bind:tap="jump" data-url="/pages/myOrder/myOrder?activeTab=1">
+        <text class="h_text">商城订单</text>
+        <image src="/assets/images/gray-rightArrow.svg" style="height: 18rpx;width: 20rpx;" mode="aspectFill" />
+      </view>
+    </view>
+    <van-tabs active="{{ active }}" bind:change="onChange" custom-class="tab" swipe-threshold="4" border swipeable>
+      <van-tab wx:for="{{categoryList}}" wx:key="id" wx:for-item="tabItem" title="{{tabItem.name}}" name="{{tabItem.id}}">
+        <scroll-view class="sheight" scroll-y bindscrolltolower="changePageNum">
+          <view class="swiper1">
+            <view wx:for="{{productList}}" wx:key="id" class="g_item" bind:tap="jump" data-url="/pages/goodDetail/goodDetail?searchId={{item.id}}">
+              <image src="{{item.coverImage}}" mode="aspectFill" class="goodImages" />
+              <view class="goodInfo">
+                <text class="goodTitle">{{item.name}}</text>
+                <view class="flex">
+                  <text class="goodCoin">{{priceFormat.formatPrice(item)}}</text>
+                  <view class="goodExchanged">已兑{{item.exchangeNum}}</view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </scroll-view>
+      </van-tab>
+    </van-tabs>
+  </view>
+  <view wx:else>
+    <van-tabs active="{{ active }}" bind:change="onChange" custom-class="tab" swipe-threshold="4" border swipeable>
+      <van-tab wx:for="{{categoryList}}" wx:key="id" wx:for-item="tabItem" title="{{tabItem.name}}" name="{{tabItem.id}}">
+        <scroll-view class="ssheight" scroll-y bindscrolltolower="changePageNum">
+          <view class="swipper">
+            <swiper bindchange="swiperChange" autoplay interval='3000' circular class="h362">
+              <block wx:for="{{bannerList}}" wx:key="index" wx:key="index" wx:for-item="bItem" class="">
+                <swiper-item class="Rflex">
+                  <view wx:for="{{bItem}}" wx:for-item="sItem" wx:key="index" class="sItem" bind:tap="jump" data-url="/pages/venueDetails/venueDetails?searchId={{sItem.id}}">
+                    <image src="{{sItem.coverImageUrl}}" mode="aspectFill" class="sImg" />
+                    <view class="sBottom">
+                      <view style="display: flex;justify-content: space-between;align-items: center;width: 100%;">
+                        <view class="sTitle">{{sItem.name}}</view>
+                        <view class="dis">{{sItem.distance}}</view>
+                      </view>
+                      <view class="tis" wx:if="{{sItem.info}}">{{sItem.info}}</view>
+                    </view>
+                  </view>
+                </swiper-item>
+              </block>
+            </swiper>
+            <view class="dots-wrapper">
+              <view class="dot {{swiperCurrent == index ? 'active-dot' : 'normal-dot'}}" wx:for="{{bannerList}}" wx:key="index"></view>
+            </view>
+          </view>
+          <view class="swiper1">
+            <view wx:for="{{storeList}}" wx:key="index" class="g_item " style="height: auto;" bind:tap="jump" data-url="/pages/venueDetails/venueDetails?searchId={{ssItem.id}}" wx:for-item="ssItem">
+              <image src="{{ssItem.coverImageUrl}}" mode="aspectFill" class="sImg" />
+              <view class="sBottom">
+                <view style="display: flex;justify-content: space-between;align-items: center;width: 100%;">
+                  <view class="sTitle">{{ssItem.name}}</view>
+                  <view class="dis">{{ssItem.distance}}</view>
+                </view>
+                <view class="tis" wx:if="{{ssItem.info}}">{{ssItem.info}}</view>
+              </view>
+            </view>
+          </view>
+        </scroll-view>
+      </van-tab>
+    </van-tabs>
+  </view>
+</view>

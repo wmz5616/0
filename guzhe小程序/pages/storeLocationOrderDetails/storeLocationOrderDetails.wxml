@@ -1,0 +1,75 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">订单详情</text>
+  </van-nav-bar>
+  <view class="swiper {{isIOS?'h336':''}}">
+    <view class="paysg boxShadow">
+      <image src="{{typeList[orderInfo.status]}}" mode="aspectFill" style="position: absolute;right:-22px;top: -19px;height: 144rpx;width: 194rpx;" />
+      <view class="flex link">
+        <text class="shopName">设备编号：{{orderInfo.serialNumber}}</text>
+      </view>
+      <view class="info">
+        <view class="flex text">
+          <text>支付时间</text>
+          <text>{{orderInfo.orderTime}}</text>
+        </view>
+        <view class="flex text">
+          <text>订单金额</text>
+          <text>¥{{orderInfo.totalAmount / 100 || 0}}</text>
+        </view>
+        <view class="flex text">
+          <text>下单人</text>
+          <text>{{orderInfo.orderUserText}}</text>
+        </view>
+        <view class="flex text">
+          <text>订单号</text>
+          <view class="flex g10">
+            <text class="grayText">{{orderInfo.orderNo}}</text>
+            <van-button bind:click="copy" custom-class="copy">复制</van-button>
+          </view>
+        </view>
+        <view class="flex text">
+          <text>所属商超</text>
+          <text>{{orderInfo.businessCircleName}}</text>
+        </view>
+        <view class="flex text">
+          <text style="flex-shrink: 0;">所在地址</text>
+          <text>{{orderInfo.businessCircleAddress}}</text>
+        </view>
+        <!-- <view class="flex text">
+          <text>驳回原因</text>
+          <text>线下支付</text>
+        </view>
+        <view class="flex text">
+          <text>驳回时间</text>
+          <text>2026-02-10 14:35:38</text>
+        </view> -->
+      </view>
+    </view>
+    <view class="paysg boxShadow">
+      <view class="g10 Cflex">
+        <text class="shopName">1.租用月份</text>
+        <view class="time">{{orderInfo.rentalMonths}}</view>
+      </view>
+      <view class="g30 Cflex">
+        <text class="shopName">2.请选择要展示的内容</text>
+        <view class="g10 checkBox" bind:tap="selectSwitch" data-type="{{1}}">
+          <image src="/assets/images/{{(orderInfo.status == 0||orderInfo.status == 3 ||orderInfo.status == 4 || orderInfo.status == 5)?(displayType == 1?'graySelect':'unSelect'):(displayType == 1?'purpleSelect':'unSelect')}}.svg" mode="aspectFill" class="baseSelect" />
+          <view class="cbText {{(orderInfo.status == 0||orderInfo.status == 3 ||orderInfo.status == 4 || orderInfo.status == 5)? grayType:''}}">商品（展示商品管理页面的商品信息）</view>
+        </view>
+        <view class="g10 checkBox" bind:tap="selectSwitch" data-type="{{2}}">
+          <image src="/assets/images/{{(orderInfo.status == 0||orderInfo.status == 3 ||orderInfo.status == 4 || orderInfo.status == 5)?(displayType == 2?'graySelect':'unSelect'):(displayType == 2?'purpleSelect':'unSelect')}}.svg" mode="aspectFill" class="baseSelect" />
+          <view class="cbText {{(orderInfo.status == 0||orderInfo.status == 3 ||orderInfo.status == 4 || orderInfo.status == 5)? grayType:''}}">海报（展示海报管理页面的海报）</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{orderInfo.status == 2}}" class="footer1 {{isIOS?'isIOS':''}}">
+    <view class="Btn" bind:tap="getScreenshotTask">
+      <text class="btnText">查看屏幕画面</text>
+    </view>
+  </view>
+</view>

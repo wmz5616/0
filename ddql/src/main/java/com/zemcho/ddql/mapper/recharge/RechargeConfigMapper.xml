@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zemcho.ddql.mapper.recharge.RechargeConfigMapper">
+
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO recharge_config (
+            enable_recharge,
+            enable_custom_amount,
+            min_amount,
+            critical_amount,
+            description,
+            create_time,
+            update_time
+        ) VALUES
+            (
+            #{data.enableRecharge},
+            #{data.enableCustomAmount},
+            #{data.minAmount},
+            #{data.criticalAmount},
+            #{data.description},
+            #{data.createTime},
+            #{data.updateTime}
+            )
+    </insert>
+
+    <update id="update">
+        UPDATE recharge_config
+        <set>
+            <if test="data.enableRecharge != null">
+                enable_recharge = #{data.enableRecharge},
+            </if>
+            <if test="data.enableCustomAmount != null">
+                enable_custom_amount = #{data.enableCustomAmount},
+            </if>
+            <if test="data.minAmount != null">
+                min_amount = #{data.minAmount},
+            </if>
+            <if test="data.criticalAmount != null">
+                critical_amount = #{data.criticalAmount},
+            </if>
+            <if test="data.description != null">
+                description = #{data.description},
+            </if>
+        </set>
+        WHERE id = #{data.id}
+    </update>
+
+    <select id="selectById" resultType="com.zemcho.ddql.entity.recharge.RechargeConfig">
+        SELECT * FROM recharge_config WHERE id = #{id}
+    </select>
+
+    <select id="select" resultType="com.zemcho.ddql.entity.recharge.RechargeConfig">
+        SELECT * FROM recharge_config limit 1
+    </select>
+</mapper>

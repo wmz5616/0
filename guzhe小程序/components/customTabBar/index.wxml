@@ -1,0 +1,7 @@
+<view class="tab-bar">
+  <view wx:for="{{tabListd}}" wx:key="index" class="tab-bar-item" data-path="{{item.pagePath}}" data-index="{{index}}" bind:tap="switchTab">
+    <view wx:if="{{item.bulge}}" class="badge">{{item.bulge}}</view>
+    <image class="image {{selected === index?'selectImage':''}}" src="{{selected === index ? item.selectedIconPath : item.iconPath}}"></image>
+    <view wx:if="{{item.text && selected != index}}" style="color: {{selected === index ? selectedColor : color}}" class="tab-bar-view">{{item.text}}</view>
+  </view>
+</view>

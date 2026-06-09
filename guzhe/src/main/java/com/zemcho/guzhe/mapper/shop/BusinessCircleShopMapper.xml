@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.shop.BusinessCircleShopMapper">
+
+    <sql id="field">
+        circle_id,
+        shop_id
+    </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `business_circle_shop`
+        (<include refid="field"/>)
+        VALUES
+        (
+        #{data.circleId},
+        #{data.shopId}
+        )
+    </insert>
+
+    <insert id="insertBatch">
+        INSERT INTO `business_circle_shop`
+        (<include refid="field"/>)
+        VALUES
+        <foreach collection="dataList" item="item" separator=",">
+            (
+            #{item.circleId},
+            #{item.shopId}
+            )
+        </foreach>
+    </insert>
+
+    <update id="update">
+        UPDATE `business_circle_shop`
+        <set>
+            <if test="data.circleId != null">
+                circle_id = #{data.circleId},
+            </if>
+            <if test="data.shopId != null">
+                shop_id = #{data.shopId},
+            </if>
+        </set>
+        WHERE id = #{data.id}
+    </update>
+
+    <select id="selectById" resultType="com.zemcho.guzhe.entity.shop.BusinessCircleShop">
+        SELECT *
+        FROM business_circle_shop
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectShopIdsByCircleId" resultType="java.lang.Integer">
+        SELECT shop_id
+        FROM business_circle_shop
+        WHERE circle_id = #{circleId}
+    </select>
+
+    <select id="selectCircleIdsByShopId" resultType="java.lang.Integer">
+        SELECT circle_id
+        FROM business_circle_shop
+        WHERE shop_id = #{shopId}
+    </select>
+    <select id="existShop" resultType="java.lang.Boolean">
+        select count(1)
+        FROM business_circle_shop
+        WHERE circle_id in
+        <foreach item="item" collection="circleIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <delete id="deleteByCircleId">
+        DELETE FROM business_circle_shop
+        WHERE circle_id = #{circleId}
+    </delete>
+
+    <delete id="deleteByShopIds">
+        DELETE FROM business_circle_shop
+        WHERE shop_id IN
+        <foreach item="item" collection="shopIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByCircleIdAndShopId">
+        DELETE FROM business_circle_shop
+        WHERE circle_id = #{circleId} AND shop_id = #{shopId}
+    </delete>
+
+    <delete id="deleteByIds">
+        DELETE FROM business_circle_shop WHERE id IN
+        <foreach item="item" collection="ids" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="select" resultType="java.lang.String">
+            select name from business_circle_shop
+        where id = #{circleId}
+    </select>
+</mapper>

@@ -1,0 +1,51 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">充值记录</text>
+  </van-nav-bar>
+  <view class="picker">
+    <view class="picker_item" data-type="showPopup" bind:tap="open">
+      <text class="picker_title">{{teamInfo.text}}</text>
+      <view class="base down"></view>
+    </view>
+    <view class="picker_item" data-type="showPopup1" bind:tap="open">
+      <text class="picker_title">时间</text>
+      <view class="base up"></view>
+    </view>
+  </view>
+  <view class="middle">
+    <text class="gray-coin">充值总金额：¥{{totalAmount/100}}</text>
+  </view>
+  <view class="swiper">
+    <view wx:for="{{list}}" wx:key="index" class="box list">
+      <view class="flex">
+        <text class="orderNo">{{item.orderNo}}</text>
+        <view class="flex">
+          <text class="danwei">￥</text>
+          <view class="title">{{item.amount/100}}</view>
+        </view>
+      </view>
+      <text class="title">{{item.teamName}}</text>
+      <view class="flex l_bottom">
+        <text>{{item.createTime}}</text>
+        <text>操作人：{{item.nickName}} {{item.phone}} </text>
+      </view>
+    </view>
+  </view>
+  <!-- 自定义弹出层 -->
+  <van-popup show="{{ showPopup }}" z-index="{{100}}" position="bottom" round data-name="showPopup" bind:close="onClose">
+    <!-- 切换团体 -->
+    <van-picker toolbar-class="pTab" show-toolbar title="切换团体" columns="{{ columns }}" bind:confirm="confirm" bind:cancel="onClose" data-name="showPopup" />
+  </van-popup>
+  <van-popup position="bottom" round show="{{ showPopup1 }}" bind:close="onClose" data-name="showPopup1">
+    <view>
+      <view class="pickerTime flex">
+        <text class="p_avtiveText" bind:tap="onClose" data-name="showPopup1">取消</text>
+        <text class="p_text">选择时间</text>
+        <text class="p_avtiveText" bind:tap="comfrimDate" data-name="showPopup1">确定</text>
+      </view>
+      <van-datetime-picker show-toolbar="{{false}}" type="date" data-field="startTime" value="{{ startTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ forma }}" />
+      <van-datetime-picker show-toolbar="{{false}}" type="date" data-field="endTime" value="{{ endTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ forma }}" />
+    </view>
+  </van-popup>
+</view>

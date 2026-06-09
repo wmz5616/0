@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.cas.CasAdminRoleMapper">
+    <sql id="field">
+        admin_id,
+        role_id
+    </sql>
+
+    <insert id="insertAll">
+        INSERT INTO `cas_admin_role`(
+        <include refid="field"></include>
+        )VALUES
+        <foreach collection="data" item="item" separator=",">
+            (
+            #{item.adminId},
+            #{item.roleId}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectAdminIdByRoleIds" resultType="java.lang.Integer">
+        SELECT admin_id
+        FROM `cas_admin_role`
+        WHERE role_id IN
+        <foreach collection="roleIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <delete id="deleteByRoleIds">
+        DELETE FROM `cas_admin_role`
+        WHERE role_id IN
+        <foreach collection="roleIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByAdminId">
+        DELETE FROM `cas_admin_role`
+        WHERE admin_id = #{adminId}
+    </delete>
+
+    <delete id="deleteByAdminIds">
+        DELETE FROM `cas_admin_role`
+        WHERE admin_id IN
+        <foreach collection="adminIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="selectRoleIdByAdminId" resultType="java.lang.Integer">
+        SELECT a.role_id
+        FROM `cas_admin_role` as a
+        <if test="status != null">inner join `cas_role` as b on a.role_id = b.id</if>
+        WHERE a.admin_id = #{adminId}
+        <if test="status != null">AND b.status != #{status}</if>
+    </select>
+
+    <select id="selectByAdminIds" resultType="com.zemcho.guzhe.controller.cas.vo.AdminRoleListVO">
+        SELECT a.admin_id, b.*
+        FROM `cas_admin_role` as a
+        inner join `cas_role` as b on a.role_id = b.id
+        WHERE a.admin_id IN
+        <foreach collection="adminIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY a.admin_id
+    </select>
+</mapper>

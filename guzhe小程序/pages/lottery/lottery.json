@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "订单管理",
+  "usingComponents": {
+    "van-nav-bar": "@vant/weapp/nav-bar/index",
+    "van-popup": "@vant/weapp/popup/index",
+    "van-datetime-picker": "@vant/weapp/datetime-picker/index",
+    "van-picker": "@vant/weapp/picker/index",
+    "van-field": "@vant/weapp/field/index",
+    "van-overlay": "@vant/weapp/overlay/index",
+    "van-button": "@vant/weapp/button/index",
+    "customTabBar": "/components/customTabBar/index"
+  }
+}

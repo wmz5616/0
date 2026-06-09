@@ -1,0 +1,22 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">券码核销</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <van-cell-group>
+      <van-field custom-class="field" label-class="label" label="券码" value="{{ searchStrField1 }}" type="digit" placeholder="请输入券码" border="{{ false }}" bind:change="onChange" clearable />
+    </van-cell-group>
+    <view class="base nomal" bind:tap="getTicketCheck">确认核销</view>
+    <view class="base active" bind:tap="scan">扫码核销</view>
+  </view>
+  <!-- 弹出框 -->
+  <van-dialog use-slot use-title-slot show="{{ showDialog }}" showConfirmButton confirmButtonText="知道了" width="540rpx" bind:close="onClose" bind:confirm="dialogConfirm" confirm-button-class="d1 purple">
+    <view slot="title">{{msg}}</view>
+    <view wx:if="{{msg != '券码已失效'}}" class="d_content">
+      {{msgType[msg]}}
+    </view>
+  </van-dialog>
+</view>

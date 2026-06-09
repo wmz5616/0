@@ -1,0 +1,165 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">打卡记录</text>
+  </van-nav-bar>
+  <view class="picker">
+    <view class="picker_item" data-type="status" bind:tap="showPicker">
+      <text class="picker_title">打卡类型</text>
+      <view class="base down"></view>
+    </view>
+    <view class="picker_item" data-type="time" bind:tap="showTime">
+      <text class="picker_title">打卡时间</text>
+      <view class="base down"></view>
+    </view>
+  </view>
+  <view class="warning">
+    <image src="/assets/images/orangeWarning.svg" style="height:34rpx;width:34rpx" mode="aspectFill" />
+    <text wx:if="{{type!='place'}}" class="warning_text">打卡成功：{{checkCount.totalNum}}次，获得健康币总数：{{checkCount.totalHealthCoin || 0}}枚</text>
+    <text wx:else class="warning_text">打卡次数：{{total}}次</text>
+  </view>
+  <scroll-view bindscrolltolower="reachbottoms" class="swiper" 	scroll-y 	show-scrollbar="{{false}}" enhanced >
+    <view wx:for="{{listData}}" wx:key="index" class="c_info">
+      <view class="info_top LRP30">
+        <view class="i_t_left">
+          <image src="/assets/images/Sclock.svg" style="height: 66rpx;width: 52rpx;" mode="aspectFill" />
+          <text class="i_t_l_text">打卡成功！</text>
+        </view>
+        <view class="i_t_right" data-name="showPopup" bind:tap="showComponent" data-info="{{item}}">
+          <image src="/assets/images/wechat.svg" mode="aspectFill" style="height: 32rpx;width: 38rpx;"></image>
+          <text>分享</text>
+        </view>
+      </view>
+      <view class="info_middle MLR30">
+        <view class="i_m_text">
+          <text class="gray_label">打卡人</text>
+          <view class="i_m_left flex">
+            <image src="{{item.avatar}}" style="height: 62rpx;width: 62rpx;border-radius:62rpx;" mode="" />
+            <text class="left-text" style="font-weight: 500;">{{item.nickname}}</text>
+          </view>
+        </view>
+        <view class="i_m_text">
+          <text class="gray_label">打卡类型</text>
+          <text class="left-text">{{item.checkInMethod==1?'场地打卡':'扫码打卡'}}</text>
+        </view>
+        <view class="i_m_text">
+          <text class="gray_label">打卡场地</text>
+          <text class="left-text">{{item.placeName}}</text>
+        </view>
+        <view class="i_m_text">
+          <text class="gray_label">打卡地址</text>
+          <view class="i_m_left flex">
+            <text class="left-text">{{item.placeAddress}}</text>
+            <image src="/assets/images/xiala.svg" style="height: 20rpx;width: 10rpx;" mode="" />
+          </view>
+        </view>
+        <view class="i_m_text">
+          <text class="gray_label">打卡时间</text>
+          <text class="left-text">{{item.startTime}}</text>
+        </view>
+      </view>
+      <text class="active_middle LRP30">共获得{{item.healthCoin}}枚健康币</text>
+      <view class="info_footer">
+        <view class="f_title LRP30">
+          <text class="max_left">团体</text>
+          <text class="max_middle">打卡排名</text>
+          <text class="max_last">获币数</text>
+        </view>
+        <view class="flex activeItem" wx:for="{{item.teamData}}" wx:for-item="items" wx:for-index="indexs" wx:key="index">
+          <view class="max_left">{{items.teamName}}</view>
+          <text class="max_middle">{{items.rank}}</text>
+          <text class="max_last">+{{items.healthCoin}}币</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  <van-popup show="{{ showPopup }}" position="bottom" round data-name="showPopup" bind:close="onClose" custom-class="pop">
+    <view class="p-title">
+      <text class="p-text">分享</text>
+      <image bind:tap="onClose" data-name="showPopup" class="p-close" src="/assets/images/close.png" mode="" />
+    </view>
+    <view class="p-connent">
+      <circle bind:canvasReady="canvasReady" draw='circwewle1' per="{{pre}}" r='240' stepNum="{{sportInfo.stepNum}}" />
+      <view wx:key="index" class="c_info">
+        <view class="info_top LRP30">
+          <view class="i_t_left">
+            <image src="/assets/images/Sclock.svg" style="height: 66rpx;width: 52rpx;" mode="aspectFill" />
+            <text class="i_t_l_text">打卡成功！</text>
+          </view>
+        </view>
+        <view class="info_middle MLR30">
+          <view class="i_m_text">
+            <text class="gray_label">打卡人</text>
+            <view class="i_m_left flex">
+              <image src="/assets/images/avatar.png" style="height: 62rpx;width: 62rpx;" mode="" />
+              <text class="left-text" style="font-weight: 500;">{{info.nickname}}</text>
+            </view>
+          </view>
+          <view class="i_m_text">
+            <text class="gray_label">打卡场地</text>
+            <text class="left-text">{{info.placeName}}</text>
+          </view>
+          <view class="i_m_text">
+            <text class="gray_label">打卡地址</text>
+            <view class="i_m_left flex">
+              <text class="left-text">{{info.placeAddress}}</text>
+            </view>
+          </view>
+          <view class="i_m_text">
+            <text class="gray_label">打卡时间</text>
+            <text class="left-text">{{info.startTime}}</text>
+          </view>
+        </view>
+        <text class="active_middle LRP30">共获得{{info.healthCoin}}枚健康币</text>
+      </view>
+      <view class="p_img">
+        <image src="/assets/images/logo.png" class="p-logo" mode="aspectFit" />
+        <image src="/assets/images/p_code.png" class="p-code" mode="aspectFit" />
+      </view>
+      <view class="p_btn">
+        <button class="Btn avtiveBtn" style="font-weight:normal;" open-type="share">
+          <image src="/assets/images/white-wechat.svg" mode="aspectFill" style="height:30rpx;width:37rpx;"></image>
+          <text>微信好友</text>
+        </button>
+        <button class="Btn unAvtiveBtn" style="font-weight:normal;" bind:tap="shartimeLine">
+          <image src="/assets/images/pyq.svg" mode="aspectFill" style="height: 36rpx;width:36rpx;"></image>
+          <text>微信朋友圈</text>
+        </button>
+      </view>
+    </view>
+  </van-popup>
+  <van-popup show="{{ showPopup2}}" position="bottom" round data-name="showPopup2" bind:close="onClose" custom-class="pop">
+    <view class="p-title">
+      <text class="p-text">分享</text>
+      <image bind:tap="onClose" data-name="showPopup2" class="p-close" src="/assets/images/close.png" mode="" />
+    </view>
+    <view class="share-wrapper" style="padding:30rpx;">
+      <view style="color:#04C0D9;font-weight:bold;font-size:42rpx;padding-top:40rpx;">分享到微信朋友圈操作指引</view>
+      <view style="height:268rpx;border:1rpx solid #5DD5DE;border-radius:18rpx;margin-top:30rpx;padding-left:30rpx;">
+        <view class="step-one" style="display:flex;margin-top:60rpx;margin-bottom:30rpx;align-items:center;">
+          <view style="background-image: linear-gradient(192deg, #5DD5DE 0%, #4EACD3 84%);width:200rpx;height:60rpx;color:#fff;text-align:center;font-weight:bold;border-radius:26rpx;line-height:60rpx;">STEP 01</view>
+          <view style="color:#333333;font-weight:bold;padding-left:30rpx;">点击右上角“...”</view>
+        </view>
+        <view class="step-two" style="display:flex;align-items:center;">
+          <view style="background-image: linear-gradient(192deg, #5DD5DE 0%, #4EACD3 84%);width:200rpx;height:60rpx;color:#fff;text-align:center;font-weight:bold;border-radius:26rpx;line-height:60rpx;">STEP 02</view>
+          <view style="color:#333333;font-weight:bold;padding-left:30rpx;">选择分享到朋友圈</view>
+          <image src="/assets/images/timeline.svg" mode="aspectFit" style="height:45rpx;width:45rpx;padding-left:15rpx;"/>
+        </view>
+      </view>
+    </view>
+  </van-popup>
+  <van-popup position="bottom" round show="{{ showPicker }}" bind:close="onClose" data-name="showPicker">
+    <van-picker show-toolbar columns="{{ columns }}" bind:confirm="onConfirm" cancel-button-text="" />
+  </van-popup>
+  <van-popup position="bottom" round show="{{ showPopup1 }}" bind:close="onClose" data-name="showPopup1">
+    <view>
+      <view class="pickerTime flex">
+        <text class="p_avtiveText" bind:tap="onClose" bind:tap="cancelPicker">取消</text>
+        <text class="p_text">选择时间</text>
+        <text class="p_avtiveText"  bind:tap="comfrimPicker">确定</text>
+      </view>
+      <van-datetime-picker show-toolbar="{{false}}" type="{{dateType}}" data-field="startTime" value="{{ startTime }}" min-date="{{ minDate }}" bind:input="onInput" formatter="{{ forma }}" />
+      <van-datetime-picker show-toolbar="{{false}}" type="{{dateType}}" data-field="endTime" value="{{ endTime }}" min-date="{{ minDate }}" bind:input="onInput" formatter="{{ forma }}" />
+    </view>
+  </van-popup>
+</view>

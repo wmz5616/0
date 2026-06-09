@@ -1,0 +1,62 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">金币记录</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <view class="header flex boxShadow">
+      <view class="h_left">
+        <image src="/assets/images/goldCion.svg" mode="aspectFill" class="imgIcon" />
+        <text class="coin">{{goldCoin || 0}}</text>
+        <text class="text">金币</text>
+      </view>
+      <view class="h_right" bind:tap="goduihuan">
+        <text class="text">去兑换</text>
+        <image src="/assets/images/black-rightArrow.svg" mode="aspectFill" class="rightIcon" />
+      </view>
+    </view>
+    <view class="middle boxShadow">
+      <view class="m_top">
+        <picker value="{{time}}" mode="date" fields="month" bindchange="changedate">
+          <view class="same">
+            <text class="grayText">{{start}}</text>
+            <image src="/assets/images/gray-rightArrow.svg" mode="aspectFill" class="rightIcon down" />
+          </view>
+        </picker>
+        <!-- <view bind:tap="open" class="same">
+          <text class="grayText">{{team}}</text>
+          <image src="/assets/images/gray-rightArrow.svg" mode="aspectFill" class="rightIcon down" />
+        </view> -->
+      </view>
+      <view bind:tap="changeTab" class="m_bottom">
+        <view wx:for="{{tabList}}" wx:key="index" data-id="{{item.id}}" class="item text {{active == item.id && 'active'}}">{{item.title}}</view>
+        <view class="bLine" style="transform: translateX({{256 * active}}rpx)"></view>
+      </view>
+    </view>
+    <view wx:for="{{list}}" wx:key="index" class="list boxShadow qy">
+      <view class="flex">
+        <!-- <text class="text">{{item.teamType==0?'企事单位':item.teamType==0?'企事单位':item.teamType==1?'政府部':item.teamType==2?'家庭':'朋友'}}{{item.txnType==1?'打卡':item.txnType==2?'充值':item.txnType==3?'兑换':item.txnType==4?'提现':'兑换退货'}}</text> -->
+        <text class="text">{{item.remark}}</text>
+        <text class="text">{{item.numType==1?'+'+item.coinNum:'-'+item.coinNum}}</text>
+      </view>
+      <view class="flex">
+        <text class="grayTime">{{item.createTime}}</text>
+        <text class="text1">{{item.teamName}}</text>
+      </view>
+    </view>
+    <view wx:if="{{list.length==0}}" class="empty-img" style="text-align:center;">
+    <image src="/assets/images/empty.png"/>
+    <view style="color:#B2B2B2">暂无数据</view>
+    </view>
+  </view>
+  <van-popup position="bottom" round show="{{ showPopup }}" bind:close="onClose" data-name="showPopup">
+    <view class="p-title flex">
+      <text class="p_text">团体</text>
+      <view class="p_left">
+        <text class="p_avtiveText" bind:tap="clearpicker" data-name="showPopup">清空筛选</text>
+        <text class="p_avtiveText" bind:tap="confirm" data-name="showPopup">确定</text>
+      </view>
+    </view>
+    <van-picker columns="{{ columns }}" bind:change="onChange" />
+  </van-popup>
+</view>

@@ -1,0 +1,36 @@
+<!--pages/settlementRecord/settlementRecord.wxml-->
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">申请入驻记录</text>
+  </van-nav-bar>
+  <view class="tabs">
+    <view class="tooolTip-style">
+      <view class="tabs_title">
+        <view wx:for="{{tabList}}" wx:key="id" class="title_item  {{item.isActive?'active':''}}" bindtap="handleItemTap" data-index="{{index}}">
+          {{item.value}}
+          <!-- <image src="/assets/images/common/localArrow.png" /> -->
+        </view>
+      </view>
+    </view>
+  </view>
+  <scroll-view bindscrolltolower='onScroll' class="swiper" scroll-y>
+    <view class="cns" bind:tap="goDetail" data-id="{{item.id}}" data-url="/pages/applySettlement/applySettlement?shopId={{item.id}}" wx:for="{{listData}}" wx:key="index">
+      <view class="item">
+        <image bind:tap="previewImg" data-url="{{item.coverImageUrl}}" src="{{item.coverImageUrl}}" mode="aspectFill" style="height: 106rpx;width: 106rpx" />
+        <view class="middle">
+          <text class="title">{{item.name}}</text>
+          <view class="flex">
+            <text class="grayText">申请人:{{item.userName}}</text>
+            <text class="grayTime">申请时间:{{item.submitTime}}</text>
+          </view>
+        </view>
+        <image src="/assets/images/underReview.svg" mode="aspectFill" class="bigIcon" />
+        <image src="{{item.applyResult==0?'/assets/images/daishenhe.svg':item.applyResult==1?'/assets/images/yitongguo.svg':'/assets/images/yibohui.svg'}}" mode="aspectFit" class="bigIcon" />
+      </view>
+    </view>
+    <view class="{{isIOS?'isIOS':'h30'}}"></view>
+  </scroll-view>
+</view>

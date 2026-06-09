@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.bank.BankMapper">
+
+    <sql id="bankWhere">
+        <where>
+            <if test="param.isFilterNullBank != null and param.isFilterNullBank">
+                and bank != ''
+            </if>
+            <if test="param.bank != null and param.bank != ''">
+                and bank = #{param.bank}
+            </if>
+            <if test="param.bankName != null and param.bankName != ''">
+                and bankName like concat('%', #{param.bankName}, '%')
+            </if>
+            <if test="param.provinceName != null and param.provinceName != ''">
+                and provinceName like concat('%', #{param.provinceName}, '%')
+            </if>
+            <if test="param.province != null and param.province != ''">
+                and province = #{param.province}
+            </if>
+            <if test="param.cityName != null and param.cityName != ''">
+                and marketName like concat('%', #{param.cityName}, '%')
+            </if>
+            <if test="param.city != null and param.city != ''">
+                and city = #{param.city}
+            </if>
+            <if test="param.bankLinkNo != null and param.bankLinkNo != ''">
+                and bankLinkNo = #{param.bankLinkNo}
+            </if>
+            <if test="param.bankLinkName != null and param.bankLinkName != ''">
+                and bankLinkName like concat('%', #{param.bankLinkName}, '%')
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectBankLists" resultType="com.zemcho.guzhe.controller.wechat.common.vo.WechatBankCommonVo">
+        select distinct bank, bankName
+        from bank
+        <include refid="bankWhere"/>
+    </select>
+
+    <select id="selectProvinceCityLists" resultType="com.zemcho.guzhe.controller.wechat.common.vo.WechatBankProvinceCityVo">
+        select distinct
+            province,
+            provinceName,
+            city,
+            marketName as cityName
+        from bank
+        <include refid="bankWhere"/>
+        order by province asc, city asc
+    </select>
+
+    <select id="selectBankLinkLists" resultType="com.zemcho.guzhe.controller.wechat.common.vo.WechatBankLinkVo">
+        select distinct
+            bankLinkNo,
+            bankLinkName
+        from bank
+        <include refid="bankWhere"/>
+        order by bankLinkNo asc
+    </select>
+</mapper>

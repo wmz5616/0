@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zemcho.guzhe.mapper.sys.TransactionFlowMapper">
+
+    <!-- 按店铺分组汇总分账 (给定时任务用) -->
+    <select id="selectSubLedgerSummaryGrouped" resultType="com.zemcho.guzhe.entity.reconciliation.SubLedgerSummary">
+        SELECT
+        shop_id as shopId,
+        DATE(create_time) as billDate,
+        SUM(divide_amount) as totalDivideAmount,
+        SUM(handling_charge) as totalHandlingCharge,
+        SUM(platform_charge) as totalPlatformCharge,
+        COUNT(id) as totalCount
+        FROM order_divide_log
+        <where>
+            <if test="data.startTime != null"> AND create_time &gt;= #{data.startTime} </if>
+            <if test="data.endTime != null"> AND create_time &lt;= #{data.endTime} </if>
+        </where>
+        GROUP BY shop_id
+    </select>
+
+    <!-- 对账统计数据持久化 -->
+    <insert id="insertTransactionSummary">
+        INSERT INTO reconciliation_transaction_summary (shop_id, bill_date, total_income, total_refund, fee_amount, fee_return_amount, income_count, refund_count, total_count)
+        VALUES (#{item.shopId}, #{item.billDate}, #{item.totalIncome}, #{item.totalRefund}, #{item.feeAmount}, #{item.feeReturnAmount}, #{item.incomeCount}, #{item.refundCount}, #{item.totalCount})
+    </insert>
+
+    <insert id="batchInsertTransactionFlow">
+        INSERT INTO reconciliation_transaction_flow (shop_id, bill_date, transaction_time, order_no, merchant_order_no, order_id, order_type, type, amount, service_fee, product_name, total_quantity, user_id, order_user, remark, orderno, origin_merchant_order_no, origin_orderno)
+        VALUES
+        <foreach collection="list" item="it" separator=",">
+            (#{it.shopId}, #{it.billDate}, #{it.transactionTime}, #{it.orderNo}, #{it.merchantOrderNo}, #{it.orderId}, #{it.orderType}, #{it.type}, #{it.amount}, #{it.serviceFee}, #{it.productName}, #{it.totalQuantity}, #{it.userId}, #{it.orderUser}, #{it.remark}, #{it.orderno}, #{it.originMerchantOrderNo}, #{it.originOrderno})
+        </foreach>
+    </insert>
+
+    <insert id="insertSubLedgerSummary">
+        INSERT INTO reconciliation_subledger_summary (shop_id, bill_date, total_divide_amount, total_handling_charge, total_platform_charge, total_count)
+        VALUES (#{item.shopId}, #{item.billDate}, #{item.totalDivideAmount}, #{item.totalHandlingCharge}, #{item.totalPlatformCharge}, #{item.totalCount})
+    </insert>
+
+    <!-- 清理旧数据 -->
+    <delete id="deleteTransactionFlowByDate">
+        DELETE FROM reconciliation_transaction_flow WHERE bill_date = #{billDate}
+    </delete>
+    <delete id="deleteTransactionSummaryByDate">
+        DELETE FROM reconciliation_transaction_summary WHERE bill_date = #{billDate}
+    </delete>
+    <delete id="deleteSubLedgerSummaryByDate">
+        DELETE FROM reconciliation_subledger_summary WHERE bill_date = #{billDate}
+    </delete>
+
+    <!-- 快照表查询逻辑 -->
+    <sql id="snapshotFlowConditions">
+        <where>
+            <if test="data.searchStrList != null and data.searchStrList.size() > 0">
+                AND id IN
+                <foreach collection="data.searchStrList" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="data.shopId != null and data.shopId != 0"> AND shop_id = #{data.shopId} </if>
+            <if test="data.orderNo != null and data.orderNo != ''"> AND (order_no LIKE CONCAT('%',#{data.orderNo},'%') OR merchant_order_no LIKE CONCAT('%',#{data.orderNo},'%')) </if>
+            <if test="data.merchantOrderNo != null and data.merchantOrderNo != ''"> AND merchant_order_no LIKE CONCAT('%',#{data.merchantOrderNo},'%') </if>
+            <if test="data.productName != null and data.productName != ''"> AND product_name LIKE CONCAT('%',#{data.productName},'%') </if>
+            <if test="data.orderUser != null and data.orderUser != ''">
+                AND REPLACE(REPLACE(order_user, '(', ''), ')', '') LIKE CONCAT('%', REPLACE(REPLACE(#{data.orderUser}, '(', ''), ')', ''), '%')
+            </if>
+            <if test="data.yibaoOrderNo != null and data.yibaoOrderNo != ''"> AND (orderno LIKE CONCAT('%',#{data.yibaoOrderNo},'%') OR origin_orderno LIKE CONCAT('%',#{data.yibaoOrderNo},'%')) </if>
+            <if test="data.type != null and data.type != ''">
+                <if test="data.type == '1'.toString() or data.type == '收款'"> AND type = 1 </if>
+                <if test="data.type == '2'.toString() or data.type == '3'.toString() or data.type == '退款'"> AND type = 2 </if>
+            </if>
+            <if test="data.startTime != null"> AND bill_date &gt;= DATE(#{data.startTime}) </if>
+            <if test="data.endTime != null"> AND bill_date &lt;= DATE(#{data.endTime}) </if>
+        </where>
+    </sql>
+
+    <select id="selectTransactionFlowSnapshotList" resultType="com.zemcho.guzhe.controller.sys.vo.TransactionFlowVo">
+        SELECT id, transaction_time as transactionTime, order_no as orderNo, merchant_order_no as merchantOrderNo,po.specification,
+        IF(type = 1, '收款', '退款') as type,
+        COALESCE(IF(type = 1, amount / 100.0, NULL), 0) as income,
+        COALESCE(IF(type = 2, amount / 100.0, NULL), 0) as expense,
+        COALESCE(amount / 100.0, 0) as amount, COALESCE(service_fee / 100.0, 0) as serviceFee,
+        product_name as productName, total_quantity as totalQuantity, order_user as orderUser, '' as orderUserPhone, IF(remark = '无', '', remark) as remark,
+        orderno as yibaoOrderNo, origin_merchant_order_no as originMerchantOrderNo, origin_orderno as originOrderno
+        FROM reconciliation_transaction_flow rtf
+        LEFT JOIN product_order po ON po.order_no=rtf.order_no
+        <include refid="snapshotFlowConditions"/>
+        ORDER BY transaction_time DESC
+    </select>
+
+    <select id="selectTransactionFlowSnapshotList_COUNT" resultType="long">
+        SELECT COUNT(0) FROM reconciliation_transaction_flow <include refid="snapshotFlowConditions"/>
+    </select>
+
+    <select id="selectTransactionFlowSnapshotSummary" resultType="com.zemcho.guzhe.controller.sys.vo.TransactionFlowSummaryVo">
+        SELECT COUNT(0) as totalCount,
+        SUM(CASE WHEN type = 1 THEN 1 ELSE 0 END) as incomeCount,
+        SUM(CASE WHEN type = 1 THEN amount ELSE 0 END) / 100.0 as incomeAmount,
+        SUM(CASE WHEN type = 1 THEN service_fee ELSE 0 END) / 100.0 as totalServiceFee,
+        SUM(CASE WHEN type = 2 THEN 1 ELSE 0 END) as expenseCount,
+        SUM(CASE WHEN type = 2 THEN amount ELSE 0 END) / 100.0 as expenseAmount,
+        SUM(CASE WHEN type = 2 THEN service_fee ELSE 0 END) / 100.0 as refundFeeReturn
+        FROM reconciliation_transaction_flow
+        <include refid="snapshotFlowConditions"/>
+    </select>
+
+    <select id="selectTransactionSummarySnapshotList" resultType="com.zemcho.guzhe.controller.sys.vo.TransactionSummaryVo">
+        SELECT bill_date as billDate,
+        COALESCE(SUM(total_income) / 100.0, 0) as transactionIncome,
+        COALESCE(SUM(total_refund) / 100.0, 0) as refundExpense,
+        COALESCE(SUM(fee_amount) / 100.0, 0) as transactionFeeExpense,
+        COALESCE(SUM(fee_return_amount) / 100.0, 0) as transactionFeeReturn
+        FROM reconciliation_transaction_summary
+        <where>
+            <if test="data.searchStrList != null and data.searchStrList.size() > 0">
+                AND bill_date IN
+                <foreach collection="data.searchStrList" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="data.shopId != null and data.shopId != 0"> AND shop_id = #{data.shopId} </if>
+            <if test="data.startTime != null"> AND bill_date &gt;= DATE(#{data.startTime}) </if>
+            <if test="data.endTime != null"> AND bill_date &lt;= DATE(#{data.endTime}) </if>
+        </where>
+        GROUP BY bill_date
+        ORDER BY bill_date DESC
+    </select>
+
+    <select id="selectTransactionSummarySnapshotList_COUNT" resultType="long">
+        SELECT COUNT(DISTINCT bill_date) FROM reconciliation_transaction_summary
+        <where>
+            <if test="data.searchStrList != null and data.searchStrList.size() > 0">
+                AND bill_date IN
+                <foreach collection="data.searchStrList" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="data.shopId != null and data.shopId != 0"> AND shop_id = #{data.shopId} </if>
+            <if test="data.startTime != null"> AND bill_date &gt;= DATE(#{data.startTime}) </if>
+            <if test="data.endTime != null"> AND bill_date &lt;= DATE(#{data.endTime}) </if>
+        </where>
+    </select>
+
+    <select id="selectSubLedgerSummarySnapshotList" resultType="com.zemcho.guzhe.controller.sys.vo.SubLedgerSummaryVo">
+        SELECT bill_date as billDate, COALESCE(SUM(total_divide_amount) / 100.0, 0) as divideAmount
+        FROM reconciliation_subledger_summary
+        <where>
+            <if test="data.shopId != null and data.shopId != 0"> AND shop_id = #{data.shopId} </if>
+            <if test="data.startTime != null"> AND bill_date &gt;= DATE(#{data.startTime}) </if>
+            <if test="data.endTime != null"> AND bill_date &lt;= DATE(#{data.endTime}) </if>
+        </where>
+        GROUP BY bill_date
+        ORDER BY bill_date DESC
+    </select>
+
+    <select id="selectSubLedgerSummarySnapshotList_COUNT" resultType="long">
+        SELECT COUNT(DISTINCT bill_date) FROM reconciliation_subledger_summary
+        <where>
+            <if test="data.shopId != null and data.shopId != 0"> AND shop_id = #{data.shopId} </if>
+            <if test="data.startTime != null"> AND bill_date &gt;= DATE(#{data.startTime}) </if>
+            <if test="data.endTime != null"> AND bill_date &lt;= DATE(#{data.endTime}) </if>
+        </where>
+    </select>
+
+    <!-- 分账明细查询 (基于 V70 order_divide_log) -->
+    <select id="selectSubLedgerDetailList" resultType="com.zemcho.guzhe.controller.sys.vo.SubLedgerDetailVo">
+        SELECT create_time as transactionTime, COALESCE(divide_amount / 100.0, 0) as divideAmount,
+        COALESCE(handling_charge / 100.0, 0) as tongGuanFee, COALESCE(platform_charge / 100.0, 0) as platformFee,
+        COALESCE(amount / 100.0, 0) as orderAmount, order_no as orderNo, divide_no as subLedgerRequestNo
+        FROM order_divide_log
+        <where>
+            <if test="data.shopId != null and data.shopId != 0"> AND shop_id = #{data.shopId} </if>
+            <if test="data.startTime != null"> AND create_time &gt;= #{data.startTime} </if>
+            <if test="data.endTime != null"> AND create_time &lt;= #{data.endTime} </if>
+            <if test="data.orderNo != null and data.orderNo != ''"> AND order_no LIKE CONCAT('%',#{data.orderNo},'%') </if>
+            <if test="data.subLedgerRequestNo != null and data.subLedgerRequestNo != ''"> AND divide_no LIKE CONCAT('%',#{data.subLedgerRequestNo},'%') </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectSubLedgerDetailList_COUNT" resultType="long">
+        SELECT COUNT(0) FROM order_divide_log
+        <where>
+            <if test="data.shopId != null and data.shopId != 0"> AND shop_id = #{data.shopId} </if>
+            <if test="data.startTime != null"> AND create_time &gt;= #{data.startTime} </if>
+            <if test="data.endTime != null"> AND create_time &lt;= #{data.endTime} </if>
+            <if test="data.orderNo != null and data.orderNo != ''"> AND order_no LIKE CONCAT('%',#{data.orderNo},'%') </if>
+            <if test="data.subLedgerRequestNo != null and data.subLedgerRequestNo != ''"> AND divide_no LIKE CONCAT('%',#{data.subLedgerRequestNo},'%') </if>
+        </where>
+    </select>
+
+    <select id="selectSubLedgerDetailSummary" resultType="com.zemcho.guzhe.controller.sys.vo.SubLedgerDetailSummaryVo">
+        SELECT COUNT(0) as totalCount,
+        IFNULL(SUM(divide_amount / 100.0), 0) as totalDivideAmount,
+        IFNULL(SUM(handling_charge / 100.0), 0) as totalTongGuanFee,
+        IFNULL(SUM(platform_charge / 100.0), 0) as totalPlatformFee
+        FROM order_divide_log
+        <where>
+            <if test="data.shopId != null and data.shopId != 0"> AND shop_id = #{data.shopId} </if>
+            <if test="data.startTime != null"> AND create_time &gt;= #{data.startTime} </if>
+            <if test="data.endTime != null"> AND create_time &lt;= #{data.endTime} </if>
+            <if test="data.orderNo != null and data.orderNo != ''"> AND order_no LIKE CONCAT('%',#{data.orderNo},'%') </if>
+            <if test="data.subLedgerRequestNo != null and data.subLedgerRequestNo != ''"> AND divide_no LIKE CONCAT('%',#{data.subLedgerRequestNo},'%') </if>
+        </where>
+    </select>
+
+    <!-- 小程序端查询商家结算记录列表 -->
+    <select id="selectWechatSettlementRecordList" resultType="com.zemcho.guzhe.controller.wechat.shop.vo.SettlementRecordItemVo">
+        SELECT
+        DATE_FORMAT(create_time, '%Y-%m-%d') as settlementTime,
+        IFNULL(SUM(divide_amount) / 100.0, 0) as settlementAmount,
+        IFNULL(MAX(platform_rate), 0) as platformRate
+        FROM order_divide_log
+        <where>
+            shop_id = #{data.shopId}
+            <if test="data.startDate != null"> AND DATE(create_time) &gt;= #{data.startDate} </if>
+            <if test="data.endDate != null"> AND DATE(create_time) &lt;= #{data.endDate} </if>
+        </where>
+        GROUP BY DATE_FORMAT(create_time, '%Y-%m-%d')
+        ORDER BY settlementTime DESC
+    </select>
+
+    <select id="selectWechatSettlementRecordListCount" resultType="long">
+        SELECT COUNT(DISTINCT DATE_FORMAT(create_time, '%Y-%m-%d'))
+        FROM order_divide_log
+        <where>
+            shop_id = #{data.shopId}
+            <if test="data.startDate != null"> AND DATE(create_time) &gt;= #{data.startDate} </if>
+            <if test="data.endDate != null"> AND DATE(create_time) &lt;= #{data.endDate} </if>
+        </where>
+    </select>
+
+    <select id="selectWechatSettlementRecordSummary" resultType="com.zemcho.guzhe.controller.wechat.shop.vo.SettlementRecordSummaryVo">
+        SELECT
+        COUNT(0) as totalCount,
+        IFNULL(SUM(divide_amount / 100.0), 0) as totalAmount
+        FROM order_divide_log
+        <where>
+            shop_id = #{data.shopId}
+            <if test="data.startDate != null"> AND DATE(create_time) &gt;= #{data.startDate} </if>
+            <if test="data.endDate != null"> AND DATE(create_time) &lt;= #{data.endDate} </if>
+        </where>
+    </select>
+
+</mapper>

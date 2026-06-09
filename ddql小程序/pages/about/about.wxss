@@ -1,0 +1,63 @@
+/* pages/about/about.wxss */
+
+/* 中间列表 */
+.toolList {
+  width: 670rpx;
+  /* height: 280rpx; */
+  border-radius: 18rpx;
+  box-shadow: 0px 2px 10px 4px rgba(0,0,0,0.05);
+  margin: 0 auto;
+  padding: 0 10rpx;
+  background-color: #fff;
+}
+.navText {
+  font-size: 37rpx;
+  color: #333333;
+  font-weight: 500;
+}
+.img {
+  width: 20rpx;
+  height: 35rpx;
+}
+
+/* 列表中单个元素 */
+.ListItem {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 630rpx;
+  height: 90rpx;
+  margin: 0 auto;
+  font-size: 32rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+/* 红点 */
+.dot {
+  width: 34rpx;
+  height: 34rpx;
+  border-radius: 50%;
+  color: #fff;
+  background-color: rgba(230,46,61,1);
+  font-size: 20rpx;
+  text-align: center;
+  line-height: 32rpx;
+}
+
+.grayText{
+  font-size: 26rpx;
+  color: #ceced1;
+  font-weight: 400;
+  text-align: center;
+}
+
+.sys{
+  position: fixed;
+  width: 100%;
+  bottom: 40rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  align-items: center;
+}

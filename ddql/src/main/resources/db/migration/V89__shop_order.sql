@@ -1,0 +1,31 @@
+CREATE TABLE IF NOT EXISTS `shop_order` (
+    `id` int NOT NULL AUTO_INCREMENT COMMENT '订单ID',
+    `order_no` varchar(32) NOT NULL COMMENT '订单编号',
+    `equipment_id` int NOT NULL COMMENT '设备ID',
+    `shop_id` int NOT NULL COMMENT '门店ID',
+    `shop_name` varchar(100) NOT NULL COMMENT '门店名称',
+    `business_circle_id` int NOT NULL DEFAULT 0 COMMENT '商圈ID',
+    `business_circle_name` varchar(100) NOT NULL DEFAULT '' COMMENT '商圈名称',
+    `total_amount` int NOT NULL DEFAULT 0 COMMENT '订单总金额（单位：分）',
+    `deduct_coin` int NOT NULL DEFAULT 0 COMMENT '抵扣金币数',
+    `deduct_amount` int NOT NULL DEFAULT 0 COMMENT '抵扣金币金额（单位：分）',
+    `pay_amount` int NOT NULL DEFAULT 0 COMMENT '实付金额（单位：分）',
+    `order_time` datetime NOT NULL COMMENT '下单时间/支付时间',
+    `user_id` int NOT NULL DEFAULT 0 COMMENT '下单用户ID',
+    `phone` varchar(32) NOT NULL DEFAULT '' COMMENT '下单手机号',
+    `nick_name` varchar(100) NOT NULL DEFAULT '' COMMENT '下单用户昵称',
+    `status` tinyint NOT NULL DEFAULT 1 COMMENT '订单状态 1完成 2退款',
+    `refund_reason` varchar(255) DEFAULT NULL COMMENT '退款原因',
+    `refund_time` datetime DEFAULT NULL COMMENT '退款时间',
+    `remark` varchar(255) DEFAULT NULL COMMENT '备注/驳回原因',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_order_no` (`order_no`),
+    KEY `idx_shop_id_order_time` (`shop_id`, `order_time`),
+    KEY `idx_user_id_order_time` (`user_id`, `order_time`),
+    KEY `idx_status_order_time` (`status`, `order_time`),
+    KEY `idx_equipment_id_order_time` (`equipment_id`, `order_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='门店订单表';
+
+

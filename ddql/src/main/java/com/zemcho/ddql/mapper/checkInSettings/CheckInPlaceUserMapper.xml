@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.checkInSettings.CheckInPlaceUserMapper">
+
+    <insert id="insert"
+            parameterType="java.util.List">
+        insert into check_in_place_user (user_id, place_id) values
+        <foreach item="item" index="index" collection="data" separator=",">
+            (#{item.userId},#{item.placeId})
+        </foreach>
+    </insert>
+    <select id="select" resultType="com.zemcho.ddql.entity.checkInSettings.CheckInPlaceUser">
+        select * from check_in_place_user
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="placeId != null">
+                and place_id = #{placeId}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>形状</title>
+    <g id="小程序-商家管理" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="商家管理-商品管理-商品详情" transform="translate(-619, -2117)" fill="#CCCCCC" fill-rule="nonzero">
+            <g id="编组-2" transform="translate(29, 942)">
+                <g id="编组-4" transform="translate(30, 689)">
+                    <path d="M575,486 C566.683168,486 560,492.683168 560,501 C560,509.316832 566.683168,516 575,516 C583.316832,516 590,509.316832 590,501 C590,492.683168 583.316832,486 575,486 Z M575,514.663366 C567.425743,514.663366 561.336634,508.574257 561.336634,501 C561.336634,493.425743 567.425743,487.336634 575,487.336634 C582.574257,487.336634 588.663366,493.425743 588.663366,501 C588.663366,508.574257 582.574257,514.663366 575,514.663366 Z" id="形状"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

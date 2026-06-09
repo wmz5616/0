@@ -1,0 +1,64 @@
+<!--index.wxml-->
+<import src="../../wxParse/wxParse.wxml" />
+<customTabBar selectIndex="{{0}}"></customTabBar>
+<view class="index-wrapper {{isIOS?'h168':''}}">
+  <view class="linear-gradient" style="min-height:426rpx;">
+    <image style="width:100%;position: absolute;top:0;" class="bg-image" src="/assets/images/header.png"></image>
+    <view class="center-msg" style="position:relative;z-index:99;text-align:center;">
+      <view class="img-wrapper">
+        <image style="height:40rpx;width:180rpx;" class="img" src="/assets/images/logo.png" mode="aspectFit"></image>
+      </view>
+      <view class="hindex-text">首页</view>
+    </view>
+  </view>
+  <view class="container-wrapper">
+    <view class="card-style swiper-wrapper">
+      <swiper autoplay class="banner-wrapper swiper" bindchange="handleSwiperChange" interval='3000'>
+        <swiper-item wx:for="{{showList}}" data-url="{{item.url}}" data-type="{{item.type}}" wx:key="index" class="banner-item" catchtap="jumpUrl">
+          <image lazy-load class="banner" src="{{item.pic}}" mode="aspectFill"></image>
+        </swiper-item>
+      </swiper>
+      <view class="dots-wrapper" wx:if="{{showList.length>1}}">
+        <view class="dot {{swiperCurrent == index ? 'active-dot' : ''}}" wx:for="{{showList}}" wx:key="index"></view>
+      </view>
+    </view>
+    <view wx:if="{{noticeList.length}}" class="notice-text">
+      <image mode="aspectFit" class="notice-icon" src="/assets/images/noticeicon.svg"></image>
+      <view class='swiper-wrappers'>
+        <swiper autoplay="{{true}}" interval="{{3000}}" vertical="{{true}}">
+          <swiper-item wx:for="{{noticeList}}" wx:key="index" data-id="{{item.id}}" catchtap="pushNoticeList">
+            <view class="text">{{item.title}}</view>
+          </swiper-item>
+        </swiper>
+      </view>
+      <view class="side-right" bindtap="pushNoticeList">
+        <view class="arrowIndex"></view>
+      </view>
+    </view>
+    <swiper wx:if="{{menuData.length}}" class="swiper-container" display-multiple-items="{{menuData.length < 4 ?menuData.length:4}}">
+      <swiper-item wx:for="{{menuData}}" wx:key="id">
+        <view bind:tap="jumpUrl" class="Cflex" data-url="{{item.url}}" data-type="{{item.type}}">
+          <image lazy-load="{{true}}" preload="{{true}}" src="{{item.banUrl}}" mode="aspectFit" class="icon"></image>
+          <text class="text3">{{item.name || item.otherName}}</text>
+        </view>
+      </swiper-item>
+    </swiper>
+    <view wx:if="{{bannerList.length}}" class="card-style swiper-wrapper swiper-wrappermin">
+      <swiper autoplay class="banner-wrapper swiper" bindchange="handleSwiperChange" interval='3000'>
+        <swiper-item wx:for="{{bannerList}}" data-url="{{item.url}}" data-type="{{item.type}}" wx:key="index" class="banner-item" catchtap="jumpUrl">
+          <image lazy-load class="banner" src="{{item.banUrl}}" mode="aspectFill"></image>
+        </swiper-item>
+      </swiper>
+      <view class="dots-wrapper" wx:if="{{bannerList.length>1}}">
+        <view class="dot {{swiperCurrent == index ? 'active-dot' : ''}}" wx:for="{{bannerList}}" wx:key="index"></view>
+      </view>
+    </view>
+    <view class="foot-desc">
+      <view class="jinjian-title" style="width:367rpx;height:107rpx;position:relative;color:#FFFFFF;font-size:34rpx;text-align:center;line-height:107rpx;margin:0 auto;padding-bottom:20rpx;">
+        <image mode="aspectFit" src="/assets/images/titlebaground.png" style="width:367rpx;height:107rpx;position:absolute;left:0;top:0;" />
+        <view style="position:relative;">平台介绍</view>
+      </view>
+      <template is="wxParse" data="{{wxParseData:newsDetail.contentHtml.nodes}}" />
+    </view>
+  </view>
+</view>

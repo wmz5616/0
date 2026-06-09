@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.cas.CasRuleMapper">
+    <sql id="field">
+        id,
+        is_menu,
+        parent_id,
+        rule_name,
+        api,
+        sort
+    </sql>
+
+    <insert id="insertAll">
+        INSERT INTO `cas_rule`(
+        <include refid="field"></include>
+        )VALUES
+        <foreach collection="data" item="item" separator=",">
+            (
+            #{item.id},
+            #{item.isMenu},
+            #{item.parentId},
+            #{item.ruleName},
+            #{item.api},
+            #{item.sort}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="truncateTableData">
+        TRUNCATE TABLE `cas_rule`
+    </delete>
+
+    <select id="selectLists" resultType="com.zemcho.guzhe.controller.cas.vo.RuleTreeVO">
+        SELECT *
+        FROM `cas_rule`
+        <where>
+            <if test="param.searchField1 != null">AND is_super = #{param.searchField1}</if>
+        </where>
+        ORDER BY sort ASC
+    </select>
+
+    <select id="selectByIds" resultType="com.zemcho.guzhe.entity.cas.CasRule">
+        SELECT *
+        FROM `cas_rule`
+        WHERE id in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY sort ASC
+    </select>
+</mapper>

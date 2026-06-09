@@ -1,0 +1,129 @@
+
+
+// .container {
+//   display: flex;
+//   flex-direction: column;
+//   height: 100vh;
+//   overflow: auto;
+//   background: @layout-body-background;
+// }
+
+.lang {
+  width: 100%;
+  height: 40px;
+  line-height: 44px;
+  text-align: right;
+  :global(.ant-dropdown-trigger) {
+    margin-right: 24px;
+  }
+}
+
+.content {
+  flex: 1;
+  padding: 32px 0;
+}
+
+
+  .container {
+    // background-image: url('../assets/images/loginBg.jpg');
+    background: #2F57E8; /* 针对不支持渐变的浏览器 */
+    background: -webkit-linear-gradient(left, #528FE9, #4678EB, #2257BF);
+    /*  Safari 5.1 到 6.0 */
+    background: -o-linear-gradient(right, #528FE9, #4678EB, #2257BF);
+    /*  Opera 11.6 到 12.0 */
+    background: -moz-linear-gradient(right, #528FE9, #4678EB, #2257BF);
+    /*  Fx 3.6 到 15 */
+    background: linear-gradient( to right,#528FE9, #4678EB, #2257BF);
+    /* 标准语法（必须是最后一个） */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+    height: 100%;
+  }
+
+  .content {
+    padding: 32px 0 24px;
+  }
+
+
+.top {
+  text-align: center;
+}
+
+.header {
+  height: 44px;
+  line-height: 44px;
+  a {
+    text-decoration: none;
+  }
+}
+
+.logo {
+  height: 44px;
+  margin-right: 16px;
+  vertical-align: top;
+}
+.zcLogo{
+  margin-left: 40px;
+  margin-top: 40px;
+}
+
+.title {
+  position: relative;
+  top: 2px;
+  // color: @heading-color;
+  font-weight: 600;
+  font-size: 33px;
+  font-family: Avenir, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.desc {
+  margin-top: 12px;
+  margin-bottom: 40px;
+  // color: @text-color-secondary;
+  // font-size: @font-size-base;
+}
+.footer{
+  font-size: 16px;
+  color: #FFFFFF;
+  margin: 30px auto;
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  text-align:center;
+}
+
+
+.xx1{
+  width: 108px;
+  height: 120px;
+  position: absolute;
+  top: 50px;
+  left: 15%;
+}
+
+
+.xx3{
+  width: 105px;
+  height: 90px;
+  position: absolute;
+  top: 40px;
+  right: 5%;
+}
+
+.xx33{
+  width: 90px;
+  height: 85px;
+  position: absolute;
+  bottom: 60px;
+  left: 10%;
+}
+
+.xx4{
+  width: 290px;
+  // height: 00px;
+  position: absolute;
+  bottom: 0px;
+  right: 30px;
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="29px" height="28px" viewBox="0 0 29 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>daohang2-mianxing</title>
+    <g id="首页" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="附近打卡点-离场打卡" transform="translate(-608, -1099)" fill="#04C0D9" fill-rule="nonzero">
+            <g id="推荐内容" transform="translate(30, 911)">
+                <g id="编组-6" transform="translate(568, 182)">
+                    <g id="daohang2-mianxing" transform="translate(24.3239, 20.3608) rotate(51) translate(-24.3239, -20.3608)translate(15.8239, 9.3608)">
+                        <path d="M8.49938699,17.7808878 L1.10294367,21.905837 C0.83383035,22.0551792 0.497803393,22.02476 0.261436757,21.8296588 C0.0250701208,21.6345576 -0.0613933124,21.3162457 0.0449077704,21.0325154 L7.80792437,0.469978522 C7.91518103,0.187495818 8.19128149,-4.54747351e-13 8.5,-4.54747351e-13 C8.80871851,-4.54747351e-13 9.08481897,0.187495818 9.19207563,0.469978522 L16.9550922,21.0325154 C17.0613933,21.3162457 16.9749299,21.6345576 16.7385632,21.8296588 C16.5021966,22.02476 16.1661697,22.0551792 15.8970563,21.905837 L8.49938699,17.7808878 Z" id="路径"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,2 @@
+ALTER TABLE `shop`
+    MODIFY COLUMN `rate` DECIMAL(5,1) NOT NULL DEFAULT 0 COMMENT '单位 百分之一 费率';

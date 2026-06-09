@@ -1,0 +1,19 @@
+var format = {
+  formatter: function(time,gap) {
+    if (!time) return ''
+  
+    var date = getDate(time)
+    var year = date.getFullYear()
+    var month = date.getMonth() + 1
+    var day = date.getDate()
+    
+    month = month < 10 ? '0' + month : month
+    day = day < 10 ? '0' + day : day
+
+    return gap ? year + gap + month + gap + day : year + '年' + month + '月' + day + '日'
+  },
+};
+
+module.exports = {
+  formatter: format.formatter,
+};

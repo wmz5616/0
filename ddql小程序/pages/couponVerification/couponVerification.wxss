@@ -1,0 +1,75 @@
+.bc {
+  height: 100vh;
+  background-color: #f9f9f9;
+  position: relative;
+  overflow: hidden;
+}
+
+.LRP30 {
+  padding: 0 30rpx;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.swiper {
+  padding: 30rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+  overflow-y: auto;
+  height: calc(100vh - 302rpx);
+  position: relative;
+}
+
+.base{
+  box-sizing: border-box;
+   padding: 0rpx 30rpx;
+   height: 92rpx;
+   width: 100%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   border-radius: 46rpx;
+   font-size: 32rpx;
+text-align: center;
+line-height: 48rpx;
+font-weight: 400;
+}
+
+.nomal{
+  background: #FFFFFF;
+  color: #4EACD3;
+  border: 1rpx solid #5DD5DE;
+}
+
+.active{
+  background-image: linear-gradient(192deg, #5DD5DE 0%, #4EACD3 84%);
+  color: #fff;
+}
+
+.label{
+font-size: 34rpx;
+color: #000000;
+font-weight: 400;
+}
+
+.van-cell__title{
+  min-width: 3.2em !important;
+  max-width: 3.2em !important;
+}
+
+/* dialog */
+.van-dialog__header {
+  padding-top: 46rpx !important;
+  padding-bottom: 46rpx !important;
+}
+
+.d_content{
+  margin-top: -16rpx;
+  font-size: 32rpx;
+}

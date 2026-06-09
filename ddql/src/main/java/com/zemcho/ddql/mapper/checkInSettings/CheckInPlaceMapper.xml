@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.checkInSettings.CheckInPlaceMapper">
+
+
+    <insert id="insert" parameterType="com.zemcho.ddql.entity.checkInSettings.CheckInPlace" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into check_in_place(name, address,location, check_in_method, check_in_distance, check_in_type_id,
+                                   contact_phone, status, sort, introduction, images, remark, create_time)
+        values (#{data.name}, #{data.address},#{data.location}, #{data.checkInMethod}, #{data.checkInDistance},
+                #{data.checkInTypeId}, #{data.contactPhone}, #{data.status}, #{data.sort}, #{data.introduction},
+                #{data.images}, #{data.remark}, #{data.createTime})
+    </insert>
+
+    <update id="update" parameterType="com.zemcho.ddql.entity.checkInSettings.CheckInPlace">
+        update check_in_place
+        <set>
+            <if test="data.name != null">
+                name = #{data.name},
+            </if>
+            <if test="data.address != null">
+                address = #{data.address},
+            </if>
+            <if test="data.location != null">
+                location = #{data.location},
+            </if>
+            <if test="data.checkInMethod != null">
+                check_in_method = #{data.checkInMethod},
+            </if>
+            <if test="data.checkInDistance != null">
+                check_in_distance = #{data.checkInDistance},
+            </if>
+            <if test="data.checkInTypeId != null">
+                check_in_type_id = #{data.checkInTypeId},
+            </if>
+            <if test="data.contactPhone != null">
+                contact_phone = #{data.contactPhone},
+            </if>
+            <if test="data.status != null">
+                status = #{data.status},
+            </if>
+            <if test="data.sort != null">
+                sort = #{data.sort},
+            </if>
+            <if test="data.introduction != null">
+                introduction = #{data.introduction},
+            </if>
+            <if test="data.images != null">
+                images = #{data.images},
+            </if>
+            <if test="data.remark != null">
+                remark = #{data.remark},
+            </if>
+        </set>
+        where id = #{data.id}
+    </update>
+
+
+    <update id="delete">
+        update check_in_place set delete_time = now()
+        where id in
+        <foreach item="item" collection="deleteIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="select" resultType="com.zemcho.ddql.controller.checkInSettings.vo.CheckInPlaceVo">
+        select c.id,
+        c.name,
+        c.address,
+        c.location,
+        c.check_in_method,
+        c.check_in_distance,
+        c.check_in_type_id,
+        c.contact_phone,
+        c.status,
+        c.sort,
+        c.introduction,
+        c.images,
+        c.remark,
+        c.create_time,
+        c.update_time,
+        ct.name as check_in_type_name,
+        ct.images as check_in_type_images
+        from check_in_place c
+        left join check_in_type ct on c.check_in_type_id = ct.id
+        <where>
+            <if test="param.keyword != null">
+                and c.name like concat('%', #{param.keyword}, '%')
+            </if>
+            <if test="param.searchId != null">
+                and c.check_in_type_id = #{param.searchId}
+            </if>
+            <if test="param.searchType != null">
+                and c.check_in_method = #{param.searchType}
+            </if>
+            <if test="param.searchIntStatus != null">
+                and c.status = #{param.searchIntStatus}
+            </if>
+            <if test="param.startTime != null">
+                and c.create_time >= #{param.startTime}
+            </if>
+            <if test="param.endTime != null">
+                and #{param.endTime} >= c.create_time
+            </if>
+            and c.delete_time is null
+        </where>
+        order by c.sort desc,c.id desc
+    </select>
+
+    <select id="selectByIds" resultType="com.zemcho.ddql.controller.checkInSettings.vo.CheckInPlaceVo">
+        select c.id,
+               c.name,
+               c.address,
+               c.location,
+               c.check_in_method,
+               c.check_in_distance,
+               c.check_in_type_id,
+               c.contact_phone,
+               c.status,
+               c.sort,
+               c.introduction,
+               c.images,
+               c.remark,
+               c.create_time,
+               c.update_time,
+               ct.name as check_in_type_name,
+               ct.images as check_in_type_images
+        from check_in_place c
+                 left join check_in_type ct on c.check_in_type_id = ct.id
+        where c.id in
+        <foreach item="item" collection="ids" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        and c.delete_time is null
+    </select>
+
+    <select id="selectById" resultType="com.zemcho.ddql.entity.checkInSettings.CheckInPlace">
+        SELECT *
+        FROM `check_in_place`
+        WHERE id = #{id}
+          AND delete_time IS NULL
+    </select>
+
+    <update id="updateStatusByIds">
+        UPDATE `check_in_place`
+        SET status = #{status}
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND delete_time is null
+    </update>
+</mapper>

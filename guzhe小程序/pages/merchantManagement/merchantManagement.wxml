@@ -1,0 +1,64 @@
+<wxs module="format" src="./merchantManagement.wxs"></wxs>
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">商家管理</text>
+  </van-nav-bar>
+  <view class="p30 g30 swiper">
+    <view class="p30 g30 box header">
+      <view class="g10 hTop">
+        <image src="/assets/images/merchantIcon.svg" mode="aspectFill" style="height: 38rpx;width: 42rpx;" />
+        <text class="shopName">{{shopDetail.name}}</text>
+      </view>
+      <view class="g20 hBom" bind:tap="showTime">
+        <view class="hbLeft">
+          <view class="time">{{format.formatter(startTime,'.')}}</view>
+          <view class="time">至</view>
+          <view class="time">{{format.formatter(endTime,'.')}}</view>
+        </view>
+        <image src="/assets/images/down.svg" mode="aspectFill" class="hbRight {{showTime?'up':''}}" />
+      </view>
+    </view>
+    <view class="g30 middle">
+      <view class="item">
+        <image src="/assets/images/purpleB.png" mode="aspectFill" class="imgB" />
+        <view class="mTitle">¥{{businessData.revenue / 100 || 0}}</view>
+        <view class="mGray">营业额</view>
+      </view>
+      <view class="item">
+        <image src="/assets/images/blueB.png" mode="aspectFill" class="imgB" />
+        <view class="mTitle">{{businessData.orderCount}}</view>
+        <view class="mGray">订单数</view>
+      </view>
+      <view class="item">
+        <image src="/assets/images/orangeB.png" mode="aspectFill" class="imgB" />
+        <view class="mTitle">¥{{businessData.pendingAmount / 100 || 0}}</view>
+        <view class="mGray">待结算金额</view>
+      </view>
+    </view>
+    <view class="g30 p30 box footer">
+      <view wx:for="{{iconList}}" wx:if="{{item.isShow}}" wx:key="index" class="iIcon" bind:tap="jump" data-url="{{item.url}}" data-text="{{item.text}}">
+        <image src="{{item.imgIcon}}" mode="aspectFill" class="Icon" />
+        <view class="fGray">{{item.text}}</view>
+        <view wx:if="{{item.badge}}" class="round">{{item.badge}}</view>
+      </view>
+    </view>
+  </view>
+  <van-popup round show="{{showTime}}" data-type="showTime" position="bottom" bind:close="close" lock-scroll>
+    <view class="p30 tHeader">
+      <view class="taText" bind:tap="reset">重置</view>
+      <view class="tTitle">选择时间</view>
+      <view class="taText" bind:tap="confirm">确定</view>
+    </view>
+    <view class="p_box">
+      <view class="p_top">
+        <view bind:tap="changeTime" data-index="1" class="basebox {{activeTime == 1 ? 'activeBox' : ''}}">{{format.formatter(tempStartTime)}}</view>
+        <text class="zhi">至</text>
+        <view bind:tap="changeTime" data-index="2" class="basebox {{activeTime == 2 ? 'activeBox' : ''}}">{{format.formatter(tempEndTime)}}</view>
+      </view>
+      <van-datetime-picker show-toolbar="{{false}}" type="date" data-field="startTime" value="{{ time }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ formatter }}" />
+    </view>
+  </van-popup>
+</view>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.shop.IndustryCategoryMapper">
+
+    <insert id="insert">
+        INSERT INTO `industry_category` (name, sort)
+        VALUES (#{data.name}, #{data.sort})
+    </insert>
+
+    <update id="update">
+        UPDATE `industry_category`
+        <set>
+            <if test="data.name != null and data.name != ''">
+                name = #{data.name},
+            </if>
+            <if test="data.sort != null">
+                sort = #{data.sort},
+            </if>
+        </set>
+        WHERE id = #{data.id}
+    </update>
+
+    <delete id="deleteByIds">
+        UPDATE `industry_category`
+        SET delete_time = NOW()
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="selectList" resultType="com.zemcho.guzhe.entity.shop.IndustryCategory">
+        SELECT *
+        FROM `industry_category`
+        WHERE delete_time is null
+        ORDER BY sort
+    </select>
+
+    <select id="selectMaxSort" resultType="java.lang.Integer">
+        SELECT MAX(sort)
+        FROM `industry_category`
+        WHERE delete_time is null
+    </select>
+
+    <select id="selectById" resultType="com.zemcho.guzhe.entity.shop.IndustryCategory">
+        SELECT *
+        FROM `industry_category`
+        WHERE id = #{id}
+        AND delete_time is null
+    </select>
+
+    <select id="selectByIds" resultType="com.zemcho.guzhe.entity.shop.IndustryCategory">
+        SELECT *
+        FROM `industry_category`
+        <where>
+            <if test="ids!=null">
+                id IN
+                <foreach collection="ids" item="item" close=")" open="(" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            AND delete_time is null
+        </where>
+    </select>
+
+    <select id="selectByShopIds"
+            resultType="com.zemcho.guzhe.controller.shop.vo.ShopIndustryCategoryListVO">
+        SELECT *
+        FROM `industry_category` ic
+        JOIN `shop_industry_category` sic ON ic.id = sic.industry_category_id
+        WHERE sic.shop_id IN
+        <foreach collection="ids" item="item" close=")" open="(" separator=",">
+            #{item}
+        </foreach>
+        AND ic.delete_time is null
+    </select>
+</mapper>

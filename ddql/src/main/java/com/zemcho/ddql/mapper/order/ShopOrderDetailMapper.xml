@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.order.ShopOrderDetailMapper">
+
+    <select id="selectDetailListByOrderId" resultType="com.zemcho.ddql.entity.personalCenter.ShopOrderDetail">
+        select * from shop_order_detail where order_id = #{orderId}
+    </select>
+
+    <insert id="batchInsert">
+        INSERT INTO shop_order_detail (
+        order_id, order_no, item_name, spec_name, unit,
+        unit_price, quantity, total_amount, deduct_coin,
+        deduct_amount, pay_amount, sort, remark, create_time, update_time
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.orderId}, #{item.orderNo}, #{item.itemName}, #{item.specName},
+            #{item.unit}, #{item.unitPrice}, #{item.quantity}, #{item.totalAmount},
+            #{item.deductCoin}, #{item.deductAmount}, #{item.payAmount},
+            #{item.sort}, #{item.remark}, NOW(), NOW()
+            )
+        </foreach>
+    </insert>
+</mapper>

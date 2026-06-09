@@ -1,0 +1,31 @@
+var format = {
+  formatter: function(time,gap) {
+    if (!time) return ''
+    var date = getDate(time)
+    var year = date.getFullYear()
+    var month = date.getMonth() + 1
+    var day = date.getDate()
+    
+    month = month < 10 ? '0' + month : month
+    day = day < 10 ? '0' + day : day
+
+    return gap ? year + gap + month + gap + day : year + '年' + month + '月' + day + '日'
+  },
+  formatStatus: function(status) {
+    if (status === 0) return '待支付';
+    if (status === 1) return '待使用';
+    if (status === 2) return '待发货';
+    if (status === 3) return '已发货';
+    if (status === 4) return '已完成';
+    if (status === 5) return '退款中';
+    if (status === 6) return '已退款';
+    if (status === 7) return '已过期';
+    if (status === 8) return '已取消';
+    return '未知状态';
+  }
+};
+
+module.exports = {
+  formatter: format.formatter,
+  formatStatus: format.formatStatus,
+};

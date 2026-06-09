@@ -1,0 +1,31 @@
+<!--pages/about/about.wxml-->
+<van-nav-bar bind:click-left="goBack">
+  <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+  <text slot="title" class="navText">关于我们</text>
+</van-nav-bar>
+<!-- logo -->
+<view style="width: 100%;padding:60rpx 210rpx;">
+  <image src="/assets/images/logo.png" mode="aspectFill" style="width: 329rpx;height: 115rpx;" />
+</view>
+
+<!-- 中间列表 -->
+<view class="toolList">
+  <view wx:key="index" wx:for="{{list}}" class="ListItem" data-type="{{index}}" bindtap="navigateTo">
+    <view>{{item.title}}</view>
+    <image src="/assets/images/gray-rightArrow.svg" mode="aspectFill" style="width: 16rpx;height: 25rpx;" />
+  </view>
+  <!-- <view class="ListItem" data-type="{{1}}" bindtap="navigateTo">
+    <view>服务协议</view>
+    <image src="/assets/images/gray-rightArrow.svg" mode="aspectFill" style="width: 16rpx;height: 25rpx;" />
+  </view>
+  <view class="ListItem" style="border: none;" data-type="{{2}}" bindtap="navigateTo">
+    <view>隐私协议</view>
+    <image src="/assets/images/gray-rightArrow.svg" mode="aspectFill" style="width: 16rpx;height: 25rpx;" />
+  </view> -->
+</view>
+
+<view class="sys">
+  <text class="grayText">{{version}}</text>
+  <text class="grayText">{{org_name}}</text>
+  <text class="grayText">{{miitbeian}}</text>
+</view>

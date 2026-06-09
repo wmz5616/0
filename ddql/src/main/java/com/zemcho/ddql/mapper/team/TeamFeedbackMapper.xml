@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.team.TeamFeedbackMapper">
+
+    <sql id="field">
+        id,
+        team_id,
+        user_id,
+        user_name,
+        content,
+        is_anonymous,
+        create_time,
+        delete_time
+    </sql>
+
+    <insert id="insert" parameterType="com.zemcho.ddql.entity.team.TeamFeedback">
+        INSERT INTO `team_feedback`(
+            team_id,
+            user_id,
+            user_name,
+            content,
+            is_anonymous,
+            create_time
+        )VALUES(
+            #{teamId},
+            #{userId},
+            #{userName},
+            #{content},
+            #{isAnonymous},
+            NOW()
+        )
+    </insert>
+
+    <select id="selectByTeamId" resultType="com.zemcho.ddql.entity.team.TeamFeedback">
+        SELECT <include refid="field"/>
+        FROM `team_feedback`
+        WHERE team_id = #{teamId}
+          AND delete_time IS NULL
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

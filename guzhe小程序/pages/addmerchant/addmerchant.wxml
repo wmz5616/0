@@ -1,0 +1,265 @@
+<!--pages/applySettlement/applySettlement.wxml-->
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">收款商户管理</text>
+  </van-nav-bar>
+  <view class="swiper {{isIOS?'h336':''}}">
+    <view class="box Cflex">
+      <view class="jinjian-title" style="width:367rpx;height:107rpx;position:relative;color:#FFFFFF;font-size:34rpx;text-align:center;line-height:107rpx;margin:0 auto;">
+        <image mode="aspectFit" src="/assets/images/titlebaground.png" style="width:367rpx;height:107rpx;position:absolute;left:0;top:0;" />
+        <view style="position:relative;">填写进件信息</view>
+      </view>
+      <view class="head-title" style="background-color:#FDFCEC;padding-left:30rpx;color:#F86E21;font-size:28rpx;padding:16rpx 30rpx;">
+        请确认进件信息的准确性，提交后无法主动修改，除非被打回需补充修改。
+      </view>
+      <view style="padding-bottom:25rpx;">
+        <view class="field" style="border:none;padding:0;">
+          <view class="title require">进件类型：</view>
+          <van-radio-group data-type="operationType" value="{{ operationType }}" bind:change="onChange" direction="horizontal">
+            <van-radio data-name="operationType" name="0" checked-color="#8153FC">个人经营者</van-radio>
+            <van-radio name="1" data-name="operationType" checked-color="#8153FC ">企业</van-radio>
+          </van-radio-group>
+        </view>
+      </view>
+      <view class="maxtitle" style="color:#333333;font-size:36rpx;font-weight:bold;display:flex;gap:28rpx;margin-bottom:20rpx;align-items:center;margin-left:-30rpx;">
+        <view class="blue-line"></view>
+        <view>商户基本信息</view>
+      </view>
+      <view class="field">
+        <view class="title require">商户名称：</view>
+        <input disabled="{{isRead}}" value="{{merchantName}}" bindinput="inputChange" data-type="merchantName" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field">
+        <view class="title require">联系电话：</view>
+        <input disabled="{{isRead}}" value="{{contactPhone}}" bindinput="inputChange" data-type="contactPhone" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field">
+        <view class="title require">邮箱地址：</view>
+        <input disabled="{{isRead}}" value="{{email}}" bindinput="inputChange" data-type="email" class="input" type="text" placeholder="请输入商户邮箱地址" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field">
+        <view class="title require">门店名称：</view>
+        <input disabled="{{isRead}}" value="{{storeName}}" bindinput="inputChange" data-type="storeName" class="input" type="text" placeholder="请输入门店名称" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field">
+        <view class="title require">所属地区：</view>
+        <view bind:tap="showArea" class="gap10" data-type="storeAddrInfo">
+          <view wx:if="{{storeAddrInfo}}" class="list">
+            <view  class="badge">{{storeAddrInfo}}</view>
+          </view>
+          <view wx:else class="grayText">请选择</view>
+          <image src="/assets/images/pullDown.svg" mode="aspectFill" style="height: 17rpx;width: 28rpx;" />
+        </view>
+      </view>
+      <view class="field">
+        <view class="title require">详细地址：</view>
+        <input disabled="{{isRead}}" value="{{storeAddr}}" bindinput="inputChange" data-type="storeAddr" class="input" type="text" placeholder="请输入门店详细地址" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view wx:if="{{operationType==1}}" class="maxtitle" style="color:#333333;font-size:36rpx;font-weight:bold;display:flex;gap:28rpx;margin-bottom:20rpx;align-items:center;margin-left:-30rpx;">
+        <view class="blue-line"></view>
+        <view>经营主体信息</view>
+      </view>
+      <view class="field" style="align-items: flex-start;" wx:if="{{operationType==1}}">
+        <view class="title require">主体名称：</view>
+        <textarea disabled="{{isRead}}" value="{{businessName}}" bindinput="inputChange" data-type="businessName" style="height:80rpx;" class="input" type="text" placeholder="请根据主体营业执照或登记证书准确输入主体名称" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field" wx:if="{{operationType==1}}">
+        <view class="title require">主体类型</view>
+        <view bind:tap="openPop" class="gap42" data-pickertype="mainType">
+          <view wx:if="{{mainType}}" class="badge">{{mainTypeText}}</view>
+          <view wx:else class="grayText">请选择主体所属类型</view>
+          <image src="/assets/images/pullDown.svg" mode="aspectFill" style="height: 17rpx;width: 28rpx;" />
+        </view>
+      </view>
+      <view class="card-uploadimg" wx:if="{{operationType==1}}">
+        <view class="title require" style="padding-bottom:20rpx;">营业执照照片</view>
+        <van-uploader file-list="{{ licenceUrlList }}" deletable max-count="1" use-before-read preview-file bind:before-read="beforeRead" upload-icon="plus" bind:after-read="afterRead" bind:delete="deleteRead" data-type="licenceUrlList" />
+      </view>
+      <view class="field" wx:if="{{operationType==1}}">
+        <view class="title require">执照/证书编号：</view>
+        <textarea disabled="{{isRead}}" value="{{businessNo}}" bindinput="inputChange" data-type="businessNo" style="height:80rpx;" class="input" type="text" placeholder="请输入主体营业执照或登记证书编号" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field" style="align-items: flex-start;" wx:if="{{operationType==1}}">
+        <view class="title require">法人姓名：</view>
+        <textarea value="{{legalPerson}}" bindinput="inputChange" data-type="legalPerson" disabled="{{isRead}}" style="height:80rpx;" class="input" type="text" placeholder="请根据证件信息准确输入主体法定代表人姓名" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field" wx:if="{{operationType==1}}">
+        <view class="title require">所属地区：</view>
+        <view bind:tap="showArea" class="gap42" data-type="businessAddrInfo">
+          <view wx:if="{{businessAddrInfo}}" class="list">
+            <view class="badge">{{businessAddrInfo}}</view>
+          </view>
+          <view wx:else class="grayText">请选择</view>
+          <image src="/assets/images/pullDown.svg" mode="aspectFill" style="height: 17rpx;width: 28rpx;" />
+        </view>
+      </view>
+      <view class="field" style="align-items: flex-start;" wx:if="{{operationType==1}}">
+        <view class="title require">详细地址：</view>
+        <textarea value="{{businessAddr}}" bindinput="inputChange" data-type="businessAddr" style="height:100rpx;" class="input" type="text" placeholder="请根据主体营业执照或登记证书准确输入详细地址" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view style="border-bottom:1rpx solid rgba(238, 238, 238, 1);padding-bottom:25rpx;" wx:if="{{operationType==1}}">
+        <view class="field" style="border:none;padding:0;">
+          <view class="title require">执照/证书有效期：</view>
+          <view class="gap15" data-type="bus" bind:tap="openTime" data-start="businessBeginDate" data-end="businessEndDate">
+            <view wx:if="{{businessEndDate}}">{{businessBeginDate}}~{{businessEndDate}}</view>
+            <view wx:else class="grayText">请选择时间</view>
+            <image src="/assets/images/time.svg" mode="aspectFill" style="height: 30rpx;width: 35rpx;" />
+          </view>
+        </view>
+        <view class="gap15">
+          <van-checkbox-group value="{{business}}" bind:change="radioonChange" direction="horizontal" data-type="business">
+            <van-checkbox name="1" checked-color="#8153FC ">长期</van-checkbox>
+          </van-checkbox-group>
+        </view>
+      </view>
+      <view class="maxtitle" style="color:#333333;font-size:36rpx;font-weight:bold;display:flex;gap:28rpx;margin-bottom:20rpx;align-items:center;margin-left:-30rpx;">
+        <view class="blue-line"></view>
+        <view>负责人身份证信息</view>
+      </view>
+      <view class="card-uploadimg">
+        <view class="title require" style="padding-bottom:20rpx;">身份证人像面照片</view>
+        <van-uploader file-list="{{ legalLicenceFrontList }}" deletable max-count="1" use-before-read preview-file bind:before-read="beforeRead" upload-icon="plus" bind:after-read="afterRead" bind:delete="deleteRead" data-type="legalLicenceFrontList" />
+        <!-- <image src="https://sd-img-new-1255001373.cos.shc.cos.yun.unionpay.com/2026/05/25e5a336-3e5d-4660-88c9-e009f2c898e7"/> -->
+      </view>
+      <view class="field" style="align-items: flex-start;">
+        <view class="title require">证件持有人姓名：</view>
+        <textarea value="{{cardName}}" bindinput="inputChange" data-type="cardName" disabled="{{isRead}}" style="height:80rpx;" class="input" type="text" placeholder="请根据证件信息准确输入证件持有人姓名" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field">
+        <view class="title require">证件号码：</view>
+        <input bindinput="inputChange" value="{{cardNo}}" data-type="cardNo" disabled="{{isRead}}" class="input" type="text" placeholder="请输入身份证号码" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field">
+        <view class="title require">手机号码：</view>
+        <input bindinput="inputChange" value="{{cardMobile}}" data-type="cardMobile" disabled="{{isRead}}" class="input" type="text" placeholder="请输入证件持有人手机号码" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="card-uploadimg">
+        <view class="title require" style="padding-bottom:20rpx;">身份证国徽面照片</view>
+        <van-uploader file-list="{{ legalLicenceBackList }}" deletable max-count="1" use-before-read preview-file bind:before-read="beforeRead" upload-icon="plus" bind:after-read="afterRead" bind:delete="deleteRead" data-type="legalLicenceBackList" />
+      </view>
+      <view style="border-bottom:1rpx solid rgba(238, 238, 238, 1);padding-bottom:25rpx;">
+        <view class="field" style="border:none;padding:0;">
+          <view class="title require">证件有效期：</view>
+          <view class="gap15" data-type="card" bind:tap="openTime" data-start="cardBeginDate" data-end="cardEndDate">
+            <view wx:if="{{cardEndDate}}">{{cardBeginDate}}~{{cardEndDate}}</view>
+            <view wx:else class="grayText">请选择时间</view>
+            <image src="/assets/images/time.svg" mode="aspectFill" style="height: 30rpx;width: 35rpx;" />
+          </view>
+        </view>
+        <view class="gap15">
+          <van-checkbox-group value="{{card}}" bind:change="radioonChange" direction="horizontal" data-type="card">
+            <van-checkbox name="1" checked-color="#8153FC ">长期</van-checkbox>
+          </van-checkbox-group>
+        </view>
+      </view>
+      <view class="maxtitle" style="color:#333333;font-size:36rpx;font-weight:bold;display:flex;gap:28rpx;margin-bottom:20rpx;align-items:center;margin-left:-30rpx;">
+        <view class="blue-line"></view>
+        <view>分账账户信息</view>
+      </view>
+      <view class="field">
+        <view class="title require">账户类型</view>
+        <view bind:tap="openPop" class="gap42" data-pickertype="accType">
+          <view wx:if="{{accType}}" class="list">
+            <view catch:tap="clearItem" wx:key="index">{{accType==10070?'开户许可证照片':'法人银行卡照片'}}</view>
+          </view>
+          <view wx:else class="grayText">请选择账户所属类型</view>
+          <image src="/assets/images/pullDown.svg" mode="aspectFill" style="height: 17rpx;width: 28rpx;" />
+        </view>
+      </view>
+      <view class="card-uploadimg" wx:if="{{accType}}">
+        <view class="title require" style="padding-bottom:20rpx;">{{accType==10070?'开户许可证照片':'法人银行卡照片'}}</view>
+        <van-uploader file-list="{{ openAccountLicenceList }}" deletable max-count="1" use-before-read preview-file bind:before-read="beforeRead" upload-icon="plus" bind:after-read="afterRead" bind:delete="deleteRead" data-type="openAccountLicenceList" />
+      </view>
+      <view style="border-bottom:1rpx solid rgba(238, 238, 238, 1);padding-bottom:25rpx;">
+        <view class="field" style="border:none;padding:0;">
+          <view class="title require">银行账号：</view>
+          <input bindinput="inputChange" value="{{accCardNo}}" data-type="accCardNo" disabled="{{isRead}}" class="input" type="text" placeholder="请输入银行账户" placeholder-style="color: #CCCCCC;" />
+        </view>
+        <view style="color:#F86E21;font-size:24rpx;padding-top:20rpx;">注意：需严格按照账户类型输入对应的银行帐户</view>
+      </view>
+      <view style="border-bottom:1rpx solid rgba(238, 238, 238, 1);padding-bottom:25rpx;">
+        <view class="field" style="border:none;padding:0;">
+          <view class="title require">账户名称：</view>
+          <input value="{{accName}}" bindinput="inputChange" data-type="accName" disabled="{{isRead}}" class="input" type="text" placeholder="请输入银行账户" placeholder-style="color: #CCCCCC;" />
+        </view>
+        <view style="color:#F86E21;font-size:24rpx;padding-top:20rpx;">根据账户所属类型输入法人姓名或开户许可证主体名称</view>
+      </view>
+      <view class="field">
+        <view class="title require">开户预留手机：</view>
+        <input value="{{accMobile}}" bindinput="inputChange" data-type="accMobile" disabled="{{isRead}}" class="input" type="text" placeholder="请输入" placeholder-style="color: #CCCCCC;" />
+      </view>
+      <view class="field">
+        <view class="title require">开户行</view>
+        <view bind:tap="openPop" class="gap42" data-pickertype="bank">
+          <view wx:if="{{bankName}}" class="list">
+            <view  data-pickertype="bankName"  wx:key="index" >{{bankName}}</view>
+          </view>
+          <view wx:else class="grayText">请选择开户行</view>
+          <image src="/assets/images/pullDown.svg" mode="aspectFill" style="height: 17rpx;width: 28rpx;" />
+        </view>
+      </view>
+      <view class="field">
+        <view class="title require">开户所属地区：</view>
+        <view bind:tap="showArea" class="gap10" data-type="bankAddress">
+          <view wx:if="{{bankAddress}}" class="list">
+            <view>{{bankAddress}}</view>
+          </view>
+          <view wx:else class="grayText">请选择</view>
+          <image src="/assets/images/pullDown.svg" mode="aspectFill" style="height: 17rpx;width: 28rpx;" />
+        </view>
+      </view>
+      <view class="field">
+        <view class="title require">支行</view>
+        <view bind:tap="openPop" class="gap10" data-pickertype="bankLinkNo">
+          <view wx:if="{{bankBranch}}" class="list">
+            <view  data-pickertype="typeList">{{bankBranch}}</view>
+          </view>
+          <view wx:else class="grayText">请选择支行</view>
+          <image src="/assets/images/pullDown.svg" mode="aspectFill" style="height: 17rpx;width: 28rpx;" />
+        </view>
+      </view>
+      <!-- <view class="field">
+        <view class="title require">营业时间：</view>
+        <view class="gap15" bind:tap="openTime">
+          <view wx:if="{{showStartTime}}">{{showStartTime}}~{{showEndTime}}</view>
+          <view wx:else class="grayText">开始时间~结束时间</view>
+          <image src="/assets/images/time.svg" mode="aspectFill" style="height: 30rpx;width: 35rpx;" />
+        </view>
+      </view> -->
+    </view>
+  </view>
+  <view class="Btn1 {{isIOS?'isIOS':''}}" wx:if="{{type=='find'}}">
+    <view class="btn1" bind:tap="goBack">返回</view>
+  </view>
+  <view wx:if="{{type!='find'}}" class="Btn1 {{isIOS?'isIOS':''}}" style="gap:60rpx;">
+    <view class="btn1 twbtn" bind:tap="submit" data-status="2">提交</view>
+    <view class="btn1 twbtn bordert" bind:tap="submit" data-status="4">保存草稿</view>
+  </view>
+  <van-popup close-on-click-overlay position="bottom" round show="{{ showPop }}" bind:close="onClose" data-type="showPop">
+   <view style="text-align:center;padding-top:20rpx;padding-bottom:20rpx;"><input value="{{searchValue}}" bindconfirm="searchyinhang" placeholder="请输入关键词确认搜索" bindinput="getinputvalue"/></view>
+    <van-picker data-type="showPop" id="myPicker" toolbar-class="p_title" show-toolbar cancel-button-text="取消" title="{{pickertype == 'mainType'?'主体类型':pickertype=='accType'?'账户类型':pickertype == 'bank'?'开户行':'支行'}}" columns="{{ selectcolumns }}" bind:confirm="onConfirm" data-name="showPop" bind:cancel="onClose" />
+  </van-popup>
+  <!-- 时间筛选 -->
+  <van-popup position="bottom" round show="{{ showPop1 }}" bind:close="onClose" data-name="showPop1">
+    <view>
+      <view class="pickerTime flex">
+        <text class="p_avtiveText" bind:tap="onClose" data-type="showPop1" data-fil="cancel">取消</text>
+        <text class="p_text">选择日期</text>
+        <text class="p_avtiveText" bind:tap="comfrimDate" data-type="showPop1">确定</text>
+      </view>
+      <van-datetime-picker min-date="{{minDate}}" max-date="{{maxDate}}" show-toolbar="{{false}}" type="date" value="{{ currentDate }}" bind:input="onInput" formatter="{{ forma }}" data-field="currentDate"/>
+      <van-datetime-picker min-date="{{minDate}}" max-date="{{maxDate}}" show-toolbar="{{false}}" data-field="currentendDate" type="date" value="{{ currentendDate }}" bind:input="onInput" formatter="{{ forma }}" />
+    </view>
+  </van-popup>
+  <van-popup show="{{ showArea }}" round position="bottom" bind:close="onClose" data-type="showArea">
+    <van-cascader value="{{currentAddress}}" options="{{ columns }}" active-color="#6070FB" bind:close="onClose" bind:finish="onFinish" bind:change="onaddressChange" data-type="showArea" use-title-slot="{{true}}">
+      <view slot="title" class="pHeader">
+        <!-- <text class="clear" bind:tap="clear">清空</text> -->
+        <view class="pTitle">地址选择</view>
+      </view>
+    </van-cascader>
+  </van-popup>
+</view>

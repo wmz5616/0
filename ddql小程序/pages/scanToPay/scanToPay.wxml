@@ -1,0 +1,44 @@
+<import src="../../wxParse/wxParse.wxml" />
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">{{shopName}}</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <view class="boxShadow Rflex g20 header">
+      <view class="text">订单金额（元）：</view>
+      <input disabled="{{confirmType}}" class="input" type="digit" value="{{totalAmount}}" placeholder="请输入" bindinput="onInput" />
+      <view class="samllBtn" bind:tap="confirmAmount">{{confirmType?'修改金额':'确定金额'}}</view>
+    </view>
+    <view wx:if="{{hadRule}}" class="Cflex g30" style="width: 100%;">
+      <view wx:if="{{ confirmType}}" class="boxShadow" style="width: 100%;">
+        <view class="mHeader">
+          <image src="/assets/images/goldCion.svg" mode="aspectFill" style="height: 42rpx;width: 42rpx;" />
+          <text class="color">{{totalCoin}}</text>
+          <text class="coin">金币</text>
+        </view>
+        <view class="mMiddle p30">
+          <view class="coin">抵扣金币</view>
+          <view class="Rflex" style="height: 78rpx;">
+            <input class="Oinput" type="number" value="{{deductCoin}}" placeholder="请输入抵扣金币" bindinput="onInput1" />
+            <view wx:if="{{deductCoin}}" style="height: 100%;display: flex;align-items: center;" data-name="deductCoin" bind:tap="clear">
+              <view class="circle">x</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="boxShadow empty">
+        <image src="/assets/images/scanEnpty.svg" mode="aspectFill" style="height: 160rpx;width: 195rpx" />
+        <view class="grayText">确定订单金额后，可编辑抵扣金额</view>
+      </view>
+    </view>
+
+    <view wx:if="{{hadRule && ruleInfo.remark}}" class="p30 boxShadow">
+      <view class="coin" style="padding-bottom: 30rpx;">抵扣规则</view>
+      <template is="wxParse" data="{{wxParseData:newsDetail.contentHtml.nodes}}" />
+    </view>
+  </view>
+  <view class="btn">
+    <view class="Btn" bind:tap="pay">立即支付{{payPrice?'￥'+payPrice:''}}</view>
+  </view>
+</view>

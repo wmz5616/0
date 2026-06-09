@@ -1,0 +1,90 @@
+/* pages/permissionManagement/permissionManagement.wxss */
+.swiper {
+  overflow-y: auto;
+  height: calc(100vh - 180rpx);
+  position: relative;
+  width: 100%;
+}
+
+.item{
+  margin: 30rpx 30rpx 0rpx 30rpx;
+  width: auto;
+}
+
+.h284 {
+  height: calc(100vh - 284rpx) !important;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.transfer {
+  padding: 30rpx 39rpx 30rpx 21rpx;
+  background: #FFFFFF;
+  border-radius: 18rpx;
+}
+
+.gray_right {
+  height: 28rpx;
+  width: 16rpx;
+}
+
+.title {
+  font-size: 30rpx;
+  color: #333333;
+  font-weight: 400;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.tag {
+  font-size: 30rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.name {
+  font-size: 28rpx;
+  color: #333333;
+  font-weight: 400;
+}
+
+.radio {
+  height: 36rpx;
+  width: 36rpx;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border: 1px solid rgba(163, 169, 175, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.activeRadio {
+  border: none;
+}
+
+.d_v_btn {
+  font-size: 32rpx !important;
+  color: #8153FC !important;
+  line-height: 42rpx !important;
+  font-weight: 400 !important;
+}
+
+.dialogBtn {
+  width: 100% !important;
+  font-size: 36rpx;
+  color: #333333;
+  text-align: center;
+  line-height: 42rpx;
+  font-weight: 400;
+}
+
+.van-dialog__header {
+  padding: 30rpx 56rpx !important;
+  box-sizing: border-box;
+}

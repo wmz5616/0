@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.product.ProductSpecValueMapper">
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO product_spec_value (type_id, value_name, sort, create_time)
+        VALUES (#{data.typeId}, #{data.valueName}, #{data.sort}, NOW())
+    </insert>
+
+    <insert id="batchInsert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO product_spec_value (type_id, value_name, sort, create_time) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.typeId}, #{item.valueName}, #{item.sort}, NOW())
+        </foreach>
+    </insert>
+
+    <delete id="deleteByTypeIds">
+        DELETE FROM product_spec_value WHERE type_id IN
+        <foreach collection="typeIds" item="typeId" open="(" separator="," close=")">
+            #{typeId}
+        </foreach>
+    </delete>
+
+    <update id="update">
+        UPDATE product_spec_value SET value_name = #{value.valueName}, sort = #{value.sort} WHERE id = #{value.id}
+    </update>
+
+    <select id="selectByTypeId" resultType="com.zemcho.guzhe.entity.product.ProductSpecValue">
+        SELECT id, type_id AS typeId, value_name AS valueName, sort, create_time AS createTime
+        FROM product_spec_value WHERE type_id = #{typeId}
+        ORDER BY sort ASC
+    </select>
+
+    <select id="selectByTypeIdAndValueName" resultType="com.zemcho.guzhe.entity.product.ProductSpecValue">
+        SELECT id, type_id AS typeId, value_name AS valueName, sort, create_time AS createTime
+        FROM product_spec_value WHERE type_id = #{typeId} AND value_name = #{valueName}
+        LIMIT 1
+    </select>
+</mapper>

@@ -1,0 +1,78 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">充值购币</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <view class="box top">
+      <view class="flex t_top ">
+        <text class="title">{{teamInfo.text}}</text>
+        <view class="Btn" bind:tap="open" data-name="showPopup">
+          <text class="">切换团体</text>
+          <image src="/assets/images/transform.svg" style="width: 31rpx;height: 24rpx;" mode="aspectFill" />
+        </view>
+      </view>
+      <view class="flex t_bottom">
+        <view class="t_b_left">
+          <image src="{{teamInfo.avatar}}" style="height:86rpx;width:86rpx;border-radius: 50%;" mode="aspectFill" />
+          <view bind:tap="jump" data-url="/pages/rechargeRecord/rechargeRecord">
+            <text class="coin">{{teamInfo.healthyCoin}}</text>
+            <text class="nomal_text">(币值:{{teamInfo.healthyCoin}}枚)</text>
+            <image src="/assets/images/black-rightArrow.svg" mode="aspectFill" style="height: 20rpx;width: 10rpx;" />
+          </view>
+        </view>
+        <!-- <view class="flex t_b_right" bind:tap="jump" data-url="/pages/transactionRecord/transactionRecord?id={{teamInfo.value}}">
+          <text class="title">流水记录</text>
+          <image src="/assets/images/black-rightArrow.svg" style="width:11rpx;height:20rpx;" mode="aspectFill" />
+        </view> -->
+      </view>
+      <view class="t_bottoms" bind:tap="gotixian">
+        <text class="title">点击设置提现规则</text>
+        <image src="/assets/images/black-rightArrow.svg" style="width:11rpx;height:20rpx;" mode="aspectFill" />
+      </view>
+    </view>
+    <view wx:if="{{rechargeConfigData.enableRecharge}}" class="box middle">
+      <view class="m_top">
+        <image src="/assets/images/waller.svg" style="width:34rpx;height: 36rpx;" mode="aspectFill" />
+        <text class="title">选中充值金额</text>
+      </view>
+      <view class="m_bottom">
+        <view wx:for="{{coinList}}" wx:key="index" class="coin_box" data-index="{{index}}" bind:tap="select">
+          <image wx:if="{{selectCoin == index}}" class="selectImage" src="/assets/images/selectImage.png" mode="aspectFill" />
+          <view style="position: absolute;text-align: center;z-index: 1;">
+            <view class="c_b_top {{selectCoin == index?'activeCoin':''}}">
+              <text class="c_b_coin">{{item.rechargeAmount/100}}</text>元
+            </view>
+            <text wx:if="{{item.giftAmount}}" class="c_b_bottom {{selectCoin == index?'activeCoin':''}}">充{{item.rechargeAmount/100}}送{{item.giftAmount/100}}={{item.totalPrice/100}}健康币</text>
+          </view>
+        </view>
+        <view wx:if="{{rechargeConfigData.enableCustomAmount}}" class="coin_box" data-index="{{coinList.length}}" bind:tap="select">
+          <image wx:if="{{selectCoin == coinList.length}}" class="selectImage" src="/assets/images/selectImage.png" mode="aspectFill" />
+          <!-- <view style="position: absolute;text-align: center;z-index: 1;">
+            <view class="c_b_top">
+              <text class="c_b_coin">1.00</text>元
+            </view>
+          </view> -->
+          <view class="zdy" data-type="zdy">
+            <input 	bindblur="blur" value="{{price}}" type="number" class="inpt" placeholder="自定义"/>
+            <text wx:if="{{selectCoin == coinList.length}}" class="c_b_top">元</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{rechargeConfigData.enableRecharge}}" class="box bottom">
+      <text class="title">充值说明:</text>
+      <view class="list">
+      <rich-text nodes="{{rechargeConfigData.description}}"></rich-text>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{rechargeConfigData.enableRecharge}}" class="Btn1">
+    <view bind:tap="getRechargeOrder" class="flex btn">立即充值</view>
+  </view>
+  <!-- 自定义弹出层 -->
+  <van-popup show="{{ showPopup }}" z-index="{{100}}" position="bottom" round data-name="showPopup" bind:close="onClose">
+    <!-- 切换团体 -->
+    <van-picker toolbar-class="pTab" show-toolbar title="切换团体" columns="{{ columns }}" bind:confirm="confirm" bind:cancel="onClose" data-name="showPopup" />
+  </van-popup>
+</view>

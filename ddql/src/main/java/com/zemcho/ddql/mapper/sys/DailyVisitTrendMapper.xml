@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.sys.DailyVisitTrendMapper">
+    <sql id="field">
+        year,
+        month,
+        date,
+        session_cnt,
+        visit_pv,
+        visit_uv,
+        visit_uv_new,
+        created_at
+    </sql>
+
+    <insert id="insertAll">
+        INSERT INTO `daily_visit_trend`(
+        <include refid="field"></include>
+        )VALUES
+        <foreach collection="data" item="item" separator=",">
+            (
+            #{item.year},
+            #{item.month},
+            #{item.date},
+            #{item.sessionCnt},
+            #{item.visitPv},
+            #{item.visitUv},
+            #{item.visitUvNew},
+            #{item.createdAt}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByDate">
+        DELETE FROM `daily_visit_trend`
+        WHERE `date` = #{date}
+    </delete>
+
+    <select id="countVisitPvByDate" resultType="java.lang.Integer">
+        SELECT sum(visit_pv)
+        FROM `daily_visit_trend`
+        <where>
+            <if test="startDate != null and endDate != null">
+                AND `date` BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectVisitTrendStat" resultType="com.zemcho.ddql.controller.statistic.vo.VisitTrendStatVo">
+        SELECT
+        <choose>
+            <when test="param.timeDimension == 'year'">
+                `year` as dataGroup,
+            </when>
+            <when test="param.timeDimension == 'month'">
+                `month` as dataGroup,
+            </when>
+            <otherwise>
+                `date` as dataGroup,
+            </otherwise>
+        </choose>
+        SUM(session_cnt) as totalSessionCnt,
+        SUM(visit_pv) as totalVisitPv,
+        SUM(visit_uv) as totalVisitUv,
+        SUM(visit_uv_new) as totalVisitUvNew
+        FROM `daily_visit_trend`
+        <where>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `created_at` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+        <choose>
+            <when test="param.timeDimension == 'year'">
+                GROUP BY `year`
+                ORDER BY `year`
+            </when>
+            <when test="param.timeDimension == 'month'">
+                GROUP BY `month`
+                ORDER BY `month`
+            </when>
+            <otherwise>
+                GROUP BY `date`
+                ORDER BY `date`
+            </otherwise>
+        </choose>
+    </select>
+</mapper>

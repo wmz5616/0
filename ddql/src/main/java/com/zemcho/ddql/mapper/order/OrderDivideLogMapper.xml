@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zemcho.ddql.mapper.order.OrderDivideLogMapper">
+
+    <insert id="insert" parameterType="com.zemcho.ddql.entity.order.OrderDivideLog">
+        INSERT INTO `order_divide_log`
+        (
+            shop_id,
+            shop_name,
+            order_type,
+            order_id,
+            order_no,
+            amount,
+            merchant_no,
+            merchant_name,
+            divide_no,
+            divide_amount,
+            handling_rate,
+            handling_charge,
+            platform_merchant_no,
+            platform_merchant_name,
+            platform_rate,
+            platform_charge,
+            create_time
+        )
+        VALUES
+            (
+                #{data.shopId},
+                #{data.shopName},
+                #{data.orderType},
+                #{data.orderId},
+                #{data.orderNo},
+                #{data.amount},
+                #{data.merchantNo},
+                #{data.merchantName},
+                #{data.divideNo},
+                #{data.divideAmount},
+                #{data.handlingRate},
+                #{data.handlingCharge},
+                #{data.platformMerchantNo},
+                #{data.platformMerchantName},
+                #{data.platformRate},
+                #{data.platformCharge},
+                #{data.createTime}
+            )
+    </insert>
+
+</mapper>

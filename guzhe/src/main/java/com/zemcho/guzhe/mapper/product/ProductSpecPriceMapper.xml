@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.product.ProductSpecPriceMapper">
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO product_spec_price (product_id, spec_value_ids, spec_combination, price, amount, stock, status, sort, create_time)
+        VALUES (#{data.productId}, #{data.specValueIds}, #{data.specCombination}, #{data.price}, #{data.amount}, #{data.stock}, #{data.status}, #{data.sort}, NOW())
+    </insert>
+
+    <insert id="batchInsert">
+        INSERT INTO product_spec_price (product_id, spec_value_ids, spec_combination, price, amount, stock, status, sort, create_time) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.productId}, #{item.specValueIds}, #{item.specCombination}, #{item.price}, #{item.amount}, #{item.stock}, #{item.status}, #{item.sort}, NOW())
+        </foreach>
+    </insert>
+
+    <delete id="deleteByProductId">
+        DELETE FROM product_spec_price WHERE product_id = #{productId}
+    </delete>
+
+    <select id="sumStockByProductId" resultType="java.lang.Integer">
+        SELECT COALESCE(SUM(stock), 0) FROM product_spec_price WHERE product_id = #{productId}
+    </select>
+
+    <select id="selectByProductId" resultType="com.zemcho.guzhe.entity.product.ProductSpecPrice">
+        SELECT * FROM product_spec_price WHERE product_id = #{productId} ORDER BY sort ASC
+    </select>
+</mapper>

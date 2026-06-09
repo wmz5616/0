@@ -1,0 +1,31 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">邀请成员</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <view class="box code my_canvas" id="my-canvas">
+      <view class="c_header my_draw_canvas">
+        <text data-type="text" data-text="{{name}}" class="title my_draw_canvas">{{name}}</text>
+        <text data-type="text" data-text="扫一扫下面的二维码图案，加入团体" class="gray_text my_draw_canvas">扫一扫下面的二维码图案，加入团体</text>
+      </view>
+      <image data-type="image" data-url="{{codeUrl}}" src="{{codeUrl}}" class="codeImg my_draw_canvas" mode="aspectFill"
+      />
+    </view>
+    <view class="flex iconList">
+      <button id="share" open-type="share" style="display: none;"></button>
+      <label for="share">
+        <view class="left">
+          <image src="/assets/images/green-wechat.svg" class="icon" mode="aspectFill"/>
+          <text class="text">分享</text>
+        </view>
+      </label>
+      <!-- <view class="left" bind:tap="download"> -->
+        <view class="left" bind:tap="share">
+        <image src="/assets/images/down.svg" class="icon" mode="aspectFill"/>
+        <text class="text">保存到相册</text>
+      </view>
+    </view>
+  </view>
+<canvas canvas-id="myCanvas" class="myCanvas" style="position:absolute;top:-99999;"></canvas>
+</view>

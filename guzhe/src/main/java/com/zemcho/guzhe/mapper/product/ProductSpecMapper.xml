@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.product.ProductSpecMapper">
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO product_spec_type (product_id, type_name, sort, create_time)
+        VALUES (#{data.productId}, #{data.typeName}, #{data.sort}, NOW())
+    </insert>
+
+    <insert id="batchInsert">
+        INSERT INTO product_spec_type (product_id, type_name, sort, create_time) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.productId}, #{item.typeName}, #{item.sort}, NOW())
+        </foreach>
+    </insert>
+
+    <delete id="deleteByProductId">
+        DELETE FROM product_spec_type WHERE product_id = #{productId}
+    </delete>
+
+    <select id="selectIdsByProductId" resultType="java.lang.Integer">
+        SELECT id FROM product_spec_type WHERE product_id = #{productId}
+    </select>
+
+    <update id="update">
+        UPDATE product_spec_type SET type_name = #{spec.typeName}, sort = #{spec.sort} WHERE id = #{spec.id}
+    </update>
+</mapper>

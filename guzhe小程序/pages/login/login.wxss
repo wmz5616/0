@@ -1,0 +1,227 @@
+/* login.wxss */ 
+.container-wrapper { 
+  display: flex; 
+  flex-direction: column; 
+  /* align-items: center;  */
+} 
+.backgroundImage {
+  width: 100%;
+  height:426rpx;
+}
+.grayBtn{
+  background-color:transparent; 
+  color: #8153FC; 
+  width: 630rpx; 
+  height: 90rpx; 
+  margin: 0 auto; 
+  line-height: 90rpx; 
+  text-align: center; 
+  border-radius: 60rpx; 
+  font-size: 32rpx; 
+  border: 1rpx solid #8153FC; 
+  margin-top: 15rpx; 
+}
+/* 顶部图片和Logo */ 
+.header { 
+  position: relative; 
+  margin:30rpx;
+  /* height: 550rpx;  */
+ margin-top:-240rpx;
+ border-radius:16rpx;
+} 
+ 
+.background-image { 
+  width: 100%; 
+  height: 312rpx; 
+  border-radius:16rpx;
+} 
+ 
+.logo { 
+  position: absolute; 
+  width: 345rpx; 
+  top: 80rpx; 
+  left: 30rpx; 
+  height: 80rpx; 
+} 
+
+
+.van-nav-bar {
+  background-color: transparent !important;
+  position: fixed !important;
+  width: 100%;
+}
+.img {
+  height: 52rpx;
+  width: 153rpx;
+}
+
+.navText {
+  font-size: 37rpx;
+  color: #FFFFFF;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+.content{ 
+  padding: 20rpx; 
+} 
+/* 表单区域 */ 
+.form-wrapper { 
+  width: 100%; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 20rpx; 
+} 
+ 
+/* 表单项 */ 
+.form-item { 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: space-around; 
+  background-color: #fff; 
+  border-radius: 16rpx; 
+  padding-left: 20rpx; 
+  padding-right: 20rpx; 
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1); 
+  height: 197rpx; 
+  width: 650rpx; 
+} 
+.number{ 
+  display: flex; 
+  align-items: center; 
+} 
+.code{ 
+  display: flex; 
+  align-items: center; 
+  border-top: 1rpx solid #E5E5E5; 
+} 
+/* 手机号区域 */ 
+.country-code { 
+  color: #333; 
+  margin-right: 55rpx; 
+  font-size: 34rpx; 
+} 
+.country { 
+  color: #333; 
+  margin-right: 20rpx; 
+  font-size: 34rpx; 
+} 
+ 
+/* 输入框 */ 
+.input { 
+  flex: 1; 
+  height: 80rpx; 
+  font-size: 34rpx; 
+} 
+ 
+/* 验证码按钮 */ 
+.get-code-btn { 
+  color: #118ee9; 
+  border-left: 1rpx solid #E5E5E5; 
+  height: 100%; 
+  line-height: 97rpx; 
+  padding-left: 14rpx; 
+  font-size: 32rpx; 
+} 
+ 
+/* 主要按钮 */ 
+.login { 
+background-image: linear-gradient(167deg, #8153FC 0%, #6070FB 82%);
+  width: 630rpx; 
+  height: 90rpx; 
+  margin: 0 auto; 
+  color: #ffff; 
+  line-height: 90rpx; 
+  text-align: center; 
+  border-radius: 60rpx; 
+  font-size: 32rpx; 
+  /* margin-top: 30rpx;  */
+} 
+ 
+/* 次要按钮 */ 
+.quickLogin{ 
+  background-color: #fff; 
+  color: #04C0D9; 
+  width: 630rpx; 
+  height: 90rpx; 
+  margin: 0 auto; 
+  line-height: 90rpx; 
+  text-align: center; 
+  border-radius: 60rpx; 
+  font-size: 32rpx; 
+  border: 1rpx solid #5DD5DE; 
+  margin-top: 15rpx; 
+} 
+ 
+/* 占位符样式 */ 
+.placeholder-style { 
+  color: #999; 
+}
+
+/* 隐私保护 */
+.py{
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.Privacy{
+  background-color: #fff;
+  box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.21);
+  border-radius: 18rpx;
+  width: 450rpx;
+  padding: 30rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  color: #333;
+  font-weight: 500;
+}
+
+.py_title{
+  font-size: 30rpx;
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.py_text{
+  font-size: 28rpx;
+  margin-bottom: 10rpx;
+}
+
+.py_active{
+  color: #4EACD3;
+}
+
+.py_footer{
+  display: flex;
+  gap: 20rpx;
+}
+
+.py_btn{
+  font-size: 26rpx;
+}
+
+.agree{
+  background-color: #53bf6a;
+  color: #fff;
+}
+
+.cancle{
+  color: #53bf6a;
+}
+
+  .bind-btn{
+    margin-top:15rpx;
+    padding: 0;
+    width: 630rpx !important;
+    height: 92rpx;
+    font-weight: normal;
+    color:#fff;
+    line-height: 92rpx;
+    background-image: linear-gradient(167deg, #8153FC 0%, #6070FB 82%);
+    /* border:1rpx solid #5DD5DE; */
+    text-align: center;
+    font-size:32rpx;
+    border-radius: 46rpx;
+    /* border-color:#5DD5DE  */
+}

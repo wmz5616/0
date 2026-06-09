@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.cas.CasUserWithdrawalMapper">
+    <sql id="field">
+        user_id,
+        nickname,
+        phone,
+        team_id,
+        team_name,
+        team_type,
+        amount,
+        out_bill_no,
+        wx_transaction_no,
+        state,
+        wx_result,
+        create_time
+    </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `cas_user_withdrawal`(
+        <include refid="field"></include>
+        )VALUES (
+        #{data.userId},
+        #{data.nickname},
+        #{data.phone},
+        #{data.teamId},
+        #{data.teamName},
+        #{data.teamType},
+        #{data.amount},
+        #{data.outBillNo},
+        #{data.wxTransactionNo},
+        #{data.state},
+        #{data.wxResult},
+        #{data.createTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `cas_user_withdrawal`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.state != null">`state` = #{data.state},</if>
+            <if test="data.wxTransactionNo != null">`wx_transaction_no` = #{data.wxTransactionNo},</if>
+            <if test="data.wxResult != null">`wx_result` = #{data.wxResult},</if>
+        </trim>
+        WHERE id = #{data.id}
+    </update>
+
+    <select id="selectById" resultType="com.zemcho.ddql.entity.cas.CasUserWithdrawal">
+        SELECT *
+        FROM `cas_user_withdrawal`
+        WHERE `id` = #{id}
+    </select>
+
+    <select id="selectList" resultType="com.zemcho.ddql.entity.cas.CasUserWithdrawal">
+        SELECT *
+        FROM `cas_user_withdrawal`
+        <where>
+            <if test="param.searchField1 != null">AND user_id = #{param.searchField1}</if>
+            <if test="param.searchField2 != null">AND team_id = #{param.searchField2}</if>
+            <if test="param.searchStrField1 != null">AND `state` = #{param.searchStrField1}</if>
+            <if test="param.searchStrList != null and param.searchStrList.size() > 0">
+                AND `state` IN
+                <foreach collection="param.searchStrList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+        ORDER BY `id` desc
+    </select>
+
+    <select id="selectUserCount" resultType="com.zemcho.ddql.controller.wechat.index.vo.UserWithdrawalCountVo">
+        SELECT user_id, SUM(amount) AS amount
+        FROM `cas_user_withdrawal`
+        <where>
+            <if test="param.searchField1 != null">AND user_id = #{param.searchField1}</if>
+            <if test="param.searchField2 != null">AND team_id = #{param.searchField2}</if>
+            <if test="param.searchStrField1 != null">AND `state` = #{param.searchStrField1}</if>
+            <if test="param.searchStrList != null and param.searchStrList.size() > 0">
+                AND `state` IN
+                <foreach collection="param.searchStrList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+        group by user_id
+    </select>
+</mapper>

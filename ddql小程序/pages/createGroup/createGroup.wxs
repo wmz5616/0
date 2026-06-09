@@ -1,0 +1,13 @@
+var teamStatus = ['企事业单位', '政府部门', '家庭', '朋友']
+var show = {
+  showZiZhi: function(type) {
+    if (!teamStatus || !type) return false;
+    
+    var index = teamStatus.indexOf(type);
+    return index === 0 || index === 1;
+  }
+}
+module.exports = {
+  showZiZhi: show.showZiZhi
+}
+

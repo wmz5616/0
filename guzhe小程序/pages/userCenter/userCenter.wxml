@@ -1,0 +1,71 @@
+<customTabBar selectIndex="{{3}}"></customTabBar>
+<view class="index-wrapper">
+  <view class="linear-gradient" style="min-height:426rpx;">
+    <image style="width:100%;position: absolute;top:0;" class="bg-image" src="/assets/images/header.png"></image>
+    <view class="center-msg" style="position:relative;z-index:99;text-align:center;">
+      <view class="hindex-text">我的</view>
+    </view>
+    <view bind:tap="gologin" class="user-msg" style="display:flex;position:relative;gap:24rpx;padding:30rpx 30rpx 30rpx 30rpx;align-items:center;">
+      <view class="avatar">
+        <image src="{{userInfo.avatar || '/assets/images/defaultavatar.svg'}}" style="width:140rpx;height:140rpx;border-radius: 50%;" mode="aspectFit"></image>
+      </view>
+      <view class="rigth-mside" style="line-height:1.6;color:#333333;">
+        <view style="font-size:32rpx;">{{userInfo.nickname}}</view>
+        <view style="font-size:30rpx;">晚上好！</view>
+      </view>
+      <image mode="aspectFit" src="/assets/images/setting.svg" style="width:48rpx;height:46rpx;position:absolute;right:30rpx;top:60rpx;" bind:tap="jump" data-url="/pages/editUser/editUser" />
+    </view>
+  </view>
+  <view class="container-wrapper">
+    <view class="card">
+      <view class="info-row" bind:tap="jump" data-url="/pages/applySettlement/applySettlement">
+        <image mode="aspectFit" src="/assets/images/usercenter/ruzhu.svg" style="width:48rpx;height:40rpx;" />
+        <text class="label" style="flex: auto;padding-left:16rpx;">商家入驻申请</text>
+        <view class="arrowRight">
+          <image src="/assets/images/more.svg" mode="aspectFill" style="height: 28rpx;width: 16rpx" />
+        </view>
+      </view>
+      <view class="info-row" bind:tap="jump" data-url="/pages/lottery/lottery">
+        <image mode="aspectFit" src="/assets/images/usercenter/myorder.svg" style="width:48rpx;height:40rpx;" />
+        <text class="label" style="flex: auto;padding-left:16rpx;">我的订单</text>
+        <view class="arrowRight">
+          <image src="/assets/images/more.svg" mode="aspectFill" style="height: 28rpx;width: 16rpx" />
+        </view>
+      </view>
+      <view class="info-row" bind:tap="jump" data-url="/pages/address/address">
+        <image mode="aspectFit" src="/assets/images/usercenter/address.svg" style="width:48rpx;height:48rpx;" />
+        <text class="label" style="flex: auto;padding-left:16rpx;">收货地址</text>
+        <view class="arrowRight">
+          <image src="/assets/images/more.svg" mode="aspectFill" style="height: 28rpx;width: 16rpx" />
+        </view>
+      </view>
+      <view class="info-row" bind:tap="jump" data-url="/pages/notice/notice">
+        <image mode="aspectFit" src="/assets/images/usercenter/notice.svg" style="width:48rpx;height:40rpx;" />
+        <text class="label" style="flex: auto;padding-left:16rpx;">通知公告</text>
+        <view class="arrowRight">
+          <image src="/assets/images/more.svg" mode="aspectFill" style="height: 28rpx;width: 16rpx" />
+        </view>
+      </view>
+      <view class="info-row">
+        <image mode="aspectFit" src="/assets/images/usercenter/contact.svg" style="width:48rpx;height:40rpx;" />
+        <!-- <text class="label" style="flex: auto;padding-left:16rpx;">联系客服</text> -->
+        <button style="border:none;font-weight:normal;padding:0;background-color:transparent;text-align:left;margin-left:16rpx;font-size:32rpx;width:100%;" open-type="contact">联系客服</button>
+        <view class="arrowRight">
+          <image src="/assets/images/more.svg" mode="aspectFill" style="height: 28rpx;width: 16rpx" />
+        </view>
+      </view>
+      <view class="info-row" bind:tap="jump" data-url="/pages/about/about">
+        <image mode="aspectFit" src="/assets/images/usercenter/guanyuwomen.svg" style="width:48rpx;height:40rpx;" />
+        <text class="label" style="flex: auto;padding-left:16rpx;">关于我们</text>
+        <view class="arrowRight">
+          <image src="/assets/images/more.svg" mode="aspectFill" style="height: 28rpx;width: 16rpx" />
+        </view>
+      </view>
+    </view>
+    <view class="sys">
+      <text class="grayText">{{version}}</text>
+      <text class="grayText" bind:tap="jumpH5">{{org_name}}</text>
+      <text class="grayText">{{miitbeian}}</text>
+    </view>
+  </view>
+</view>

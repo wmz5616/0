@@ -1,0 +1,42 @@
+{
+  "setting": {
+    "urlCheck": false,
+    "compileHotReLoad": true,
+    "coverView": true,
+    "lazyloadPlaceholderEnable": false,
+    "skylineRenderEnable": false,
+    "preloadBackgroundData": false,
+    "autoAudits": false,
+    "useApiHook": true,
+    "useApiHostProcess": true,
+    "showShadowRootInWxmlPanel": true,
+    "useStaticServer": false,
+    "useLanDebug": false,
+    "showES6CompileOption": false,
+    "checkInvalidKey": true,
+    "ignoreDevUnusedFiles": true,
+    "bigPackageSizeSupport": false
+  },
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pages/coupon/coupon",
+          "pathName": "pages/coupon/coupon",
+          "query": "",
+          "scene": null,
+          "launchMode": "default"
+        },
+        {
+          "name": "/pages/refundReview/refundReview",
+          "pathName": "/pages/refundReview/refundReview",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
+    }
+  },
+  "libVersion": "3.16.0",
+  "projectname": "%E9%AA%A8%E6%8A%98%E5%B0%8F%E7%A8%8B%E5%BA%8F"
+}

@@ -1,0 +1,8 @@
+<!--components/customPopu/index.wxml-->
+<view class="Rflex" style="justify-content: flex-start;" bind:tap="showPop">
+  <text class="Ctitle">{{flag || text}}</text>
+  <image src="/assets/images/down.svg" mode="aspectFit" class="base {{showPop?'up':''}}"/>
+</view>
+<van-popup show="{{ showPop }}" position="bottom" round bind:close="onClose">
+  <van-picker show-toolbar title="{{'请选择'+title}}" columns="{{ columns }}" default-index="{{ 0 }}" bind:cancel="onClose" bind:confirm="selectItem" />
+</van-popup>

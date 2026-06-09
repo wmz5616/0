@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.express.ExpressOrderMapper">
+    <sql id="field">
+        txn_type,
+        txn_id,
+        express_company_name,
+        express_company_code,
+        express_no,
+        status,
+        is_record,
+        is_sub,
+        create_time
+    </sql>
+
+    <insert id="insertAll">
+        INSERT INTO `express_order`(
+        <include refid="field"></include>
+        )VALUES
+        <foreach collection="data" item="item" separator=",">
+            (
+            #{item.txnType},
+            #{item.txnId},
+            #{item.expressCompanyName},
+            #{item.expressCompanyCode},
+            #{item.expressNo},
+            #{item.status},
+            #{item.isRecord},
+            #{item.isSub},
+            #{item.createTime}
+            )
+        </foreach>
+    </insert>
+
+    <update id="update">
+        UPDATE `express_order`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.info != null">`info` = #{data.info},</if>
+            <if test="data.status != null">`status` = #{data.status},</if>
+            <if test="data.isRecord != null">`is_record` = #{data.isRecord},</if>
+            <if test="data.isSub != null">`is_sub` = #{data.isSub},</if>
+        </trim>
+        WHERE id = #{data.id}
+    </update>
+
+    <select id="selectLists" resultType="com.zemcho.guzhe.entity.express.ExpressOrder">
+        SELECT *
+        FROM `express_order`
+        <where>
+            <if test="param.searchType != null">AND `txn_type` = #{param.searchType}</if>
+            <if test="param.searchField1 != null">AND `txn_id` = #{param.searchField1}</if>
+            <if test="param.searchField2 != null">AND `is_sub` = #{param.searchField2}</if>
+            <if test="param.searchField3 != null">AND `is_record` = #{param.searchField3}</if>
+            <if test="param.searchIntStatus != null">AND `status` = #{param.searchIntStatus}</if>
+            <if test="param.searchStatus != null">
+                AND (`info` is null or `info` = '')
+            </if>
+            <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+                AND `express_company_name` = #{param.searchStrField1}
+            </if>
+            <if test="param.searchStrField2 != null and param.searchStrField2 != ''">
+                AND `express_company_code` = #{param.searchStrField2}
+            </if>
+            <if test="param.searchStrField3 != null and param.searchStrField3 != ''">
+                AND `express_no` = #{param.searchStrField3}
+            </if>
+            <if test="param.limitTime != null">
+                AND `update_time` &lt;= #{param.limitTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByTxn" resultType="com.zemcho.guzhe.controller.order.vo.ExpressOrderVo">
+        SELECT *
+        FROM `express_order`
+        WHERE `txn_type` = #{txnType}
+          AND `txn_id` = #{txnId}
+          AND `is_record` = 1
+            LIMIT 1
+    </select>
+</mapper>

@@ -1,0 +1,10 @@
+<!--pages/refundProgress/refundProgress.wxml-->
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">退款申请</text>
+  </van-nav-bar>
+  <view style="width: 630rpx;height: 380rpx;background-color: #fff;border-radius: 18rpx;margin: 0 auto;margin-top: 30rpx;padding: 20rpx 0rpx 80rpx 30rpx;">
+    <van-steps steps="{{ steps }}" active="{{ active }}" direction="vertical" desc-class="desc-class" active-icon="/assets/images/activeProcess.svg" text-class="custom-class"/>
+  </view>
+</view>

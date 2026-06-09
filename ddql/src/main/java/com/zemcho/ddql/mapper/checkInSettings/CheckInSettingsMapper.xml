@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.checkInSettings.CheckInSettingsMapper">
+
+    <update id="update" parameterType="com.zemcho.ddql.entity.checkInSettings.CheckInSettings">
+        update check_in_settings
+        <set>
+            <if test="data.targetSteps != null">
+                target_steps = #{data.targetSteps},
+            </if>
+            <if test="data.stepsGoldCoin != null">
+                steps_gold_coin = #{data.stepsGoldCoin},
+            </if>
+            <if test="data.scanCodeGoldCoin != null">
+                scan_code_gold_coin = #{data.scanCodeGoldCoin},
+            </if>
+            <if test="data.checkInInstruction != null">
+                check_in_instruction = #{data.checkInInstruction},
+            </if>
+            <if test="data.withdrawalInstruction != null">
+                withdrawal_instruction = #{data.withdrawalInstruction},
+            </if>
+            <if test="data.withdrawalPicture != null">
+                withdrawal_picture = #{data.withdrawalPicture},
+            </if>
+        </set>
+        where id = #{data.id}
+    </update>
+</mapper>

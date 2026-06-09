@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.cas.CasRoleRuleMapper">
+    <sql id="field">
+        role_id,
+        rule_id
+    </sql>
+
+    <insert id="insertAll">
+        INSERT INTO `cas_role_rule`(
+        <include refid="field"></include>
+        )VALUES
+        <foreach collection="data" item="item" separator=",">
+            (
+            #{item.roleId},
+            #{item.ruleId}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByRoleIds">
+        DELETE FROM `cas_role_rule`
+        WHERE role_id IN
+        <foreach collection="roleIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByRoleId">
+        DELETE FROM `cas_role_rule`
+        WHERE role_id = #{roleId}
+    </delete>
+
+    <select id="selectRuleIdByRoleId" resultType="java.lang.Integer">
+        SELECT rule_id
+        FROM `cas_role_rule`
+        WHERE role_id = #{roleId}
+    </select>
+
+    <select id="selectRuleIdByRoleIds" resultType="java.lang.Integer">
+        SELECT rule_id
+        FROM `cas_role_rule`
+        WHERE role_id IN
+        <foreach collection="roleIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        GROUP BY rule_id
+    </select>
+
+    <select id="selectRuleApiByRoleIds" resultType="java.lang.String">
+        SELECT b.api
+        FROM `cas_role_rule` as a
+        INNER JOIN `cas_rule` as b ON a.rule_id = b.id
+        WHERE a.role_id IN
+        <foreach collection="roleIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND b.is_menu = 0
+        GROUP BY b.id
+    </select>
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="136px" height="135px" viewBox="0 0 136 135" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>首页</title>
+    <defs>
+        <linearGradient x1="44.7346696%" y1="0%" x2="47.3015989%" y2="81.8809744%" id="linearGradient-1">
+            <stop stop-color="#8153FC" offset="0%"></stop>
+            <stop stop-color="#6070FB" offset="100%"></stop>
+        </linearGradient>
+        <circle id="path-2" cx="58" cy="58" r="58"></circle>
+        <filter x="-13.8%" y="-12.1%" width="127.6%" height="127.6%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.1 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="小程序-个人中心" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="个人中心-未登录" transform="translate(-562, -1199)">
+            <g id="编组-9" transform="translate(0, 1197)">
+                <g id="首页" transform="translate(572, 10)">
+                    <g id="椭圆形">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+                        <circle stroke="#FFFFFF" stroke-width="4" stroke-linejoin="square" fill="url(#linearGradient-1)" fill-rule="evenodd" cx="58" cy="58" r="56"></circle>
+                    </g>
+                    <g id="wode1" transform="translate(32, 31)" fill="#FFFFFF" fill-rule="nonzero">
+                        <path d="M34.6005806,24.5194997 C37.8066326,21.9990904 39.872755,18.109494 39.872755,13.7471291 C39.872755,6.16748152 33.6496067,0 26.0015464,0 C18.3534861,0 12.1303378,6.1644116 12.1303378,13.7440591 C12.1303378,18.1064241 14.1933626,21.9960205 17.4025122,24.5164298 C7.41264004,27.0460489 0,36.0409323 0,46.7212052 L0,48.0075043 C0,51.3107447 2.71352807,54 6.0465831,54 L45.953412,54 C49.2864671,54 52,51.3107447 52,48.0075043 L52,46.7212052 C52.0030928,36.0440023 44.5935504,27.0491188 34.6005806,24.5194997 L34.6005806,24.5194997 Z M15.8474996,13.7440591 C15.8474996,8.19670267 20.4010227,3.68084139 26.0015464,3.68084139 C31.6020701,3.68084139 36.1555932,8.19363275 36.1555932,13.7440591 C36.1555932,19.2944855 31.6020701,23.8072769 26.0015464,23.8072769 C20.4010227,23.8072769 15.8474996,19.2944855 15.8474996,13.7440591 Z M48.285931,48.0105742 C48.285931,49.2845935 47.2420281,50.3191586 45.9565097,50.3191586 L6.0465831,50.3191586 C4.76106467,50.3191586 3.71716174,49.2845935 3.71716174,48.0105742 L3.71716174,46.7242752 C3.71716174,36.1207504 12.4215155,27.4911882 23.1238437,27.4911882 L28.8761515,27.4911882 C39.575382,27.4911882 48.2828334,36.1176805 48.2828334,46.7242752 L48.2828334,48.0105742 L48.285931,48.0105742 Z" id="形状"></path>
+                        <path d="M37.1145758,46 L14.8854242,46 C13.8452985,46 13,45.1033333 13,44 C13,42.8966667 13.8452985,42 14.8854242,42 L37.1145758,42 C38.1547015,42 39,42.8966667 39,44 C39,45.1033333 38.1547015,46 37.1145758,46 Z" id="路径"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

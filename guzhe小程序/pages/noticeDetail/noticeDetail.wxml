@@ -1,0 +1,16 @@
+<!--pages/noticeDetail/noticeDetail.wxml-->
+<import src="../../wxParse/wxParse.wxml" />
+<van-nav-bar bind:click-left="goBack">
+  <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+  <text slot="title" class="navText">消息公告</text>
+</van-nav-bar>
+
+<!-- 文本区域 -->
+<view class="notice-container">
+  <view class="notice-title">{{noticeInfo.title}}</view>
+  <view class="notice-time">发布时间 {{noticeInfo.publishTime}}</view>
+  <view class="notice-divider"></view>
+  <template is="wxParse" data="{{wxParseData:newsDetail.contentHtml.nodes}}" />
+</view>

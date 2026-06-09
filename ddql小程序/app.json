@@ -1,0 +1,123 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/orderRecordDetail/orderRecordDetail",
+    "pages/merchantAdmin/merchantAdmin",
+    "pages/addMerchantAdmin/addMerchantAdmin",
+    "pages/scanToPay/scanToPay",
+    "pages/map/map",
+    "pages/department/department",
+    "pages/myOrder/myOrder",
+    "pages/settlementRecord/settlementRecord",
+    "pages/orderDetail/orderDetail",
+    "pages/storeManage/storeManage",
+    "pages/venueDetails/venueDetails",
+    "pages/web-view/web-view",
+    "pages/clock/clock",
+    "pages/addGroupAdmin/addGroupAdmin",
+    "pages/couponVerification/couponVerification",
+    "pages/coupon/coupon",
+    "pages/venueInfo/venueInfo",
+    "pages/login/login",
+    "pages/exchangeDetail/exchangeDetail",
+    "pages/about/about",
+    "pages/aboutDetail/aboutDetail",
+    "pages/notice/notice",
+    "pages/noticeInfo/noticeInfo",
+    "pages/healthCoin/healthCoin",
+    "pages/goldCoin/goldCoin",
+    "pages/refundProgress/refundProgress",
+    "pages/refundInfo/refundInfo",
+    "pages/refundRequest/refundRequest",
+    "pages/refundPolicy/refundPolicy",
+    "pages/address/address",
+    "pages/goodDetail/goodDetail",
+    "pages/groupAdmin/groupAdmin",
+    "pages/myGroup/myGroup",
+    "pages/withdrawalSettings/withdrawalSettings",
+    "pages/inviteMembers/inviteMembers",
+    "pages/createGroup/createGroup",
+    "pages/qualificationVerify/qualificationVerify",
+    "pages/center/center",
+    "pages/purchaseCoins/purchaseCoins",
+    "pages/transactionRecord/transactionRecord",
+    "pages/rechargeRecord/rechargeRecord",
+    "pages/rank/rank",
+    "pages/verifyName/verifyName",
+    "pages/bindPhone/bindPhone",
+    "pages/onlineWithdrawal/onlineWithdrawal",
+    "pages/logs/logs",
+    "pages/exchange/exchange",
+    "pages/storeDetail/storeDetail",
+    "pages/clockRecord/clockRecord",
+    "pages/clockPoint/clockPoint",
+    "pages/setting/setting"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "Weixin",
+    "navigationBarBackgroundColor": "#ffffff"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#04C0D9",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "position": "bottom",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "/assets/images/tabBar/home-gray.png",
+        "selectedIconPath": "/assets/images/tabBar/home-blue.png"
+      },
+      {
+        "pagePath": "pages/rank/rank",
+        "text": "光荣榜",
+        "iconPath": "/assets/images/tabBar/rank-gray.png",
+        "selectedIconPath": "/assets/images/tabBar/rank-blue.png"
+      },
+      {
+        "pagePath": "pages/exchange/exchange",
+        "text": "消费",
+        "iconPath": "/assets/images/tabBar/exchange-gray.png",
+        "selectedIconPath": "/assets/images/tabBar/exchange-blue.png"
+      },
+      {
+        "pagePath": "pages/center/center",
+        "text": "我的",
+        "iconPath": "/assets/images/tabBar/center-gray.png",
+        "selectedIconPath": "/assets/images/tabBar/center-blue.png"
+      }
+    ]
+  },
+  "subPackages": [
+    {
+      "root": "pagesA",
+      "pages": [
+        "baseInfo/baseInfo",
+        "applySettlement/applySettlement",
+        "MerchantDetail/MerchantDetail",
+        "merchantOrderDetail/merchantOrderDetail"
+      ]
+    }
+  ],
+  "style": "v2",
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "requiredBackgroundModes": [
+    "audio"
+  ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "授权定位有助于提高蓝牙水表的连接成功率"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation",
+    "startLocationUpdate",
+    "onLocationChange",
+    "chooseLocation"
+  ]
+}

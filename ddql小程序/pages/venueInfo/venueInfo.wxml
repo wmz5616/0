@@ -1,0 +1,44 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">场地信息</text>
+  </van-nav-bar>
+  <van-tabs active="{{ active }}" bind:change="onChange" custom-class="tab" animated swipeable swipe-threshold="{{3}}">
+    <van-tab wx:for="{{venueList}}" wx:key="id" title="{{item.name}}" name="{{item.id}}">
+      <view class="swiper">
+        <view class="header box flex {{!equipmentId && 'flex1'}}">
+          <text wx:if="{{equipmentId}}" class="title">设备编号：{{equipmentId}}</text>
+          <view   bind:tap="jump" data-url="/pages/clockRecord/clockRecord?placeId={{item.id}}" class="Btn">
+            <text class="h_text">打卡记录</text>
+            <image src="/assets/images/rightArrow.svg" mode="aspectFill" class="rightIcon" />
+          </view>
+        </view>
+        <view class="middle box">
+          <view class="m_header b_bottom">
+            <text class="m_title require">场地名称：</text>
+            <input placeholder="请输入场地名称" type="text" value="{{placeName}}" data-type="placeName"	bindinput="change"/>
+          </view>
+          <view class="m_midde b_bottom">
+            <view class="flex">
+              <text class="m_title">场地图片：</text>
+              <text class="m_title color">{{images.length}}/4</text>
+            </view>
+            <view style="display: flex;flex-direction: column;gap: 16rpx;">
+              <view style="display: flex;flex-wrap: wrap;">
+                <van-uploader file-list="{{ images }}" deletable max-count="4" use-before-read bind:before-read="beforeRead" bind:after-read="afterRead" bind:delete="deleteRead" />
+              </view>
+              <text class="graytext">支持在线裁剪尺寸，图片格式支持jpg/jpeg/png</text>
+            </view>
+          </view>
+          <view class="m_bottom">
+            <text class="m_title require">场地介绍：</text>
+            <textarea maxlength="{{200}}" auto-height class="textarea" placeholder="请输入场地介绍" value="{{remark}}" 	bindinput="change" data-type="remark"></textarea>
+          </view>
+        </view>
+      </view>
+    </van-tab>
+  </van-tabs>
+  <view class="Btn1">
+    <view class="btn1" bind:tap="save">保存</view>
+  </view>
+</view>

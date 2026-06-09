@@ -1,0 +1,44 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">流水记录</text>
+  </van-nav-bar>
+  <view class="picker">
+    <view>
+      <van-search value="{{ keyword }}" shape="round" background="#fff" placeholder="请输入员工昵称或手机号" left-icon='' right-icon='search' placeholder-style="font-size: 30rpx;color:#CCC;" bind:search="onSearch"
+      bind:clear="onCancel"
+      />
+    </view>
+    <view class="picker_item" data-type="showPopup1" bind:tap="open">
+      <text class="picker_title">时间</text>
+      <view class="base up"></view>
+    </view>
+  </view>
+  <view class="swiper">
+    <view wx:for="{{coinLists}}" wx:key="id" class="box list">
+      <view class="flex">
+        <view class="f_left">
+          <text>{{item.nickName}}</text>
+          <text>{{item.phone}}-{{item.txnType == 1?'打卡':item.txnType == 2?'重置':item.txnType == 3?'兑换':'提现'}}{{item.coinNum}}元</text>
+        </view>
+        <view class="flex">
+          <text class="orderNo">{{item.numType == 1?'+':'-'}}{{item.coinNum}}</text>
+        </view>
+      </view>
+      <view class="flex l_bottom">
+        <text>2025-06-28 11:23:50</text>
+      </view>
+    </view>
+  </view>
+  <van-popup position="bottom" round show="{{ showPopup1 }}" bind:close="onClose" data-name="showPopup1">
+    <view>
+      <view class="pickerTime flex">
+        <text class="p_avtiveText" bind:tap="onClose" data-name="showPopup">取消</text>
+        <text class="p_text">选择时间</text>
+        <text class="p_avtiveText" bind:tap="comfrimDate" data-name="showPopup1">确定</text>
+      </view>
+      <van-datetime-picker show-toolbar="{{false}}" type="date" data-field="startTime" value="{{ startTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ forma }}" />
+      <van-datetime-picker show-toolbar="{{false}}" type="date" data-field="endTime" value="{{ endTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ forma }}" />
+    </view>
+  </van-popup>
+</view>

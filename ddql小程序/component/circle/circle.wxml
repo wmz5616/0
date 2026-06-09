@@ -1,0 +1,16 @@
+<view class="circle_box" style="width:{{size}}px;height:{{size}}px;margin:0 auto;">
+	<canvas class="circle_draw" canvas-id="{{draw}}" style="width:{{size}}px;height:{{size}}px;position: absolute;top:-9999rpx;"></canvas>
+  <image src="{{src}}" style="height: 100%;width: 100%;" mode="aspectFit"/>
+	<!-- <text class='circle_txt'> {{txt}}剩余时长</text> -->
+  <view class="circle_txt">
+    <text>今日步数</text>
+    <tex class="circle_text">{{stepNum}}</tex>
+    <image wx:if="{{stepNum && stepNum>targetSteps}}" src="/assets/images/atciveChose.svg" mode="aspectFit" style="width:100rpx;height:100rpx;"/>
+    <view style="display: flex;align-items: center;gap: 8rpx;justify-content: center;">
+      <text>平台目标步数：{{targetSteps}}</text>
+      <image src="/assets/images/gray-rightArrow.svg" style="height: 22rpx;width: 14rpx;" mode=""/>
+    </view>
+  </view>
+  <!-- <view class='circle_txt' style="color:#999999;font-size:30rpx;bottom:210rpx;">剩余时长</view> -->
+  <!-- <view class='circle_txt' style="bottom:0rpx;font-weight:bold;font-size:34rpx;bottom:160rpx;">{{surplusTime?surplusTime:surplusTimes}}</view> -->
+</view>

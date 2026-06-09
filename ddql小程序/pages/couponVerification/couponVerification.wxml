@@ -1,0 +1,20 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">券码核销</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <van-cell-group>
+      <van-field label-class="label" label="券码" value="{{ searchStrField1 }}" type="digit" placeholder="请输入券码" border="{{ false }}" bind:change="onChange" clearable />
+    </van-cell-group>
+    <view class="base nomal" bind:tap="getTicketCheck">确认核销</view>
+    <view class="base active" bind:tap="scan">扫码核销</view>
+  </view>
+  <!-- 弹出框 -->
+  <van-dialog use-slot use-title-slot show="{{ showDialog }}" showConfirmButton confirmButtonText="知道了" width="540rpx" bind:close="onClose" bind:confirm="dialogConfirm" data-name="showDialog" confirm-button-class="dialogBtn d_v_btn">
+    <view slot="title">无权限核销</view>
+    <view class="d_content">
+      该券码不属于本人核销范围
+    </view>
+  </van-dialog>
+</view>

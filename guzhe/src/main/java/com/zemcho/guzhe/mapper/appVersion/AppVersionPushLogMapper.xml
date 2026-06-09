@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.appVersion.AppVersionPushLogMapper">
+
+    <sql id="field">
+        serial_number,
+        device_id,
+        sup_id,
+        status,
+        create_time
+    </sql>
+
+    <insert id="insert">
+        INSERT INTO `app_version_push_log`(
+        <include refid="field"></include>
+        )VALUES (
+        #{data.serialNumber},
+        #{data.deviceId},
+        #{data.supId},
+        #{data.status},
+        #{data.createTime}
+        )
+    </insert>
+
+    <select id="selectLog" resultType="com.zemcho.guzhe.entity.app.AppVersionPushLog">
+        SELECT
+        <include refid="field"></include>
+        FROM `app_version_push_log`
+        WHERE serial_number = #{searchStrField1}
+    </select>
+</mapper>

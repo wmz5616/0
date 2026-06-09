@@ -1,0 +1,41 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">兑换详情</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <image wx:if="{{!isexpired}}" src="/assets/images/duihuanquan.png" mode="aspectFill" class="background" />
+    <text wx:if="{{!isexpired}}" class="title title1">优惠券券码</text>
+    <view class="gInfo" wx:if="{{!isexpired}}">
+      <text class="gText">{{orderInfo.productName}}</text>
+      <canvas wx:if="{{status}}" canvas-id="qrcodeCanvas" style="width: 380rpx; height: 380rpx;"></canvas>
+      <text class="text activeText">{{ticketInfo.ticket}}</text>
+    </view>
+    <view class="couponList">
+      <view wx:for="{{ticketList}}" wx:key="index">
+        <view wx:if="{{item.id == ticketInfo.id && !item.isexpired}}" class="flex baseItem activeItem">
+          <view class="left">
+            <text class="listText">{{item.ticket}}</text>
+            <text class="listText f28">{{orderInfo.productName}}</text>
+          </view>
+          <view class="right">
+            <image src="/assets/images/activeCode.svg" mode="aspectFill" class="iconImg" />
+          </view>
+        </view>
+        <view wx:elif="{{item.status != 3 && !item.isexpired}}" class="flex baseItem selectItem" data-id="{{item.id}}" bind:tap="changeTicket">
+          <view class="left">
+            <text class="listText blue">{{item.ticket}}</text>
+            <text class="listText f28 blue">{{orderInfo.productName}}</text>
+          </view>
+          <view class="right blueBcakground">
+            <image src="/assets/images/code.svg" mode="aspectFill" class="iconImg" />
+          </view>
+        </view>
+        <view wx:else class="flex baseItem pud46">
+          <view class="listText gray grayText1">{{item.ticket}}</view>
+          <text class="listText gray">已核销</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

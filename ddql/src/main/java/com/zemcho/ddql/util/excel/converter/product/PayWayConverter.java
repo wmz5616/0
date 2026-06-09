@@ -1,0 +1,33 @@
+package com.zemcho.ddql.util.excel.converter.product;
+
+import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.WriteCellData;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
+
+import java.util.Map;
+
+public class PayWayConverter implements Converter<Integer> {
+    // 映射关系
+    private final static Map<Integer, String> STATUS_MAP = Map.of(0, "金币支付", 1, "组合支付", 2, "现金支付");
+
+    @Override
+    public Class<Integer> supportJavaTypeKey() {
+        return Integer.class;
+    }
+
+    @Override
+    public CellDataTypeEnum supportExcelTypeKey() {
+        return CellDataTypeEnum.STRING;
+    }
+
+    @Override
+    public WriteCellData<String> convertToExcelData(Integer value, ExcelContentProperty contentProperty,
+                                                    GlobalConfiguration globalConfiguration) {
+        WriteCellData<String> cellData = new WriteCellData<>(STATUS_MAP.get(value));
+        return cellData;
+    }
+
+
+}

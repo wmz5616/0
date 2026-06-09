@@ -1,0 +1,97 @@
+/* components/customNavBar/index.wxss */
+.navText {
+  font-size: 37rpx;
+  color: #333333;
+  letter-spacing: 0;
+  text-align: center;
+  font-weight: 500;
+}
+
+.navLeft {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10rpx;
+}
+
+.locationImg {
+  height: 27rpx;
+  width: 25rpx;
+}
+
+.navLeftText {
+  font-size: 24rpx;
+  color: #333333;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+.base{
+  height: 10rpx;
+  width: 18rpx;
+  transition: all 0.3 linear;
+}
+
+.up{
+  transform: rotate(180deg);
+}
+
+.popHeader {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 110rpx;
+  border-bottom: 1rpx solid #E0DFE4;
+  padding: 30rpx;
+  position: relative;
+}
+
+.popText {
+  font-size: 36rpx;
+  color: #333333;
+  text-align: center;
+  font-weight: 500;
+}
+
+.xiaquList {
+  overflow-y: scroll;
+  height: calc(50vh - 111rpx);
+  padding: 21rpx 30rpx 30rpx 24rpx;
+  display: flex;
+  grid-auto-rows: min-content;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 三等分 */
+  gap: 20rpx; /* 列间距和行间距 */
+  align-items: start;
+  justify-items: center; /* 内容居中 */
+  box-sizing: border-box;
+}
+
+.xiaquItem {
+  height: 62rpx;
+  width: 210rpx;
+  border: 1px solid rgba(224, 223, 228, 1);
+  border-radius: 16rpx;
+  font-size: 26rpx;
+  color: #848484;
+  text-align: center;
+  font-weight: 400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.activeItem {
+  background: #FFEBD6;
+  color: #FB6C00;
+  border: 1px solid #FB6C00;
+}
+
+.closeImg {
+  width: 30rpx;
+  height: 30rpx;
+  position: absolute;
+  right: 34rpx;
+  top: 42rpx;
+}

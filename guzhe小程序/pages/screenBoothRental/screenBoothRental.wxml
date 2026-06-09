@@ -1,0 +1,85 @@
+<wxs module="utils" src="./screenBoothRental.wxs"></wxs>
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack" z-index="{{101}}">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">屏幕店位租用</text>
+  </van-nav-bar>
+  <view class="Rflex header">
+    <view class="g10 Rflex hItem" bind:tap="showPop">
+      <view class="title">{{activeName}}</view>
+      <image src="/assets/images/down.svg" mode="aspectFill" class="hbRight {{showPop?'up':''}}" />
+    </view>
+    <view class="g10 Rflex hItem" bind:tap="showArea">
+      <view class="title">{{screenAddress || '筛选屏幕店地址'}}</view>
+      <image src="/assets/images/more.svg" mode="aspectFill" class="more" />
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="swiper {{!isShowArgee?'h636':''}}">
+    <view wx:for="{{equipmentList}}" wx:key="index" class="place">
+      <view class="g10 pHeader">
+        <view class="phTop">
+          <image src="/assets/images/dapingmu.svg" mode="aspectFill" class="Icon" />
+          <text class="pName">{{item.businessCircleName}}</text>
+          <text class="pName">设备{{item.serialNumber}}</text>
+        </view>
+        <view class="phBottom">
+          <text>店位租金每月</text>
+          <text class="aTis">{{item.money / 100 || 0}}</text>
+          <text>元</text>
+        </view>
+      </view>
+      <view class="pList">
+        <view wx:for="{{item.monthList}}" wx:for-item="mItem" wx:key="index" class="pItem {{utils.includes(item.selectMonths,mItem.monthKey)?'activeItem':''}} {{mItem.status == 1?'empty':''}}" bind:tap="selecPlace" data-id="{{item.equipmentId}}" data-month="{{mItem.monthKey}}" data-status="{{mItem.status}}">
+          <text class="ppTitle">剩余：{{mItem.remainingCount}}</text>
+          <text class="ppTime">{{mItem.monthKey}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  <view class="p30 footer">
+    <view class="info">
+      <view style="display: flex;align-items: center;">
+        <text style="color: red;">*</text>
+        <text class="iTitle">请选择要展示的内容</text>
+      </view>
+      <view class="g10 checkBox" bind:tap="selectSwitch" data-type="{{1}}">
+        <image src="/assets/images/{{showSwitch ==1?'purpleSelect':'unSelect'}}.svg" mode="aspectFill" class="baseSelect"/>
+        <view class="cbText">商品（展示商品管理页面的商品信息）</view>
+      </view>
+      <view class="g10 checkBox" bind:tap="selectSwitch" data-type="{{2}}">
+        <image src="/assets/images/{{showSwitch ==2?'purpleSelect':'unSelect'}}.svg" mode="aspectFill" class="baseSelect"/>
+        <view class="cbText">海报（展示海报管理页面的海报）</view>
+      </view>
+    </view>
+    <view class="Btn">
+      <view class="btn" bind:tap="getScreenRent">立即租用￥{{chargePrice || 0}}</view>
+      <view wx:if="{{isShowArgee}}" bind:tap="selectAgree" class="agree">
+        <image src="/assets/images/{{!showAgree?'unSelect':'select'}}.svg" mode="aspectFill" class="baseSelect"/>
+        <text class="f28">同意</text>
+        <text catch:tap="jump" data-url="/pages/leaseContract/leaseContract" class="f28 purple">《屏幕店租用合约》</text>
+      </view>
+    </view>
+  </view>
+  <van-popup show="{{ showPop }}" position="top" bind:close="onClose" data-type="showPop" custom-class="pop">
+    <view class="p30 popu">
+      <view class="g10 Rflex" bind:tap="onClose" data-type="showPop">
+        <view class="title">所属商超</view>
+        <image src="/assets/images/down.svg" mode="aspectFill" class="hbRight {{showPop?'up':''}}" />
+      </view>
+      <view class="circleList">
+        <view class="item {{activeId == item.id?'activeTab':''}}" wx:for="{{circleList}}" wx:key="id" data-id="{{item.id}}" bind:tap="selectTab">{{item.name}}</view>
+      </view>
+    </view>
+  </van-popup>
+  <van-popup show="{{ showArea }}" round position="bottom" bind:close="onClose" data-type="showArea">
+    <van-cascader options="{{ columns }}" active-color="#6070FB" bind:close="onClose" bind:finish="onFinish" bind:change="onChange" data-type="showArea" use-title-slot="{{true}}">
+      <view slot="title" class="pHeader">
+        <text class="clear" bind:tap="clear">清空</text>
+        <view class="pTitle">地址选择</view>
+      </view>
+    </van-cascader>
+  </van-popup>
+</view>

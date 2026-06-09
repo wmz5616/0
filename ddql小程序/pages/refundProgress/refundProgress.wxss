@@ -1,0 +1,38 @@
+/* pages/refundProgress/refundProgress.wxss */
+.bc {
+  height: 100vh;
+  background-color: rgba(249, 249, 249, 0.979);
+}
+.img{
+  width: 20rpx;
+  height: 35rpx;
+}
+
+.navText {
+  font-size: 37rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.desc-class {
+  font-size: 28rpx;
+  line-height: 60rpx;
+}
+.van-step__title {
+  font-size: 34rpx;
+  padding-bottom: 10rpx;
+  line-height: 50rpx;
+  margin-left: 20rpx;
+}
+/* .van-step__icon {
+  width: 50rpx;
+  height: 50rpx;
+  margin-bottom: 15rpx;
+  transform: translateX(-15rpx);
+} */
+.van-step__icon image{
+  width: 50rpx;
+  height: 50rpx;
+  margin-bottom: 15rpx;
+  transform: translateX(-15rpx);
+}

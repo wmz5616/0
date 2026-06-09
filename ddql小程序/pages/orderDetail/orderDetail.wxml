@@ -1,0 +1,61 @@
+<!--pages/orderDetail/orderDetail.wxml-->
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">门店订单</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <view class="shadow header">
+      <view>
+        <text class="status">状态：</text>
+        <text class="status {{orderInfo.status == 1?'':'red'}}">{{orderInfo.status == 1?'已完成':'已退款'}}</text>
+      </view>
+      <view class="flex link" bind:tap="jump" data-url="/pages/venueDetails/venueDetails?searchId={{orderInfo.shopId}}">
+        <text class="title">{{orderInfo.shopName}}</text>
+        <image src="/assets/images/more.svg" mode="aspectFill" style="height: 25rpx;width: 16rpx" />
+      </view>
+      <view class="info">
+        <view class="flex text">
+          <text class="c666">支付时间</text>
+          <text>{{orderInfo.orderTime}}</text>
+        </view>
+        <view class="flex text">
+          <text class="c666">下单人</text>
+          <text>{{orderInfo.nickName}}</text>
+        </view>
+        <view class="flex text">
+          <text>订单号</text>
+          <view class="order">
+            <text class="grayText">{{orderInfo.orderNo}}</text>
+            <van-button bind:click="copy" custom-class="copy">复制</van-button>
+          </view>
+        </view>
+        <view wx:if="{{orderInfo.status == 2 && orderInfo.refundReason}}" class="flex text">
+          <text class="c666">退款原因</text>
+          <text>{{orderInfo.refundReason}}</text>
+        </view>
+        <view wx:if="{{orderInfo.status == 2}}" class="flex text">
+          <text class="c666">退款时间</text>
+          <text>{{orderInfo.refundTime}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="shadow gap10">
+      <view class="flex">
+        <text class="grayTitle">订单总额</text>
+        <text class="price">￥{{orderInfo.totalAmount / 100 || 0}}</text>
+      </view>
+      <view class="flex">
+        <text class="grayTitle">抵扣金币</text>
+        <text class="price">{{orderInfo.deductCoin}}</text>
+      </view>
+      <view class="last">
+        <text class="grayText">实付：</text>
+        <view class="activeText">
+          <text class="f28">￥</text>
+          <text>{{orderInfo.payAmount / 100 || 0}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

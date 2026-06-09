@@ -1,0 +1,125 @@
+<!--pages/myOrder/myOrder.wxml-->
+<wxs module="format" src="./myOrder.wxs"></wxs>
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">我的订单</text>
+  </van-nav-bar>
+  <view class="tab">
+    <view bind:tap="changeTab" class="tabItem {{activeTab == index?'activeTab':''}}" wx:for="{{tabList}}" wx:key="index" data-index="{{index}}">{{item}}</view>
+    <view class="line" style="transform: translateX({{activeTab*266}}rpx);"></view>
+  </view>
+  <view wx:if="{{!activeTab}}">
+    <view class="pup">
+      <view class="selectTime" bind:tap="selectTime">
+        <text>{{format.formatter(showStartTime,'.')}}</text>
+        <text>至</text>
+        <view>{{format.formatter(showEndTime,'.')}}</view>
+        <image class="{{showPopup1?'up':''}}}" src="/assets/images/triangle.svg" mode="aspectFill" style="height: 10rpx;width: 20rpx;transition: all 0.3s linear;" />
+      </view>
+      <view bind:tap="showSearch" style="height: 100%;display: flex;align-items: center;justify-content: center;padding-right: 30rpx;">
+        <image src="{{showDOverlay?'/assets/images/activeSearch.svg':'/assets/images/conditionalSearch.svg'}}" mode="aspectFill" style="height: 42rpx;width: 53rpx;" />
+      </view>
+    </view>
+    <view class="tis">共{{reserveData.totalNum || 0}}笔，实付金额￥{{reserveData.totalPayAmount / 100 || 0}}元</view>
+    <view class="swiper {{isIOS?'h612':''}}">
+      <view bind:tap="jump" data-url="/pages/orderDetail/orderDetail?id={{item.id}}" wx:for="{{orderList}}" wx:key="index" class="item">
+        <view class="header">
+          <text class="title">{{item.shopName}}</text>
+          <view class="gap24">
+            <text class="nomal {{item.status == 1?'green':'red'}}">{{item.status == 1?'已完成':'已退款'}}</text>
+            <image src="/assets/images/more.svg" mode="aspectFill" style="height: 25rpx;width: 16rpx" />
+          </view>
+        </view>
+        <view class="info">
+          <view class="flex text">
+            <text>支付时间</text>
+            <text>{{item.orderTime}}</text>
+          </view>
+          <view class="flex text">
+            <text>实付金额</text>
+            <text>￥{{item.payAmount / 100 || 0}}</text>
+          </view>
+          <view class="flex text">
+            <text>抵扣金币数</text>
+            <text>{{item.deductCoin}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="footer1 {{isIOS?'isIOS':''}}">
+      <van-button disabled="{{storePageNum <= 1}}" custom-class="btn" bind:click="changePage" data-num="{{-1}}">上一页</van-button>
+      <view class="page">
+        <text class="activePage">{{storePageNum}}</text>
+        <text>/</text>
+        <text>{{storeTotalNum|| 0}}</text>
+      </view>
+      <van-button disabled="{{storePageNum >= storeTotalNum}}" custom-class="btn" bind:click="changePage" data-num="{{1}}">下一页</van-button>
+    </view>
+  </view>
+  <view wx:else>
+    <van-tabs active="{{ active }}" bind:change="onChange" custom-class="tab1" swipe-threshold="4" swipeable>
+      <van-tab wx:for="{{tabList1}}" wx:for-item="tabItem" wx:key="index" name="{{index}}" title="{{tabItem}}">
+        <scroll-view class="swiper1" scroll-y bindscrolltolower='mallOnScroll'>
+          <view wx:for="{{productList}}" wx:key="id" class="boxShadow flex list" bind:tap="jump" data-url="/pages/exchangeDetail/exchangeDetail?searchId={{item.id}}">
+            <image src="{{item.coverImage}}" mode="aspectFill" class="goodImage" />
+            <view class="left">
+              <view class="flex" style="align-items: flex-end;gap: 10rpx;">
+                <view class="l_r_t_left">
+                  <view class="flex" style="justify-content: flex-start;align-items: flex-end;">
+                    <text class="baseText">{{item.productName}}</text>
+                    <text style="font-size: 32rpx;color: #333;font-weight: 500;">×{{item.num}}</text>
+                  </view>
+                  <text class="activeText">{{item.amount}}金币</text>
+                </view>
+                <text class="grayText">{{format.formatStatus(item.status)}}</text>
+              </view>
+              <view class="flex">
+                <view class="tabs">{{format.formatStatus(item.status)}}</view>
+                <text class="grayTime">{{item.createTime}}</text>
+              </view>
+            </view>
+          </view>
+          <view style="width: 100%;height: 30rpx;"></view>
+        </scroll-view>
+      </van-tab>
+    </van-tabs>
+  </view>
+  <van-popup position="bottom" round show="{{ showPopup1 }}" bind:close="onClose" data-name="showPopup1">
+    <view>
+      <view class="pickerTime flex">
+        <text class="p_avtiveText" bind:tap="onClose" data-name="showPopup1">取消</text>
+        <text class="p_text">选择时间</text>
+        <text class="p_avtiveText" bind:tap="comfrimDate" data-name="showPopup1">确定</text>
+      </view>
+      <van-datetime-picker show-toolbar="{{false}}" type="date" data-field="startTime" value="{{ startTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ forma }}" />
+      <van-datetime-picker show-toolbar="{{false}}" type="date" data-field="endTime" value="{{ endTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ forma }}" />
+    </view>
+  </van-popup>
+  <!-- 筛选 -->
+  <van-overlay show="{{ showDOverlay }}">
+    <view class="overlay">
+      <view class="box_item">
+        <view class="p-title">
+          <text class="p-text">筛选</text>
+        </view>
+        <view class="o_content">
+          <text class="o_text">门店名称：</text>
+          <input class="o_input" value="{{shopName}}" data-type="shopName" type="text" placeholder="请输入" bindinput="changeInput" />
+          <text class="o_text">类型：</text>
+          <van-field disabled custom-class="field1" value="{{ typeData.text }}" clearable icon="arrow-down" placeholder="请选择" bind:click-icon="onClickIcon" bind:click-input="onClickIcon" placeholder-style="font-size:34rpx;color:#CCC;">
+          </van-field>
+        </view>
+        <view class="footer">
+          <view class="f_base cancle" bind:tap="reset">重置</view>
+          <view class="f_line"></view>
+          <view class="f_base comfirm" bind:tap="onConfirm" data-name="showDOverlay">确认</view>
+        </view>
+      </view>
+    </view>
+  </van-overlay>
+  <!-- 类型 -->
+  <van-popup z-index="{{2001}}" close-on-click-overlay position="bottom" round show="{{ showAreaPicker }}" bind:close="onClose" data-name="showAreaPicker">
+    <van-picker id="myPicker" toolbar-class="p_title" show-toolbar cancel-button-text="重置" title="请选择部门" columns="{{ typeList }}" bind:confirm="onDConfirm" data-name="showAreaPicker" bind:cancel="onClose" />
+  </van-popup>
+</view>

@@ -1,0 +1,232 @@
+/* pages/department/department.wxss */
+.bc {
+  height: 100vh;
+  background-color: rgba(249, 249, 249, 0.979);
+  position: relative;
+  overflow: hidden;
+}
+
+.swiper {
+  width: 100%;
+  height: calc(100vh - 402rpx);
+  overflow-y: auto;
+}
+
+.nomal{
+  height: calc(100vh - 284rpx);
+}
+
+.showDepartment {
+  display: flex;
+  background-color: #fff;
+  align-items: center;
+  gap: 40rpx;
+  padding-right: 30rpx;
+}
+
+.item {
+  padding: 0rpx;
+}
+
+.left {
+  padding: 30rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  background-color: #fff;
+  margin: 30rpx 0rpx 0rpx 30rpx;
+  border-radius: 18rpx;
+}
+
+.van-dialog__header {
+  padding-top: 46rpx !important;
+  padding-bottom: 46rpx !important;
+}
+
+.f_left {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  flex-grow: 1;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.f_l_r_top {
+  gap: 10rpx;
+  align-items: flex-end;
+}
+
+.ffff {
+  gap: 10rpx;
+  align-items: flex-end;
+  justify-content: flex-start;
+}
+
+.tag {
+  font-size: 32rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.name {
+  font-size: 30rpx;
+  color: #333333;
+  font-weight: 400;
+}
+
+.gray_tag {
+  font-size: 30rpx;
+  color: #848484;
+  font-weight: 400;
+}
+
+.slotRight {
+  height: 100%;
+  display: flex;
+}
+
+.baseSwipe {
+  height: 100%;
+  width: 120rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit {
+  background: #04C0D9;
+  border-radius: 18rpx 0rpx 0rpx 18rpx;
+}
+
+.delete {
+  background: #E62E3D;
+  border-radius: 0rpx 18rpx 18rpx 0rpx;
+}
+
+
+.btn_text {
+  font-size: 30rpx;
+  color: #FFFFFF;
+  font-weight: 400;
+}
+
+
+.overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.box_item {
+  width: 540rpx;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+}
+
+.p-title {
+  border-bottom: 0rpx;
+}
+
+.o_content {
+  padding: 30rpx;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  border-top: 1rpx solid #D8D8D8;
+  border-bottom: 1rpx solid #D8D8D8;
+}
+
+.o_text {
+  font-size: 32rpx;
+  color: #333333;
+  font-weight: 400;
+}
+
+.o_input {
+  border: 1px solid rgba(209, 209, 209, 1);
+  border-radius: 8rpx;
+  padding: 13rpx 0rpx 13rpx 20rpx;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 88rpx;
+}
+
+.f_line {
+  height: 100%;
+  width: 1rpx;
+  background: #E5E5E5;
+}
+
+.f_base {
+  height: 100%;
+  font-size: 36rpx;
+  text-align: center;
+  font-weight: 400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.cancle {
+  color: #333333;
+}
+
+.comfirm {
+  color: #04C0D9;
+}
+
+.field1 {
+  border: 1px solid rgba(209, 209, 209, 1);
+  border-radius: 8rpx;
+  padding: 13rpx 20rpx !important;
+}
+
+.allSelect {
+  margin-left: 120rpx;
+  display: flex;
+  gap: 20rpx;
+  align-items: center;
+}
+
+.selectText {
+  font-size: 32rpx;
+  color: #333333;
+  text-align: center;
+  font-weight: 400;
+}
+
+/* 按钮 */
+.Btn {
+  width: 100%;
+  padding: 0rpx 30rpx 30rpx 30rpx;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn {
+  height: 92rpx;
+  width: 630rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: linear-gradient(192deg, #5DD5DE 0%, #4EACD3 84%);
+  border-radius: 46rpx;
+  font-size: 32rpx;
+  color: #FFFFFF;
+}

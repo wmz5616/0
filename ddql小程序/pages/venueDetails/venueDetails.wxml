@@ -1,0 +1,53 @@
+<import src="../../wxParse/wxParse.wxml" />
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">门店详情</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <image src="{{consumptionInfo.coverImageUrl}}" mode="aspectFill" class="sImg" />
+    <view class="info">
+      <view class="tInfo">
+        <text class="title">{{consumptionInfo.name}}</text>
+        <view class="tis" wx:if="{{consumptionInfo.industryCategoryName}}">{{consumptionInfo.industryCategoryName}}</view>
+        <!-- <view class="tis">饮品</view> -->
+      </view>
+      <view class="Cflex">
+        <view class="item">
+          <image src="/assets/images/gClock.svg" mode="aspectFill" class="icon" />
+          <text class="grayText">营业时间：{{consumptionInfo.startTime}}-{{consumptionInfo.endTime}}</text>
+        </view>
+        <view class="item" bind:tap="openLocation">
+          <image src="/assets/images/gLocation.svg" mode="aspectFill" class="icon" />
+          <text class="grayText">{{consumptionInfo.address}}</text>
+        </view>
+        <view class="item" bind:tap="callPhone" wx:if="{{consumptionInfo.phone}}">
+          <image src="/assets/images/gPhone.svg" mode="aspectFill" class="icon" />
+          <text class="grayText">{{consumptionInfo.phone}}</text>
+        </view>
+        <view class="item">
+          <image src="/assets/images/sqIcon.svg" mode="aspectFill" class="icon" />
+          <text class="grayText">所属商圈：{{consumptionInfo.circleName || '未知'}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="sBottom">
+      <view class="tab">
+        <view wx:for="{{tabList}}" wx:key="index" class="baseTab {{index == activeTab?'activeTab':''}}" bind:tap="changeTab" data-index="{{index}}">{{item}}</view>
+        <view class="line" style="transform: translateX({{activeTab*168}}rpx);"></view>
+      </view>
+      <view class="detail" wx:if="{{activeTab == 0}}">
+        <view class="coin-rule-box" wx:if="{{consumptionInfo.coinRule}}">
+          <view class="rule-line">起始金额（元）：{{consumptionInfo.coinRule.minAmount || consumptionInfo.coinRule.startAmount || 0}}</view>
+          <view class="rule-line">每满：{{consumptionInfo.coinRule.fullAmount || consumptionInfo.coinRule.conditionAmount || 0}}元，可抵扣：{{consumptionInfo.coinRule.deductionCoin || consumptionInfo.coinRule.deductCoin || 0}}金币</view>
+          <view class="rule-line">最高抵扣（金币）：{{consumptionInfo.coinRule.maxDeductionCoin || consumptionInfo.coinRule.maxDeductCoin || 0}}</view>
+          <view class="rule-line">抵扣规则说明：{{consumptionInfo.coinRule.remark || '无'}}</view>
+        </view>
+        <view wx:else class="rule-line" style="color:#999; margin-top:20rpx;">暂无用币规则配置</view>
+      </view>
+      <view class="detail" wx:if="{{activeTab == 1}}">
+        <template is="wxParse" data="{{wxParseData:newsDetail.contentHtml.nodes}}" />
+      </view>
+    </view>
+  </view>
+</view>

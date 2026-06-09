@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.team.TeamMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into team( name, type, is_verified, people_number, region, address, contact_person, contact_phone,
+                         contact_email, status, is_user_auth, is_multi_department, check_in_num_limit, healthy_coin, create_time, update_time, delete_time)
+        values (#{data.name}, #{data.type}, #{data.isVerified}, #{data.peopleNumber}, #{data.region},
+                #{data.address}, #{data.contactPerson}, #{data.contactPhone}, #{data.contactEmail}, #{data.status}, #{data.isUserAuth},
+                #{data.isMultiDepartment},#{data.checkInNumLimit}, #{data.healthyCoin}, #{data.createTime}, #{data.updateTime}, #{data.deleteTime})
+    </insert>
+
+    <update id="update">
+        update team
+        <set>
+            <if test="data.name != null">
+                name = #{data.name},
+            </if>
+            <if test="data.type != null">
+                type = #{data.type},
+            </if>
+            <if test="data.isVerified != null">
+                is_verified = #{data.isVerified},
+            </if>
+            <if test="data.peopleNumber != null">
+                people_number = #{data.peopleNumber},
+            </if>
+            <if test="data.region != null">
+                region = #{data.region},
+            </if>
+            <if test="data.address != null">
+                address = #{data.address},
+            </if>
+            <if test="data.contactPerson != null">
+                contact_person = #{data.contactPerson},
+            </if>
+            <if test="data.contactPhone != null">
+                contact_phone = #{data.contactPhone},
+            </if>
+            <if test="data.contactEmail != null">
+                contact_email = #{data.contactEmail},
+            </if>
+            <if test="data.status != null">
+                status = #{data.status},
+            </if>
+            <if test="data.isUserAuth != null">
+                is_user_auth = #{data.isUserAuth},
+            </if>
+            <if test="data.checkInNumLimit != null">
+                check_in_num_limit = #{data.checkInNumLimit},
+            </if>
+            <if test="data.healthyCoin != null">
+                healthy_coin = #{data.healthyCoin},
+            </if>
+            <if test="data.isMultiDepartment != null">
+                is_multi_department = #{data.isMultiDepartment},
+            </if>
+        </set>
+        where id = #{data.id}
+    </update>
+
+    <update id="delete">
+        update team
+        set delete_time = #{deleteTime}
+        where id = #{deleteId}
+    </update>
+
+    <select id="selectList" resultType="com.zemcho.ddql.controller.team.vo.TeamListVo">
+        select a.*, b.status as verification_status from team as a
+        left join team_verification as b on a.id = b.team_id
+        <where>
+            <if test="param.teamIds != null and param.teamIds.size() > 0">
+                AND a.`id` IN
+                <foreach collection="param.teamIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.name != null">
+                and a.name like concat('%', #{param.name}, '%')
+            </if>
+            <if test="param.type != null">
+                and a.type = #{param.type}
+            </if>
+            <if test="param.isVerified != null">
+                and a.is_verified = #{param.isVerified}
+            </if>
+            <if test="param.verificationStatus != null">
+                and b.status = #{param.verificationStatus}
+            </if>
+            <if test="param.status != null">
+                and a.status = #{param.status}
+            </if>
+            <if test="param.region != null">
+                and a.region like concat('%', #{param.region}, '%')
+            </if>
+            <if test="param.createBeginTime != null">
+                and a.create_time >= #{param.createBeginTime}
+            </if>
+            <if test="param.createEndTime != null">
+                and #{param.createEndTime} >= a.create_time
+            </if>
+            <if test="param.deleteBeginTime != null">
+                and a.delete_time >= #{param.deleteBeginTime}
+            </if>
+            <if test="param.deleteEndTime != null">
+                and #{param.deleteEndTime} >= a.delete_time
+            </if>
+            <if test="param.deleteBeginTime == null and param.deleteEndTime == null">
+                and a.delete_time is null
+            </if>
+        </where>
+    </select>
+
+    <select id="selectListToExport" resultType="com.zemcho.ddql.entity.team.Team"
+            parameterType="java.util.List">
+        select * from team where id in
+        <foreach item="item" collection="teamIds" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectByIds" resultType="com.zemcho.ddql.entity.team.Team">
+        select * from team where id in
+        <foreach item="item" collection="teamIds" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="status != null">
+            and status = #{status}
+        </if>
+        and delete_time is null
+    </select>
+
+    <update id="incCoin">
+        UPDATE team
+        SET
+            `healthy_coin` = `healthy_coin` + ${healthCoin}
+        WHERE id = #{teamId}
+    </update>
+
+    <update id="decCoin">
+        UPDATE team
+        SET
+            `healthy_coin` = `healthy_coin` - ${healthCoin}
+        WHERE id = #{teamId}
+    </update>
+
+    <update id="updateStatusByIds">
+        UPDATE `team`
+        SET status = #{status}
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND delete_time is null
+    </update>
+
+    <select id="selectCommonList" resultType="com.zemcho.ddql.controller.wechat.common.vo.TeamCommonVo">
+        select * from team
+        <where>
+            <if test="param.name != null">
+                and `name` like concat('%', #{param.name}, '%')
+            </if>
+            <if test="param.type != null">
+                and `type` = #{param.type}
+            </if>
+            <if test="param.isVerified != null">
+                and `is_verified` = #{param.isVerified}
+            </if>
+            <if test="param.status != null">
+                and `status` = #{param.status}
+            </if>
+                and delete_time is null
+        </where>
+    </select>
+
+    <update id="incPeopleNumber">
+        UPDATE team
+        SET
+            `people_number` = `people_number` + ${peopleNumber}
+        WHERE id = #{teamId}
+    </update>
+
+    <update id="decPeopleNumber">
+        UPDATE team
+        SET
+            `people_number` = `people_number` - ${peopleNumber}
+        WHERE id = #{teamId}
+    </update>
+</mapper>

@@ -1,0 +1,151 @@
+.bc {
+  height: 100vh;
+  background-color: #f9f9f9;
+  position: relative;
+  overflow: hidden;
+}
+
+.LRP30 {
+  padding: 0 30rpx;
+}
+
+.elip{
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all ;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex1 {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10rpx;
+}
+
+.swiper {
+  padding: 30rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+  overflow-y: auto;
+  height: calc(100vh - 302rpx);
+}
+
+.list {
+  gap: 30rpx;
+  padding: 30rpx;
+  box-sizing: border-box;
+}
+
+.goodImage {
+  height: 168rpx;
+  width: 200rpx;
+  border-radius: 18rpx;
+  flex-shrink: 0;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 27rpx;
+  flex-grow: 1;
+}
+
+.l_r_t_left {
+  display: flex;
+  gap: 16rpx;
+  align-items: flex-end;
+}
+
+.baseText {
+  font-size: 32rpx;
+  color: #333333;
+  line-height: 42rpx;
+  font-weight: 500;
+}
+
+.activeText {
+  color: #04C0D9;
+  font-weight: 400;
+  flex-shrink: 0;
+}
+
+.grayText {
+  font-size: 30rpx;
+  color: #5D5C61;
+  font-weight: 400;
+  flex-shrink: 0;
+}
+
+.tabs {
+  background: #E9FDFF;
+  border-radius: 4rpx;
+  padding: 5rpx 21rpx;
+  font-size: 24rpx;
+  color: #04C0D9;
+  font-weight: 400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grayTime {
+  font-size: 26rpx;
+  color: #5D5C61;
+  font-weight: 400;
+}
+
+.refundForm {
+  margin: 0 auto;
+  width: 630rpx;
+  min-height: 417rpx;
+  border-radius: 18rpx;
+  box-shadow: 0px 2px 10px 4px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+  padding: 30rpx;
+}
+
+.refundReason {
+  min-height: 140rpx;
+  border-bottom: 1rpx solid #DDDDDD;
+}
+
+.formTitle {
+  margin-left: 25rpx;
+  font-size: 32rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.pic {
+  display: flex;
+  gap: 10rpx;
+  font-size: 32rpx;
+  font-weight: 400;
+}
+
+.title {
+  line-height: 51rpx;
+  color: #000000;
+}
+
+.grayTextt {
+  color: #C7C7CC;
+  line-height: 51rpx;
+}
+
+.refundFormPic {
+  margin-top: 30rpx;
+}

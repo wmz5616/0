@@ -1,0 +1,17 @@
+<van-nav-bar bind:click-left="goBack" border="{{border}}">
+  <view wx:if="{{showSolt}}" slot="left" class="navLeft" bind:tap="showPop">
+    <image src="/assets/images/locationImg.svg" mode="aspectFill" class="locationImg" />
+    <text class="navLeftText">{{locationName}}</text>
+    <image src="/assets/images/down.svg" mode="aspectFit" class="base {{showPop?'up':''}}"/>
+  </view>
+  <text slot="title" class="navText">{{title}}</text>
+</van-nav-bar>
+<van-popup show="{{ showPop }}" position="bottom" round custom-style="height: {{height}};overflow: hidden;" bind:close="onClose">
+  <view class="popHeader">
+    <text class="popText">请选择辖区</text>
+    <image bind:tap="onClose" src="/assets/images/close.svg" class="closeImg" mode="aspectFill" />
+  </view>
+  <view class="xiaquList">
+    <view bind:tap="selectItem" data-data="{{item}}" class="xiaquItem {{locationId == item.locationId ?'activeItem':''}}" wx:for="{{list}}" wx:key="locationId">{{item.locationName}}</view>
+  </view>
+</van-popup>

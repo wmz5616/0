@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.product.ProductMapper">
+
+    <sql id="field">
+        product_no,
+        cover_image,
+        gallery_images,
+        stock,
+        name,
+        specification,
+        unit,
+        exchange_amount,
+        sort,
+        status,
+        scheduled_time,
+        is_virtual,
+        time_limit,
+        detail,
+        pay_way,
+        pay_amount,
+        remark,
+        create_time,
+        update_time
+    </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `product`
+        (<include refid="field"/>)
+        VALUES
+        (
+        #{data.productNo},
+        #{data.coverImage},
+        #{data.galleryImages},
+        #{data.stock},
+        #{data.name},
+        #{data.specification},
+        #{data.unit},
+        #{data.exchangeAmount},
+        #{data.sort},
+        #{data.status},
+        #{data.scheduledTime},
+        #{data.isVirtual},
+        #{data.timeLimit},
+        #{data.detail},
+        #{data.payWay},
+        #{data.payAmount},
+        #{data.remark},
+        #{data.createTime},
+        #{data.updateTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `product`
+        <set>
+            <if test="data.productNo != null">
+                product_no = #{data.productNo},
+            </if>
+            <if test="data.coverImage != null">
+                cover_image = #{data.coverImage},
+            </if>
+            <if test="data.galleryImages != null">
+                gallery_images = #{data.galleryImages},
+            </if>
+            <if test="data.stock != null">
+                stock = #{data.stock},
+            </if>
+            <if test="data.name != null">
+                name = #{data.name},
+            </if>
+            <if test="data.specification != null">
+                specification = #{data.specification},
+            </if>
+            <if test="data.unit != null">
+                unit = #{data.unit},
+            </if>
+            <if test="data.exchangeAmount != null">
+                exchange_amount = #{data.exchangeAmount},
+            </if>
+            <if test="data.sort != null">
+                sort = #{data.sort},
+            </if>
+            <if test="data.status != null">
+                status = #{data.status},
+            </if>
+            <if test="data.scheduledTime != null">
+                scheduled_time = #{data.scheduledTime},
+            </if>
+            <if test="data.isVirtual != null">
+                is_virtual = #{data.isVirtual},
+            </if>
+            <if test="data.timeLimit != null">
+                time_limit = #{data.timeLimit},
+            </if>
+            <if test="data.detail != null">
+                detail = #{data.detail},
+            </if>
+            <if test="data.remark != null">
+                remark = #{data.remark},
+            </if>
+            <if test="data.payWay != null">
+                pay_way = #{data.payWay},
+            </if>
+            <if test="data.payAmount != null">
+                pay_amount = #{data.payAmount},
+            </if>
+            <if test="data.exchangeNum != null">
+                exchange_num = #{data.exchangeNum},
+            </if>
+            <if test="data.createTime != null">
+                create_time = #{data.createTime},
+            </if>
+            <if test="data.updateTime != null">
+                update_time = #{data.updateTime},
+            </if>
+        </set>
+        WHERE id = #{data.id}
+    </update>
+
+    <select id="selectList" resultType="com.zemcho.ddql.entity.product.Product">
+        SELECT *
+        FROM `product` p
+        <if test="param.categoryId != null">
+            LEFT JOIN product_category pc ON p.id = pc.product_id
+        </if>
+        <where>
+            <if test="param.searchId != null">
+                AND p.id = #{param.searchId}
+            </if>
+            <if test="param.searchIds != null and !param.searchIds.isEmpty()">
+                AND p.id IN
+                <foreach item="item" collection="param.searchIds" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.productNo != null and param.productNo != ''">
+                AND p.product_no LIKE CONCAT('%', #{param.productNo}, '%')
+            </if>
+            <if test="param.name != null and param.name != ''">
+                AND p.name LIKE CONCAT('%', #{param.name}, '%')
+            </if>
+            <if test="param.stockStatus == 1">
+                AND p.stock > 0
+            </if>
+            <if test="param.stockStatus == 0">
+                AND p.stock = 0
+            </if>
+            <if test="param.categoryId != null">
+                AND pc.category_id = #{param.categoryId}
+            </if>
+            <if test="param.searchStatusList != null and param.searchStatusList.size() > 0">
+                AND p.`status` IN
+                <foreach collection="param.searchStatusList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.status != null">
+                AND p.status = #{param.status}
+            </if>
+            <if test="param.isVirtual != null">
+                AND p.is_virtual = #{param.isVirtual}
+            </if>
+            <if test="param.limitTime != null">
+                AND p.scheduled_time &lt;= #{param.limitTime}
+            </if>
+            <if test="param.startTime != null">
+                AND p.create_time &gt;= #{param.startTime}
+            </if>
+            <if test="param.endTime != null">
+                AND p.create_time &lt;= #{param.endTime}
+            </if>
+            <if test="param.payWay != null">
+                AND p.pay_way = #{param.payWay}
+            </if>
+        </where>
+        ORDER BY p.sort desc
+    </select>
+
+
+    <select id="selectById" resultType="com.zemcho.ddql.entity.product.Product">
+        SELECT *
+        FROM product
+        <where>
+            <if test="productId != null">
+                AND id = #{productId}
+            </if>
+        </where>
+    </select>
+
+    <select id="ifExists" resultType="java.lang.Boolean">
+        SELECT COUNT(1)
+        FROM product a
+        LEFT JOIN product_category b ON a.id = b.product_id
+        WHERE b.category_id = #{categoryId}
+    </select>
+
+    <delete id="deleteByIds">
+        DELETE FROM product WHERE id IN
+        <foreach item="item" collection="productIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="inc">
+        UPDATE product
+        SET
+        <trim suffixOverrides=",">
+            <if test="stock != null and stock > 0">`stock` = `stock` + ${stock},</if>
+            <if test="exchangeNum != null and exchangeNum > 0">`exchange_num` = `exchange_num` + ${exchangeNum},</if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+    <update id="dec">
+        UPDATE product
+        SET
+        <trim suffixOverrides=",">
+            <if test="stock != null and stock > 0">`stock` = `stock` - ${stock},</if>
+            <if test="exchangeNum != null and exchangeNum > 0">`exchange_num` = `exchange_num` - ${exchangeNum},</if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStockOrExchangeNum">
+        UPDATE product
+        SET
+        <trim suffixOverrides=",">
+            <if test="stock != null">`stock` = `stock` + ${stock},</if>
+            <if test="exchangeNum != null">`exchange_num` = `exchange_num` + ${exchangeNum},</if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 检查库存是否充足 -->
+    <select id="checkStock" resultType="java.lang.Integer">
+        SELECT stock FROM product WHERE id = #{productId} AND stock >= #{quantity}
+    </select>
+
+    <!-- 扣减库存（乐观锁方式） -->
+    <update id="decreaseStock">
+        UPDATE product
+        SET stock = stock - #{quantity}, update_time = NOW()
+        WHERE id = #{productId} AND stock >= #{quantity}
+    </update>
+
+    <!-- 批量检查库存 -->
+    <select id="batchCheckStock" resultType="com.zemcho.ddql.entity.product.Product">
+        SELECT id, name, stock FROM product WHERE id IN
+        <foreach collection="productIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <!-- 增加库存（用于退款） -->
+    <update id="increaseStock">
+        UPDATE product
+        SET stock = stock + #{quantity}, update_time = NOW()
+        WHERE id = #{productId}
+    </update>
+</mapper>

@@ -1,0 +1,49 @@
+.naVigaTion{
+    width:100%;
+    background-color:#001529;
+}
+.headMenuStyle{
+    width:1140px;
+    height: 60px;
+    margin: 0 auto;
+}
+.memuTitle{
+    color: #fff;
+    font-size: 15px;
+    transition:0.3s;
+    animation:mymove .3s;  
+    -webkit-animation:mymove .3s; /*Safari and Chrome*/
+}
+  .memuTitle:hover{
+      color:#3484f5 !important
+  }
+  @keyframes mymove
+  {
+  from {transform: scale(0.1)}
+  to {transform: scale(1)}
+  }
+  @-webkit-keyframes mymove /*Safari and Chrome*/
+{
+    from {transform: scale(0.1)}
+    to {transform: scale(1)}
+}
+.headLogo{
+    height: 60px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.rightContent{
+    padding-left: 9px;
+    padding-right:9px;
+    height: 60px;
+    display: flex;
+    align-items: center;   
+    float:right;
+}
+.rightContent:hover{
+    background-color:#1890ff;
+}
+.headLogo img{
+ width:374px;
+}

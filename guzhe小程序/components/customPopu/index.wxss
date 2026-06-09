@@ -1,0 +1,17 @@
+/* components/customPopu/index.wxss */
+.Rflex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10rpx;
+}
+
+.base{
+  height: 13rpx;
+  width: 23rpx;
+  transition: all 0.3 linear;
+}
+
+.up{
+  transform: rotate(180deg);
+}

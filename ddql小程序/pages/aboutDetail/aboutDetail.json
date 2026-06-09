@@ -1,0 +1,6 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "van-nav-bar": "/miniprogram_npm/@vant/weapp/nav-bar"
+  }
+}

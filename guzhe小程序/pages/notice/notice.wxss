@@ -1,0 +1,61 @@
+/* pages/notice/notice.wxss */
+.bc {
+  height: 100vh;
+  background-color: #f9f9f9;
+  overflow: hidden;
+}
+.white{
+  background-color: #fff;
+}
+.List{
+  overflow: auto;
+  height: calc(100vh - 180rpx);
+  width: 100%;
+  box-sizing: border-box;
+  padding: 30rpx 0rpx;
+}
+.img{
+  width: 20rpx;
+  height: 35rpx;
+}
+
+.navText {
+  font-size: 37rpx;
+  color: #333333;
+  font-weight: 500;
+}
+.ListItem {
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 34rpx;
+  font-size: 32rpx;
+  box-shadow: 0rpx 2rpx 10rpx 4rpx rgba(0,0,0,0.05);
+  border-radius: 18rpx;
+  margin-bottom: 30rpx;
+  padding: 30rpx;
+  background-color: #fff;
+}
+
+.ListItem:last-child{
+  margin-bottom: 0rpx;
+}
+
+.zd {
+  position: absolute;
+  top: 10rpx;
+  right: -35rpx; 
+  width: 120rpx;
+  height: 30rpx; 
+  line-height: 30rpx;
+  text-align: center; 
+  background-color: #FB6C00;
+  color: #ffffff;
+  font-size: 22rpx;
+  font-weight: 400;
+  transform: rotate(45deg); 
+  z-index: 10;
+}

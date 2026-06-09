@@ -1,0 +1,83 @@
+<import src="../../wxParse/wxParse.wxml" />
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="navLeft">
+      <image src="/assets/images/arrow-back-white.svg" class="img" mode="aspectFill" slot="left"></image>
+    </view>
+    <!-- <text slot="title" class="navText">商品详情</text> -->
+    <!-- <text slot="title" class="navText">个人中心</text> -->
+  </van-nav-bar>
+  <view class="header">
+    <swiper bindchange="swiperChange" class="swiper" autoplay interval='3000'>
+      <block wx:for="{{imgUrlsList}}" wx:key="index">
+        <swiper-item>
+          <image class="swiper-image" src="{{item}}" mode="aspectFill"></image>
+        </swiper-item>
+      </block>
+    </swiper>
+    <view class="dots-wrapper">
+      <view class="dot {{swiperCurrent == index ? 'active-dot' : 'normal-dot'}}" wx:for="{{imgUrlsList}}" wx:key="index"></view>
+    </view>
+  </view>
+  <view class="middle">
+    <text class="title">{{productInfo.name}}</text>
+    <view class="flex">
+      <view class="m_left">
+        <text class="activeText">{{priceStr}}</text>
+        <text class="nomalText">/1{{productInfo.unit}}</text>
+      </view>
+      <view class="m_right">
+        {{text}}
+      </view>
+    </view>
+  </view>
+  <view class="info">
+    <view class="i_header">
+      <text class="title">商品详情</text>
+      <!-- <rich-text nodes="{{productInfo.detail}}"></rich-text> -->
+      <template is="wxParse" data="{{wxParseData:newsDetail.contentHtml.nodes}}" />
+    </view>
+  </view>
+  <view wx:if="{{productInfo.stock}}" class="btn">
+    <view class="Btn" bind:tap="open" data-name="showPopup">立即兑换</view>
+  </view>
+  <!-- 自定义弹出层 -->
+  <van-popup show="{{ showPopup }}" position="bottom" round data-name="showPopup" bind:close="onClose" custom-class="pop">
+    <view class="p-title">
+      <text class="p-text"></text>
+      <image bind:tap="onClose" data-name="showPopup" class="p-close" src="/assets/images/close.png" mode="" />
+    </view>
+    <view wx:if="{{!productInfo.isVirtual}}" class="address">
+      <view class="addressItem flex" bind:tap="jump" data-url="/pages/address/address?selectAddressId={{addressInfo.id}}&Dflag={{true}}">
+        <view wx:if="{{addressInfo.phone}}" class="a_left">
+          <view class="a_l_top">
+            <text class="title">{{addressInfo.name}}</text>
+            <text class="title fw400">{{addressInfo.phone}}</text>
+          </view>
+          <text class="title fw400 ellipsis">{{regionName}}{{addressInfo.address}}</text>
+        </view>
+        <view wx:else class="title">暂无默认收货地址</view>
+        <image src="/assets/images/black-rightArrow.svg" mode="aspectFill" class="backIcon"/>
+      </view>
+    </view>
+    <view class="goodList">
+      <view class="goodItem">
+        <image src="{{productInfo.coverImage}}" mode="aspectFill" class="goodImage"/>
+        <view class="g_left">
+          <view class="m_left">
+            <text class="activeText">{{priceStr}}</text>
+            <text class="nomalText">/1{{productInfo.unit}}</text>
+          </view>
+          <van-stepper value="{{ amount }}" input-width="88rpx" integer button-size="56rpx" long-press bind:change="change"/>
+        </view>
+      </view>
+    </view>
+    <view class="totalView flex">
+      <view class="t_left">
+        <text class="nomalText">合计：</text>
+        <text class="ccoin" style="color: #FF4D4F; font-size: 36rpx; font-weight: 500;">{{totalPriceStr}}</text>
+      </view>
+      <view class="t_right" bind:tap="getProductExchange">立即支付</view>
+    </view>
+  </van-popup>
+</view>

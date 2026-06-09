@@ -1,0 +1,16 @@
+<!--pages/screenPage/screenPage.wxml-->
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">屏幕画面</text>
+  </van-nav-bar>
+  <view class="header">
+    <view class="hLeft">
+      设备编号：{{screenshotInfo.serialNumber}}
+    </view>
+    <view class="hRight">查看时间：{{screenshotInfo.searchTime}}</view>
+  </view>
+  <image class="img" src="{{screenshotInfo.screenshotUrl}}" mode="aspectFill" bind:tap="showImg"></image>
+</view>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zemcho.ddql.mapper.business.ShopManagerMapper">
+
+    <!-- 根据ID查询 -->
+    <select id="selectById" resultType="com.zemcho.ddql.entity.business.ShopManager">
+        SELECT *
+        FROM `shop_manager`
+        WHERE id = #{id}
+    </select>
+
+
+    <!-- 根据商家ID查询 -->
+    <select id="selectByShopId" resultType="com.zemcho.ddql.entity.business.ShopManager">
+        SELECT *
+        FROM `shop_manager`
+        WHERE shop_id = #{shopId}
+        ORDER BY sort ASC
+    </select>
+
+    <select id="selectByIds" resultType="com.zemcho.ddql.entity.business.ShopManager">
+        SELECT *
+        FROM `shop_manager`
+        <where>
+            <if test="ids != null and ids.size > 0">
+                id IN
+                <foreach item="id" collection="ids" separator="," open="(" close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+
+    </select>
+
+    <select id="selectWechatManagedShopList"
+            resultType="com.zemcho.ddql.controller.wechat.personalCenter.vo.WechatMerchantManageListVo">
+        SELECT s.id                      AS shopId,
+               s.name                    AS shopName,
+               s.qualification_cert      AS qualificationCert,
+               sa.apply_result           AS applyResult,
+               MAX(sm.head_manager)      AS canCancel
+        FROM `shop_manager` sm
+                 INNER JOIN `shop` s ON sm.shop_id = s.id
+                 INNER JOIN `settlement_application` sa ON sa.shop_id = s.id AND sa.apply_result = 1
+        WHERE sm.phone = #{phone}
+          AND s.delete_time IS NULL
+          AND (s.shop_status IS NULL OR s.shop_status != 2)
+        GROUP BY s.id, s.name, s.qualification_cert, sa.apply_result
+        ORDER BY s.id DESC
+    </select>
+
+    <select id="countHeadManagerByShopIdAndPhone" resultType="java.lang.Integer">
+        SELECT IFNULL(COUNT(1),0)
+        FROM `shop_manager`
+        WHERE shop_id = #{shopId}
+          AND phone = #{phone}
+          AND head_manager = 1
+    </select>
+
+    <!-- 新增 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `shop_manager` (
+            shop_id,
+            sort,
+            name,
+            phone,
+            head_manager
+        ) VALUES (
+                     #{param.shopId},
+                     #{param.sort},
+                     #{param.name},
+                     #{param.phone},
+                     #{param.headManager}
+                 )
+    </insert>
+
+    <!-- 更新只修改姓名和电话 -->
+    <update id="update">
+        UPDATE `shop_manager`
+        <set>
+            <if test="param.name != null and param.name != ''">
+                name = #{param.name},
+            </if>
+            <if test="param.phone != null and param.phone != ''">
+                phone = #{param.phone},
+            </if>
+            <if test="param.sort != null">
+                sort= #{param.sort},
+            </if>
+            <if test="param.headManager != null">
+                head_manager= #{param.headManager},
+            </if>
+        </set>
+        WHERE id = #{param.id}
+    </update>
+
+    <!-- 根据ID删除 -->
+    <delete id="deleteByIds">
+        DELETE FROM `shop_manager`
+        <where>
+            <foreach item="id" collection="ids" separator="OR" open="(" close=")">
+                id = #{id}
+            </foreach>
+        </where>
+    </delete>
+
+    <select id="selectByPhoneAndShopId" resultType="com.zemcho.ddql.entity.business.ShopManager">
+        select * from `shop_manager`
+        where shop_id=#{param.searchId}
+        <if test="param.keyword != null and param.keyword != ''">
+            and phone LIKE CONCAT('%', #{param.keyword}, '%')
+        </if>
+    </select>
+
+    <select id="selectShopIdsByPhone" resultType="java.lang.Integer">
+        select shop_id from shop_manager where phone = #{phone}
+    </select>
+
+    <select id="selectByPhone" resultType="com.zemcho.ddql.entity.business.ShopManager">
+        select * from shop_manager where phone = #{phone}
+    </select>
+
+    <delete id="deleteByShopId">
+        delete from shop_manager where shop_id = #{id}
+    </delete>
+
+    <select id="selectIfExitByShopIdAndPhone" resultType="com.zemcho.ddql.entity.business.ShopManager">
+        select * from shop_manager where shop_id = #{id} and phone = #{phone}
+    </select>
+
+    <select id="selectByShopIdAndPhone" resultType="com.zemcho.ddql.entity.business.ShopManager">
+        SELECT *
+        FROM `shop_manager`
+        WHERE shop_id = #{shopId}
+          AND phone = #{phone}
+        LIMIT 1
+    </select>
+
+    <!-- 批量插入商家管理人员 -->
+    <insert id="insertBatch">
+        INSERT INTO `shop_manager` (
+            shop_id,
+            sort,
+            name,
+            phone,
+            head_manager
+        ) VALUES
+        <foreach collection="list" item="manager" separator=",">
+            (
+                #{manager.shopId},
+                #{manager.sort},
+                #{manager.name},
+                #{manager.phone},
+                #{manager.headManager}
+            )
+        </foreach>
+    </insert>
+</mapper>

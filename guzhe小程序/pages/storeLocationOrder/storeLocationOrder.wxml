@@ -1,0 +1,101 @@
+<!--pages/myOrder/myOrder.wxml-->
+<wxs module="format" src="./storeLocationOrder.wxs"></wxs>
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">店位订单</text>
+  </van-nav-bar>
+  <view class="pup">
+    <view class="selectTime" bind:tap="selectTime">
+      <text>{{format.formatter(showStartTime,'.')}}</text>
+      <text>至</text>
+      <view>{{format.formatter(showEndTime,'.')}}</view>
+      <image class="{{showPopup1?'up':''}}}" src="/assets/images/down.svg" mode="aspectFill" style="height: 10rpx;width: 20rpx;transition: all 0.3s linear;" />
+    </view>
+    <view bind:tap="showSearch" style="height: 100%;display: flex;align-items: center;justify-content: center;padding-right: 30rpx;">
+      <image src="{{showDOverlay?'/assets/images/activeSearch.svg':'/assets/images/conditionalSearch.svg'}}" mode="aspectFill" style="height: 42rpx;width: 53rpx;" />
+    </view>
+  </view>
+  <view class="tis">
+    <image src="/assets/images/warning.svg" mode="aspectFill" style="height: 34rpx;width: 34rpx;" />
+    <view>共{{orderInfo.orderCount || 0}}笔，实付金额￥{{orderInfo.totalAmountText}}元</view>
+  </view>
+  <scroll-view class="swiper {{isIOS?'h344':''}}" scroll-y bindscrolltolower="scrollTolower">
+    <view bind:tap="jump" data-url="/pages/storeLocationOrderDetails/storeLocationOrderDetails?id={{item.orderId}}" wx:for="{{orderList}}" wx:key="index" class="item">
+      <view class="header">
+        <text class="title">{{item.orderTime}}</text>
+        <view class="gap24">
+          <text class="nomal {{format.find(typeList,item.status).color}}"> {{format.find(typeList,item.status).text}}</text>
+          <image src="/assets/images/more.svg" mode="aspectFill" style="height: 25rpx;width: 16rpx" />
+        </view>
+      </view>
+      <view class="info">
+        <view class="flex text">
+          <text style="flex-shrink: 0;">设备编号</text>
+          <text user-select>{{item.serialNumber}}</text>
+        </view>
+        <view class="flex text">
+          <text style="flex-shrink: 0;">订单金额</text>
+          <text>￥{{item.totalAmount / 100 || 0}}</text>
+        </view>
+        <view class="flex text">
+          <text style="flex-shrink: 0;">所属商超</text>
+          <text>{{item.businessCircleName}}</text>
+        </view>
+        <view class="flex text">
+          <text style="flex-shrink: 0;">租用月份</text>
+          <text style="width: 480rpx;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;text-align: right;">{{item.rentalMonths}}</text>
+        </view>
+      </view>
+    </view>
+    <view style="height: 30rpx;width: 100%;"></view>
+  </scroll-view>
+  <van-popup position="bottom" round show="{{ showPopup1 }}" bind:close="onClose" data-name="showPopup1">
+    <view>
+      <view class="pickerTime flex">
+        <text class="p_avtiveText" bind:tap="onClose" data-name="showPopup1">取消</text>
+        <text class="p_text">选择时间</text>
+        <text class="p_avtiveText" bind:tap="comfrimDate" data-name="showPopup1">确定</text>
+      </view>
+      <van-datetime-picker show-toolbar="{{false}}" type="date" data-field="startTime" value="{{ startTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ forma }}" />
+      <van-datetime-picker show-toolbar="{{false}}" type="date" data-field="endTime" value="{{ endTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ forma }}" />
+    </view>
+  </van-popup>
+  <!-- 筛选 -->
+  <van-overlay show="{{ showDOverlay }}">
+    <view class="overlay">
+      <view class="box_item">
+        <view class="p-title">
+          <text class="p-text">筛选</text>
+          <view style="position: absolute;right: 0rpx;top: 0;height: 108rpx;width: 108rpx;display: flex;align-items: center;justify-content: center;" bind:tap="onClose" data-name="showDOverlay">
+            <image src="/assets/images/closed.svg" mode="aspectFill" style="height: 36rpx;width: 36rpx;" />
+          </view>
+        </view>
+        <view class="o_content">
+          <text class="o_text">所属商超：</text>
+          <van-field disabled custom-class="field1" value="{{ circleName }}" clearable icon="arrow-down" placeholder="请选择" bind:click-icon="onClickIcon" bind:click-input="onClickIcon" placeholder-style="font-size:34rpx;color:#CCC;" data-type="showSuperPicker"></van-field>
+          <text class="o_text">订单状态：</text>
+          <van-field disabled custom-class="field1" value="{{ pickerData.text }}" clearable icon="arrow-down" placeholder="请选择" bind:click-icon="onClickIcon" bind:click-input="onClickIcon" placeholder-style="font-size:34rpx;color:#CCC;" data-type="showAreaPicker">
+          </van-field>
+          <text class="o_text">设备编号：</text>
+          <input class="o_input" value="{{eqtNumber}}" data-type="eqtNumber" type="text" placeholder="请输入" bindinput="changeInput" placeholder-style="color: #c8c9cc"/>
+        </view>
+        <view class="footer">
+          <view class="f_base cancle" bind:tap="reset">重置</view>
+          <view class="f_line"></view>
+          <view class="f_base comfirm" bind:tap="onConfirm" data-name="showDOverlay">确认</view>
+        </view>
+      </view>
+    </view>
+  </van-overlay>
+  <!-- 状态 -->
+  <van-popup z-index="{{2001}}" close-on-click-overlay position="bottom" round show="{{ showAreaPicker }}" bind:close="onClose" data-name="showAreaPicker">
+    <van-picker id="myPicker" toolbar-class="p_title" show-toolbar cancel-button-text="重置" title="请选择订单状态" columns="{{ typeList }}" bind:confirm="onDConfirm" data-name="showAreaPicker" bind:cancel="onClose" />
+  </van-popup>
+  <!-- 商超 -->
+  <van-popup z-index="{{2001}}" close-on-click-overlay position="bottom" round show="{{ showSuperPicker }}" bind:close="onClose" data-name="showSuperPicker">
+    <van-picker id="myPicker" toolbar-class="p_title" show-toolbar cancel-button-text="重置" title="请选择所属商超" columns="{{ superList }}" bind:confirm="onDConfirm" data-name="showSuperPicker" bind:cancel="onClose" />
+  </van-popup>
+</view>

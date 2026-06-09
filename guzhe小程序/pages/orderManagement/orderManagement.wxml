@@ -1,0 +1,201 @@
+<!--pages/myOrder/myOrder.wxml-->
+<wxs module="format" src="./orderManagement.wxs"></wxs>
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">我的订单</text>
+  </van-nav-bar>
+  <view class="pup">
+    <view class="selectTime" bind:tap="selectTime">
+      <text>{{format.formatter(showStartTime,'.')}}</text>
+      <text>至</text>
+      <view>{{format.formatter(showEndTime,'.')}}</view>
+      <image class="{{showPopup1?'up':''}}}" src="/assets/images/down.svg" mode="aspectFill" style="height: 10rpx;width: 20rpx;transition: all 0.3s linear;" />
+    </view>
+    <view bind:tap="showSearch" style="height: 100%;display: flex;align-items: center;justify-content: center;padding-right: 30rpx;">
+      <image src="{{showDOverlay?'/assets/images/activeSearch.svg':'/assets/images/conditionalSearch.svg'}}" mode="aspectFill" style="height: 42rpx;width: 53rpx;" />
+    </view>
+  </view>
+  <view class="tis">共{{orderStat.orderNum || 0}}笔，实付金额￥{{(orderStat.totalAmount - orderStat.totalRefundAmount) / 100 || 0}}元</view>
+  <scroll-view class="swiper {{isIOS?'h616':''}}" scroll-y bindscrolltolower="scrollTolower" scroll-into-view="{{scrollToOrderId}}" scroll-with-animation="true">
+    <view bind:tap="jump" data-url="/pages/orderDetail/orderDetail?searchId={{item.id}}&myPageSize={{pageNum * pageSize}}" wx:for="{{orderList}}" wx:key="index" id="order-{{item.id}}" class="item">
+      <view class="header">
+        <text class="title">{{item.createTime}}</text>
+        <view class="gap24">
+          <text class="nomal" style="color: {{statusList[item.status].color}}">{{statusList[item.status].text}}</text>
+          <image src="/assets/images/more.svg" mode="aspectFill" style="height: 25rpx;width: 16rpx" />
+        </view>
+      </view>
+      <view class="info">
+        <view class="flex text">
+          <text>商品</text>
+          <text>{{item.productName}}</text>
+        </view>
+        <view wx:if="{{item.specification}}" class="flex text">
+          <text>规格</text>
+          <text>{{item.specification}}</text>
+        </view>
+        <view class="flex text">
+          <text>数量</text>
+          <text>{{item.num}}</text>
+        </view>
+        <view class="flex text">
+          <text>订单金额</text>
+          <text>￥{{item.amount / 100 || 0}}</text>
+        </view>
+        <view class="flex text">
+          <text>下单人</text>
+          <text>{{item.nickName}}</text>
+        </view>
+        <view class="flex text">
+          <text>下单号</text>
+          <text>{{item.orderNo}}</text>
+        </view>
+        <view wx:if="{{item.status == 5 || item.status == 6}}" class="flex text">
+          <text>申请退款时间</text>
+          <text>{{item.updateTime}}</text>
+        </view>
+        <view wx:if="{{(item.status == 5 || item.status == 6) && item.reason}}" class="flex text">
+          <text>退款原因</text>
+          <text>{{item.reason}}</text>
+        </view>
+      </view>
+      <view wx:if="{{item.status == 1 || item.status == 2 || item.status == 3 || item.status == 4 || item.status == 7}}" style="display: flex;justify-content: flex-end;align-items: center;">
+        <view catch:tap="showRefund" class="baseBtn refundBtn" data-orderitem="{{item}}">退款</view>
+      </view>
+      <view wx:if="{{item.status == 5}}" style="display: flex;justify-content: flex-end;align-items: center;">
+        <view catch:tap="jump" data-url="/pages/refundReview/refundReview?searchId={{item.id}}&type=orderJump&myPageSize={{pageNum * pageSize}}" class="baseBtn refundAudit">退款审核</view>
+      </view>
+    </view>
+    <view style="height: 30rpx;width: 100%;"></view>
+  </scroll-view>
+  <view class="footer1 {{isIOS?'isIOS':''}}">
+    <view class="Btn" bind:tap="showExport">
+      <image src="/assets/images/shipment.svg" mode="aspectFill" style="height: 40rpx;width: 40rpx;" />
+      <text class="btnText">发货</text>
+    </view>
+  </view>
+  <van-popup position="bottom" round show="{{ showPopup1 }}" bind:close="onClose" data-name="showPopup1">
+    <view>
+      <view class="pickerTime flex">
+        <text class="p_avtiveText" bind:tap="onClose" data-name="showPopup1">取消</text>
+        <text class="p_text">选择时间</text>
+        <text class="p_avtiveText" bind:tap="comfrimDate" data-name="showPopup1">确定</text>
+      </view>
+      <van-datetime-picker show-toolbar="{{false}}" type="date" data-field="startTime" value="{{ startTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ forma }}" />
+      <van-datetime-picker show-toolbar="{{false}}" type="date" data-field="endTime" value="{{ endTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ forma }}" />
+    </view>
+  </van-popup>
+  <!-- 筛选 -->
+  <van-overlay show="{{ showDOverlay }}">
+    <view class="overlay">
+      <view class="box_item">
+        <view class="p-title">
+          <text class="p-text">筛选</text>
+          <view style="position: absolute;right: 0rpx;top: 0;height: 108rpx;width: 108rpx;display: flex;align-items: center;justify-content: center;" bind:tap="onClose" data-name="showDOverlay">
+            <image src="/assets/images/closed.svg" mode="aspectFill" style="height: 36rpx;width: 36rpx;" />
+          </view>
+        </view>
+        <view class="o_content">
+          <text class="o_text">下单人：</text>
+          <input class="o_input" value="{{applyUser}}" data-type="applyUser" type="text" placeholder="请输入" bindinput="changeInput" placeholder-style="color: #c8c9cc" />
+          <text class="o_text">商品：</text>
+          <input class="o_input" value="{{productName}}" data-type="productName" type="text" placeholder="请输入" bindinput="changeInput" placeholder-style="color: #c8c9cc" />
+          <text class="o_text">订单号：</text>
+          <input class="o_input" value="{{orderNo}}" data-type="orderNo" type="text" placeholder="请输入" bindinput="changeInput" placeholder-style="color: #c8c9cc" />
+          <text class="o_text">订单状态：</text>
+          <van-field disabled custom-class="field1" value="{{ typeName }}" clearable icon="arrow-down" placeholder="请选择" bind:click-icon="onClickIcon" bind:click-input="onClickIcon" placeholder-style="font-size:32rpx;color:#CCC;">
+          </van-field>
+        </view>
+        <view class="footer">
+          <view class="f_base cancle" bind:tap="reset">重置</view>
+          <view class="f_line"></view>
+          <view class="f_base comfirm" bind:tap="onConfirm" data-name="showDOverlay">确认</view>
+        </view>
+      </view>
+    </view>
+  </van-overlay>
+  <!-- 状态 -->
+  <van-popup z-index="{{2001}}" close-on-click-overlay position="bottom" round show="{{ showAreaPicker }}" bind:close="onClose" data-name="showAreaPicker">
+    <van-picker id="myPicker" toolbar-class="p_title" show-toolbar cancel-button-text="重置" title="请选择订单状态" columns="{{ typeList }}" bind:confirm="onDConfirm" data-name="showAreaPicker" bind:cancel="onClose" />
+  </van-popup>
+  <!-- 退款 -->
+  <van-popup show="{{ showRefund }}" position="center" custom-style="width: 664rpx;overflow:hidden;border-radius: 12rpx;">
+    <view class="popup-content">
+      <view class="tit">
+        <text class="rtitle">订单退款</text>
+        <view style="position: absolute;right: 0rpx;top: 0;height: 108rpx;width: 108rpx;display: flex;align-items: center;justify-content: center;" bind:tap="onClose" data-name="showRefund">
+          <image src="/assets/images/closed.svg" mode="aspectFill" style="height: 36rpx;width: 36rpx;" />
+        </view>
+      </view>
+      <view class="tis">一个订单只能操作退款一次，请谨慎操作！</view>
+      <view class="p_center">
+        <view class="p_item">
+          <view class="p_text" style="display: flex;align-items: center;">
+            <text style="color: red;">*</text>
+            退款金额
+          </view>
+          <view class="step">
+            <input class="p_input" type="digit" value="{{refundPrice / 100}}" bindchange="changePrice" placeholder="请输入" />
+            <view class="s-item">
+              <view class="step-item up1 {{ flag && 'active1'}}" data-add="{{step}}" bind:tap="calc"></view>
+              <view class="step-item down {{ !flag && 'active2'}}" data-add="{{-step}}" bind:tap="calc"></view>
+            </view>
+          </view>
+        </view>
+        <view class="p_item1">
+          <view class="p_text" style="display: flex;align-items: center;">
+            <text style="color: red;">*</text>
+            退款原因：
+          </view>
+          <textarea class="p_textarea" value="{{refundReason}}" bindinput="changeReason" placeholder="请输入" />
+        </view>
+      </view>
+      <view class="footer">
+        <view class="f_base cancle" bind:tap="onClose" data-name="showRefund">取消</view>
+        <view class="f_line"></view>
+        <view class="f_base comfirm" bind:tap="getRefund" data-name="showDOverlay">确认</view>
+      </view>
+    </view>
+  </van-popup>
+  <!-- 意见反馈-点击 -->
+  <view class="showSearch" catchtouchstart="onTouchStart" catchtouchmove="onTouchMove" catchtouchend="onTouchEnd" style="transform: translate({{x}}rpx,{{y}}rpx);">
+    <image src="/assets/images/export.svg" mode="aspectFill" class="searchIcon" />
+    <text class="searchText">导出</text>
+  </view>
+  <!-- 导出-确认弹窗 -->
+  <van-popup show="{{ showExport }}" position="center" bind:close="onClose" data-name="showExport" custom-style="width: 658rpx;overflow:hidden;border-radius: 12rpx;">
+    <view class="popup-content">
+      <view class="tit">
+        <text class="rtitle">批量导入发货快递号</text>
+        <view style="position: absolute;right: 0rpx;top: 0;height: 108rpx;width: 108rpx;display: flex;align-items: center;justify-content: center;" bind:tap="onClose" data-name="showExport">
+          <image src="/assets/images/closed.svg" mode="aspectFill" style="height: 36rpx;width: 36rpx;" />
+        </view>
+      </view>
+      <view class="tis">批量导入请<text style="color: #8153FC;" bind:tap="getUnDispatchedExport">点击下载待发货订单</text>，填写后上传文件批量导入。</view>
+      <view class="p_center">
+        <view class="p_item" style="align-items: flex-start;">
+          <view class="e_text">
+            导入文件：
+          </view>
+          <view style="display: flex;flex-direction: column;gap: 10rpx;">
+            <van-uploader use-before-read bind:before-read="beforeRead" bind:after-read="afterRead" accept="file">
+              <view class="upload">
+                <image src="/assets/images/upload.svg" mode="aspectFill" style="height: 40rpx;width: 40rpx;" />
+                <view class="grayText">上传文件</view>
+              </view>
+            </van-uploader>
+            <view class="extentText">支持扩展名：.xlsx .xls</view>
+          </view>
+        </view>
+      </view>
+      <view class="footer">
+        <view class="f_base cancle" bind:tap="onClose" data-name="showExport">取消</view>
+        <view class="f_line"></view>
+        <view class="f_base comfirm" bind:tap="onClose" data-name="showExport">确认</view>
+      </view>
+    </view>
+  </van-popup>
+</view>

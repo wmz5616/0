@@ -1,0 +1,213 @@
+.index-wrapper {
+  height: calc(100vh - 106rpx);
+  overflow: auto;
+}
+
+.h168 {
+  height: calc(100vh - 168rpx) !important;
+}
+
+.Cflex{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.text3 {
+  font-size: 24rpx;
+  color: #444444;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+.icon {
+  width: 96rpx;
+  height: 96rpx;
+  margin-bottom: 8rpx;
+}
+
+.swiper-container {
+  width: 100%;
+  height: 134rpx;
+  padding-top: 30rpx;
+}
+
+.container-wrapper {
+  margin: 30rpx;
+}
+
+.center-msg {
+  padding: 110rpx 30rpx 0 30rpx;
+}
+
+.hindex-text {
+  color: #333333;
+  font-size: 37rpx;
+  font-weight: bold;
+}
+
+.linear-gradient .img-wrapper {
+  position: absolute;
+
+}
+
+
+.swiper-wrapper {
+  height: 312rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  position: relative;
+  z-index: 9999;
+  margin-top: -250rpx;
+}
+
+.swiper-wrappers {
+  height: 150rpx;
+}
+
+.banner-wrapper .banner-item .banner {
+  width: 100%;
+  height: 100%;
+  border-radius: 20rpx;
+}
+
+.swiper-wrapper .dots-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: absolute;
+  bottom: 30rpx;
+  right: 0;
+  left: 0;
+}
+
+.swiper-wrapper .dots-wrapper .dot {
+  flex-shrink: 0;
+  margin: 0 5rpx;
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 8rpx;
+  background-color: rgba(255, 255, 255, .6);
+}
+
+.swiper-wrapper .dots-wrapper .dot.active-dot {
+  width: 20rpx;
+  background-color: #ffffff;
+}
+
+.sss::before {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.swiper-wrapper .swiper,
+.swiper-wrapper .swiper .swiper-item,
+.swiper-wrapper .swiper .swiper-item .swiper-image {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 20rpx;
+  background-color: #f0f0f0;
+}
+
+.notice-text {
+  height: 75rpx;
+  background-color: #FFF9ED;
+  color: #F86E21;
+  font-size: 28rpx;
+  display: flex;
+  border-radius: 16rpx;
+  align-items: center;
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+  position: relative;
+  z-index: 9999;
+  margin-top: 30rpx;
+}
+
+.notice-text .swiper-wrappers {
+  width: 90%;
+  height: 72rpx;
+  line-height: 72rpx;
+  overflow: hidden;
+}
+
+.scroll-view {
+  /* height:1115px; */
+}
+
+.notice-text .text {
+  padding-left: 10rpx;
+  color: #FF6010;
+}
+
+.notice-text .notice-icon {
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.tabs-wrapper {
+  position: relative;
+  z-index: 999;
+  margin-top: 30rpx;
+}
+
+.tabs-wrapper .flex-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tabs-wrapper .flex-wrapper .tab-item {
+  flex: 1;
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+
+.tabs-wrapper .flex-wrapper .tab-item:not(:first-child) {
+  /* padding-left:12rpx; */
+}
+
+.tabs-wrapper .tab-item .img {
+  text-align: center;
+}
+
+.tabs-wrapper .tab-item .text {
+  color: #86949E;
+  padding-top: 12rpx;
+}
+
+.tabs-wrapper .tab-item .img .icon {
+  width: 76rpx;
+  height: 76rpx;
+}
+
+.swiper-wrappermin {
+  margin-top: 30rpx !important;
+  height: 172rpx;
+}
+
+.foot-desc {
+  background: #FFFFFF;
+  box-shadow: 0rpx 2rpx 10rpx 0rpx rgba(0, 0, 0, 0.21);
+  border-radius: 18rpx;
+  min-height: 600rpx;
+  margin-top: 30rpx;
+  padding: 30rpx;
+  z-index: 1;
+  position: relative;
+}
+
+.arrowIndex {
+  width: 16rpx;
+  /* 箭头的大小 */
+  height: 16rpx;
+  /* 只保留右边框和下边框 */
+  border-top: 4rpx solid #FF6010;
+  border-right: 4rpx solid #FF6010;
+  /* 顺时针旋转 45 度形成向右的箭头 */
+  transform: rotate(45deg);
+}

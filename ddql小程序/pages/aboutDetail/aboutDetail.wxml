@@ -1,0 +1,19 @@
+<!--pages/refundPolicy/refundPolicy.wxml-->
+<import src="../../wxParse/wxParse.wxml" />
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="navLeft">
+      <image src="/assets/images/arrow-back-white.svg" class="img" mode="aspectFill" slot="left"></image>
+    </view>
+    <text slot="title" class="navText">{{ articleLists.title }}</text>
+  </van-nav-bar>
+
+  <image src="/assets/images/Back.png" mode="aspectFill" style="width: 750rpx;height: 464rpx;"/>
+  <view class="text">
+    <template is="wxParse" data="{{wxParseData:newsDetail.contentHtml.nodes}}" />
+    <view style="height:120rpx;"></view>
+  </view>
+  <view class="btn">
+    <view class="Btn" bind:tap="open" data-name="showPopup">立即兑换</view>
+  </view>
+</view>

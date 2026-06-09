@@ -1,0 +1,84 @@
+/* component/cusTimer.wxss */
+
+
+.hBom {
+  display: flex;
+  align-items: center;
+}
+
+.hbLeft {
+  display: flex;
+  gap: 5rpx;
+  align-items: center;
+}
+
+.hbRight {
+  height: 15rpx;
+  width: 30rpx;
+  transition: all 0.3s linear;
+}
+
+.up {
+  transform: rotate(180deg);
+}
+
+.g20 {
+  gap: 20rpx;
+}
+
+.p30 {
+  padding: 30rpx;
+  box-sizing: border-box;
+}
+
+.tHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.taText {
+  font-size: 30rpx;
+  color: #04C0D9;
+  font-weight: 400;
+}
+
+.tTitle {
+  font-size: 36rpx;
+  color: #333333;
+  text-align: center;
+  font-weight: 500;
+}
+
+.p_box {
+  padding: 30rpx;
+  box-sizing: border-box;
+  display: flex;
+  gap: 30rpx;
+  flex-direction: column;
+}
+
+.p_top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30rpx;
+}
+
+.basebox {
+  height: 60rpx;
+  padding: 30rpx;
+  box-sizing: border-box;
+  border: 1rpx solid rgba(224, 223, 228, 1);
+  border-radius: 12rpx;
+  flex-grow: 1;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activeBox {
+  border: 1px solid rgba(4, 192, 217, 1);
+  color: #04C0D9;
+}

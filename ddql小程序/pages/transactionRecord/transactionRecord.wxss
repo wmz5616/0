@@ -1,0 +1,120 @@
+.bc {
+  height: 100vh;
+  background-color: rgba(249, 249, 249, 0.979);
+  position: relative;
+  overflow: hidden;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.swiper {
+  width: 100%;
+  height: calc(100vh - 344rpx);
+  padding: 30rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+  overflow-y: auto;
+}
+
+.picker {
+  width: 100%;
+  height: 90rpx;
+  box-sizing: border-box;
+  padding: 0rpx 80rpx 0rpx 30rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+}
+
+.picker_item {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 12rpx;
+}
+
+.picker_title {
+  font-size: 32rpx;
+  color: #333333;
+  line-height: 42rpx;
+  font-weight: 500;
+}
+
+.base {
+  height: 1rpx;
+  width: 1rpx;
+  border: 15rpx solid #333;
+}
+
+.down {
+  transform: translateY(25%);
+  border-color: #333 transparent transparent transparent;
+}
+
+.up {
+  transform: translateY(-25%);
+  border-color: transparent transparent #333 transparent;
+}
+
+.list {
+  padding: 30rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.f_left {
+  display: flex;
+  gap: 10rpx;
+  font-size: 32rpx;
+  color: #333333;
+  font-weight: 400;
+}
+
+.danwei {
+  font-size: 24rpx;
+  color: #333333;
+  font-weight: 400;
+}
+
+.title {
+  font-size: 32rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.l_bottom {
+  font-size: 24rpx;
+  color: #999999;
+  font-weight: 400;
+}
+
+
+.pickerTime {
+  height: 110rpx;
+  padding: 30rpx;
+  box-sizing: border-box;
+}
+
+.p_avtiveText {
+  font-size: 30rpx;
+  color: #04C0D9;
+  font-weight: 400;
+}
+
+.p_text {
+  font-size: 36rpx;
+  padding-left: 33rpx;
+  color: #333333;
+  text-align: center;
+  font-weight: 500;
+}

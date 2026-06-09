@@ -1,0 +1,32 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">收款商户管理</text>
+  </van-nav-bar>
+  <view class="container">
+    <view class="card" style="margin-bottom: 30rpx;padding:30rpx;display:flex;flex-direction:column;align-items:center;gap:28rpx;">
+
+      <image wx:if="{{info.applicationStatus=='REVIEW_BACK'}}" mode="aspectFit" src="/assets/images/aaplyreject.svg" style="width:164rpx;height:164rpx;" />
+      <image wx:else mode="aspectFit" src="/assets/images/applysuccess.svg" style="width:164rpx;height:164rpx;" />
+      <view style="color:#333333;font-size:36rpx;font-weight:bold;">{{info.applicationStatus == 'REVIEWING'?'申请审核中':info.applicationStatus == 'REVIEW_BACK'?'进件申请被驳回':info.applicationStatus == 'COMPLETED'?'进件申请已通过审核':''}}</view>
+      <view style="color:#999999;font-size:28rpx;">{{info.applicationStatus == 'REVIEWING'?'预计一个工作日内有审批结果':info.applicationStatus == 'REVIEW_BACK'?'请核对并修改进件信息后，再重新提交。':info.applicationStatus == 'COMPLETED'?'如有证件信息过期，请联系通莞金服进行证件更新':''}}</view>
+    </view>
+    <view class="card">
+      <view class="info-row"><text class="label">商户名称</text><text class="value">{{info.merchantName}}</text></view>
+      <view class="info-row"><text class="label" style="flex-shrink:0;">进件申请单编号</text><text class="value">{{info.applicationNo}}</text></view>
+      <view class="info-row"><text class="label">提交时间</text><text class="value">{{info.createTime}}</text></view>
+      <view wx:if="{{info.applicationStatus == 'REVIEWING'}}" class="info-row"><text class="label">申请状态</text><text class="value">申请审核中</text></view>
+      <view wx:if="{{info.applicationStatus == 'REVIEW_BACK'}}" class="info-row"><text class="label">申请状态</text><text class="value red">申请已驳回</text></view>
+      <view wx:if="{{info.applicationStatus == 'BUSINESS_OPENING'}}" class="info-row"><text class="label">申请状态</text><text class="value">业务开通中</text></view>
+      <view wx:if="{{info.applicationStatus == 'COMPLETED'}}" class="info-row"><text class="label">申请状态</text><text class="value"> 申请已完成（通过）</text></view>
+      <view wx:if="{{info.applicationStatus == 'REVIEW_BACK'}}" class="info-row"><text class="label">驳回原因</text><text class="value red">{{info.auditOpinion}}</text></view>
+    </view>
+  </view>
+  <view class="btn-group">
+    <view data-type='find' class="btn outline" bindtap="onReapply">查看商户信息</view>
+    <view data-type='edit' wx:if="{{info.applicationStatus == 'REVIEW_BACK'}}" class="btn primary" bindtap="onReapply">修改进件信息</view>
+    <view wx:if="{{info.applicationStatus != 'REVIEW_BACK'}}" class="btn primary" bindtap="goBack">返回</view>
+  </view>
+</view>

@@ -1,0 +1,188 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">光荣榜</text>
+  </van-nav-bar>
+  <van-tabs active="{{ active }}" bind:change="onChange" custom-class="tab">
+    <van-tab name="{{0}}" title="昨日"></van-tab>
+    <van-tab name="{{1}}" title="今日"></van-tab>
+    <van-tab name="{{2}}" title="月榜"></van-tab>
+    <van-tab name="{{3}}" title="月奖金榜"></van-tab>
+  </van-tabs>
+  <view class="header">
+    <view class="picker {{!columns.length ?'flexend':''}}">
+      <view class="picker" style="gap: 30rpx;">
+        <view wx:if="{{columns.length}}" class="picker_item" data-type="showPopup" bind:tap="showPopup">
+          <text class="picker_title">{{teamInfo.text}}</text>
+          <view class="base down"></view>
+        </view>
+        <view wx:if="{{columns2.length}}" class="picker_item" data-type="showPopup2" bind:tap="showPopup">
+          <text class="picker_title">{{departmentInfo.text}}</text>
+          <view class="base down"></view>
+        </view>
+      </view>
+      <view class="picker_item" data-type="showPopup1" bind:tap="showPopup">
+        <text class="picker_title">时间</text>
+        <view class="base down"></view>
+      </view>
+    </view>
+    <view wx:if="{{selfRankData}}" class="baseBox activeBox">
+      <image wx:if="{{selfRankData.rank<=4}}" class="image" src="/assets/images/Medals{{columns.length?selfRankData.rank-1:0}}.svg" mode="aspectFill" />
+      <text wx:else class="title image center">{{selfRankData.rank}}</text>
+      <view class="flex">
+        <view class="b_left">
+          <image src="{{selfRankData.avatar || userInfo.avatar}}" style="width:106rpx;height: 106rpx;border-radius: 50%;" mode="aspectFill" />
+          <view class="b_l_r">
+            <view class="b_l_r_top">
+              <text class="title">{{selfRankData.nickName || userInfo.nickname}}</text>
+              <text class="name">{{selfRankData.userName}}</text>
+            </view>
+            <view style="display:flex;flex-wrap: wrap;" wx:if="{{active==2}}">
+              <view style="margin-right:10rpx;" class="icon" wx:for="{{selfRankData.placeList}}" wx:key="index" wx:for-item="icon">
+                <image src="{{icon.img}}" style="width:45rpx;height:42rpx" mode="aspectFill" />
+                <text>{{icon.num}}</text>
+              </view>
+            </view>
+            <view class="icon" wx:else>
+              <image wx:for="{{ selfRankData.placeList }}" wx:key="index" src="{{ item.img }}" style="width:45rpx;height:42rpx" mode="aspectFill" />
+            </view>
+          </view>
+        </view>
+        <view class="b_right">
+          <text class="coin activeColor">{{active == 3?selfRankData.amount || 0: selfRankData.healthCoin || 0}}</text>
+          <view class="title">{{active == 3 ?'元':'币'}}</view>
+        </view>
+      </view>
+      <view wx:if="{{active != 3 && selfRankData.placeName}}" class="info">
+        <view wx:if="{{active==2}}">
+          <view class="grayText white"><text wx:if="{{selfRankData.hasStepCoin}}">步数达标，</text>打卡{{selfRankData.checkInNum}}次，任务完成率{{selfRankData.radio}}%</view>
+          <text class="timeText">打卡总时长：{{selfRankData.time}}</text>
+        </view>
+        <view wx:else>
+          <text class="grayText white"><text wx:if="{{selfRankData.hasStepCoin}}">步数达标，</text>打卡场地：{{selfRankData.placeName}}</text>
+          <view class="timeText">打卡时长：{{selfRankData.time}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="swiper {{active == 3? 'active3' :active==2?'active2':''}}">
+    <view wx:for="{{rankList}}" wx:key="index" class="baseBox">
+      <image wx:if="{{item.rank<=4}}" class="image" src="/assets/images/Medals{{item.rank - 1}}.svg" mode="aspectFill" />
+      <text wx:else class="title image center">{{selfRankData.rank}}</text>
+      <view class="flex">
+        <view class="b_left">
+          <image src="{{item.avatar}}" style="width:106rpx;height: 106rpx;border-radius: 50%;" mode="aspectFill" />
+          <view class="b_l_r">
+            <view class="b_l_r_top">
+              <text class="title">{{item.nickName}}</text>
+              <text class="name">{{item.userName}}</text>
+            </view>
+            <view style="display:flex;flex-wrap: wrap;" wx:if="{{active==2}}">
+              <view style="margin-right:10rpx;" class="icon" wx:for="{{item.placeList}}" wx:key="index" wx:for-item="icon">
+                <image src="{{icon.img}}" style="width:45rpx;height:42rpx" mode="aspectFill" />
+                <text>{{icon.num}}</text>
+              </view>
+            </view>
+            <view class="icon" wx:else>
+              <image wx:for="{{item.placeList}}" wx:for-item="icon" wx:key="index" src="{{icon.img}}" style="width:45rpx;height:42rpx" mode="aspectFill" />
+            </view>
+          </view>
+        </view>
+        <view class="b_right">
+          <text class="coin">{{active == 3?item.amount || 0: item.healthCoin || 0}}</text>
+          <view class="title">{{active == 3 ?'元':'币'}}</view>
+        </view>
+      </view>
+      <view wx:if="{{active != 3 && item.placeName}}" class="info">
+        <view wx:if="{{active==2}}">
+          <view class="grayText"><text wx:if="{{item.hasStepCoin}}">步数达标，</text>打卡{{item.checkInNum}}次，任务完成率：{{item.radio}}%</view>
+          <text class="timeText">打卡总时长：{{item.time}}</text>
+        </view>
+        <view wx:else>
+          <text class="grayText"><text wx:if="{{item.hasStepCoin}}">步数达标，</text>打卡场地：{{item.placeName}}</text>
+        <view class="timeText">打卡时长：{{item.time}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{active==2}}" class="Btn">
+    <view class="btn" bind:tap="showExport">导出</view>
+  </view>
+  <!-- 团体 -->
+  <van-popup position="bottom" round show="{{ showPopup }}" bind:close="onClose" data-name="showPopup">
+    <van-picker toolbar-class="pTab" show-toolbar title="切换团体" columns="{{ columns }}" bind:confirm="confirm" bind:cancel="onClose" data-name="showPopup" />
+  </van-popup>
+  <!-- 部门 -->
+  <van-popup position="bottom" round show="{{ showPopup2 }}" bind:close="onClose" data-name="showPopup2">
+    <van-picker toolbar-class="pTab" show-toolbar title="切换部门" columns="{{ columns2 }}" bind:confirm="confirm" bind:cancel="onClose" data-name="showPopup2" />
+  </van-popup>
+  <!-- 时间 -->
+  <van-popup position="bottom" round show="{{ showPopup1 }}" bind:close="onClose" data-name="showPopup1">
+    <view>
+      <view class="pickerTime flex">
+        <text class="p_avtiveText" bind:tap="onClose" data-name="showPopup">取消</text>
+        <text class="p_text">选择时间</text>
+        <text class="p_avtiveText" bind:tap="comfrimDate" data-name="showPopup1">确定</text>
+      </view>
+      <van-datetime-picker show-toolbar="{{false}}" type="{{dateType}}" data-field="startTime" value="{{ startTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ forma }}" />
+      <van-datetime-picker show-toolbar="{{false}}" type="{{dateType}}" data-field="endTime" value="{{ endTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ forma }}" />
+    </view>
+  </van-popup>
+  <!-- 意见反馈-弹窗 -->
+  <van-overlay z-index="{{2}}" show="{{ showAudit }}">
+    <view class="overlay">
+      <view class="oBox">
+        <view class="obHeader">
+          <view class="obTitle">意见反馈</view>
+        </view>
+        <view class="closeImg" bind:tap="closeOver">
+          <image src="/assets/images/close.png" mode="aspectFill" style="height: 30rpx;width: 30rpx;" />
+        </view>
+        <view class="obMiddle">
+          <van-field value="{{ textarea }}" type="textarea" placeholder="请输入" maxlength="50" show-word-limit autosize border bind:input="textareaInput" />
+          <view style="display: flex;align-items: center;gap: 10rpx;" bind:tap="selected">
+            <view wx:if="{{!checked}}" class="round"></view>
+            <image wx:else="" src="/assets/images/radioSelect.svg" mode="aspectFill" style="height: 28rpx;width: 28rpx;" />
+            <view class="tis">匿名反馈</view>
+          </view>
+        </view>
+        <view class="obBottom" bind:tap="submitFeedback">提交</view>
+      </view>
+    </view>
+  </van-overlay>
+  <!-- 意见反馈-点击 -->
+  <view wx:if="{{active==2}}" class="message" catchtouchstart="onTouchStart" catchtouchmove="onTouchMove" catchtouchend="onTouchEnd" style="position: absolute; left: {{x}}rpx; top: {{y}}rpx;z-index: 1;">
+    <image src="/assets/images/opinion.svg" mode="aspectFill" style="width:45rpx;height:46rpx;" />
+    <view class="mText">意见反馈</view>
+  </view>
+  <!-- 导出-确认弹窗 -->
+  <van-overlay z-index="{{2}}" show="{{ showExport }}">
+    <view class="overlay">
+      <view class="oBox">
+        <view class="obHeader">
+          <view class="obTitle">导出</view>
+        </view>
+        <view class="eMiddle">
+          <view class="eText">请选择导出内容：</view>
+          <view style="display: flex;gap: 30rpx;">
+            <view style="display: flex;align-items: center;gap: 24rpx;" bind:tap="Eselected" data-value="1">
+              <view wx:if="{{exportType !== 1}}" class="round"></view>
+              <image wx:else src="/assets/images/radioSelect.svg" mode="aspectFill" style="height: 28rpx;width: 28rpx;" />
+              <view class="tis">意见反馈</view>
+            </view>
+            <view style="display: flex;align-items: center;gap: 24rpx;" bind:tap="Eselected" data-value="2">
+              <view wx:if="{{exportType !== 2}}" class="round"></view>
+              <image wx:else src="/assets/images/radioSelect.svg" mode="aspectFill" style="height: 28rpx;width: 28rpx;" />
+              <view class="tis">月榜排名</view>
+            </view>
+          </view>
+        </view>
+        <view class="eBottom">
+          <view class="baseBtn" bind:tap="cancelExport">取消</view>
+          <view class="line"></view>
+          <view class="baseBtn confirmText" bind:tap="confirmExport">确认</view>
+        </view>
+      </view>
+    </view>
+  </van-overlay>
+</view>

@@ -1,0 +1,607 @@
+<wxs module="show" src="./baseInfo.wxs"></wxs>
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">{{activeTitle=='打卡提现设置'?'打卡提现设置':active == 0?'基础信息':activeTitle == '成员管理'?'成员管理':activeTitle == '充值记录'?'充值记录':activeTitle == '申请审核'?'申请审核':activeTitle=='打卡记录'?'打卡记录':'团体管理'}}</text>
+  </van-nav-bar>
+  <van-tabs swipe-threshold="{{4}}" active="{{ active }}" bind:change="onChange" custom-class="tab" swipeable>
+    <van-tab tab-class="baseTab" title="基础信息">
+      <view class="swiper">
+        <van-cell-group>
+          <van-field disabled="{{isAdmin}}" custom-class="field {{!isAdmin ? 'border-field' : 'text-field'}}" model:value="{{ name }}" clearable placeholder="请输入团体名称" placeholder-style="font-size:34rpx;color:#CCC;">
+            <view slot="label" class="label">
+              <text class="title require">团体名称：</text>
+            </view>
+          </van-field>
+          <van-field readonly="{{!isAdmin}}" disabled="{{isAdmin}}" custom-class="field {{!isAdmin ? 'border-field' : 'text-field'}}" value="{{ type }}" clearable icon="{{!isAdmin ? 'arrow-down' : ''}}" placeholder="请选择" bind:click-icon="onClickIcon" bind:click-input="onClickIcon" data-pickertype="status" placeholder-style="font-size:34rpx;color:#CCC;">
+            <view slot="label" class="label">
+              <text class="title require">团体类型：</text>
+            </view>
+          </van-field>
+          <van-field readonly="{{!isAdmin}}" disabled="{{isAdmin}}" custom-class="field {{!isAdmin ? 'border-field' : 'text-field'}}" value="{{ region }}" clearable icon="{{!isAdmin ? 'arrow-down' : ''}}" placeholder="请选择所在地区" bind:click-icon="onClickIcon" bind:click-input="onClickIcon" data-pickertype="area" placeholder-style="font-size:34rpx;color:#CCC;">
+            <view slot="label" class="label">
+              <text class="title require">地区：</text>
+            </view>
+          </van-field>
+          <van-field disabled="{{isAdmin}}" custom-class="field {{!isAdmin ? 'border-field' : 'text-field'}}" model:value="{{ address }}" clearable placeholder="请输入" placeholder-style="font-size:34rpx;color:#CCC;">
+            <view slot="label" class="label">
+              <text class="title">详细地址：</text>
+            </view>
+          </van-field>
+          <van-field disabled="{{isAdmin}}" custom-class="field {{!isAdmin ? 'border-field' : 'text-field'}}" model:value="{{ contactPerson }}" clearable placeholder="请输入" placeholder-style="font-size:34rpx;color:#CCC;">
+            <view slot="label" class="label">
+              <text class="title require">联系人名称：</text>
+            </view>
+          </van-field>
+          <van-field disabled="{{isAdmin}}" type="number" custom-class="field {{!isAdmin ? 'border-field' : 'text-field'}}" model:value="{{ contactPhone }}" clearable placeholder="请输入" bind:click-icon="onClickIcon" placeholder-style="font-size:34rpx;color:#CCC;">
+            <view slot="label" class="label">
+              <text class="title require">联系人电话：</text>
+            </view>
+          </van-field>
+          <van-field disabled="{{isAdmin}}" custom-class="field {{!isAdmin ? 'border-field' : 'text-field'}}" model:value="{{ contactEmail }}" clearable placeholder="请输入" placeholder-style="font-size:34rpx;color:#CCC;">
+            <view slot="label" class="label">
+              <text class="title">邮箱：</text>
+            </view>
+          </van-field>
+          <van-field custom-class="field" use-input-slot>
+            <view slot="label" class="label">
+              <text class="title require">进团是否审核：</text>
+            </view>
+            <view slot="input" style="width: 100%;">
+              <van-radio-group style="display: {{!isAdmin ? 'flex' : 'none'}}; width: 100%; justify-content: flex-start; gap: 40rpx;" value="{{ isUserAuth }}" data-type="isUserAuth" bind:change="onRadioChange" direction="horizontal">
+                <van-radio name="是">是</van-radio>
+                <van-radio name="否">否</van-radio>
+              </van-radio-group>
+              <view style="display: {{isAdmin ? 'block' : 'none'}}; color:#333; text-align:left; width:100%;">{{isUserAuth}}</view>
+            </view>
+          </van-field>
+          <van-field disabled="{{isAdmin}}" custom-class="field {{!isAdmin ? 'border-field' : 'text-field'}}" model:value="{{ checkInNumLimit }}" clearable placeholder="请输入" placeholder-style="font-size:34rpx;color:#CCC;" use-button-slot>
+            <view slot="label" class="label">
+              <text class="title">每月打卡次数要求：</text>
+            </view>
+            <text slot="button" style="color:#333; font-size:30rpx; margin-left:20rpx;">次</text>
+          </van-field>
+          <van-field custom-style="display: {{show.showZiZhi(type) ? '' : 'none'}};" custom-class="field" use-input-slot>
+            <view slot="label" class="label">
+              <text class="title require">是否多部门管理：</text>
+            </view>
+            <view slot="input" style="width: 100%;">
+              <van-radio-group style="display: {{!isAdmin ? 'flex' : 'none'}}; width: 100%; justify-content: flex-start; gap: 40rpx;" value="{{ isMultiDepartment }}" data-type="isMultiDepartment" bind:change="onRadioChange" direction="horizontal">
+                <van-radio name="是">是</van-radio>
+                <van-radio name="否">否</van-radio>
+              </van-radio-group>
+              <view style="display: {{isAdmin ? 'block' : 'none'}}; color:#333; text-align:left; width:100%;">{{isMultiDepartment}}</view>
+            </view>
+          </van-field>
+        </van-cell-group>
+        <view wx:if="{{show.showZiZhi(type) && !isAdmin}}" class="box flex" bind:tap="jump" data-url="/pages/qualificationVerify/qualificationVerify?teamId={{teamId}}&teamType={{teamInfo.team.type}}&contactPhone={{contactPhone}}&contactEmail={{contactEmail}}&isUserAuth={{isUserAuth}}">
+          <text class="l_text">资质认证</text>
+          <view class="l_right">
+            <text class="l_text" style="color:{{ teamStatus.status===0 ?'rgba(245, 154, 35, 0.84)':teamStatus.status ===1? 'rgba(17, 175, 33, 0.847)': teamStatus.status===2?'rgba(217, 0, 27, 0.84)':'rgba(217, 0, 27, 0.84)'}}">{{teamStatus.status ===0?'审核中':teamStatus.status ===1?'已通过':teamStatus.status ===2?'已驳回':'未认证'}}</text>
+            <image src="/assets/images/gray-rightArrow.svg" mode="aspectFill" style="height:28rpx;width:16rpx;" />
+          </view>
+        </view>
+      </view>
+    </van-tab>
+    <van-tab title="成员管理">
+      <view class="search showDepartment">
+        <van-search value="{{ keyword }}" bind:search="onSearch" bind:clear="onCancel" shape="round" background="#fff" placeholder="请输入姓名、昵称、手机号搜索" left-icon='' right-icon='search' placeholder-style="font-size: 30rpx;color:#CCC;" style="flex-grow: 1;" />
+        <image wx:if="{{teamInfo.team.isMultiDepartment == 1}}" bind:tap="batchEdit" src="{{isbatch?'/assets/images/activeEditDepartment.svg':'/assets/images/editDepartment.svg'}}" mode="aspectFill" style="height: 52rpx;width: 45rpx;" />
+        <image wx:if="{{teamInfo.team.isMultiDepartment == 1}}" bind:tap="openD" data-name="showDOverlay" data-type="{{1}}" src="/assets/images/addDepartment.svg" mode="aspectFill" style="height: 44rpx;width: 52rpx;" />
+      </view>
+      <view class="swiper active1">
+        <!-- 加入团体但未选择加入部门的列表 -->
+        <van-swipe-cell wx:for="{{teamUserLists}}" disabled="{{ isAdmin && userInfo.id != item.userId}}" wx:key="id" bind:close="onClose" class="box item" right-width="{{ 120 }}" async-close>
+          <view class="left" bind:tap="selectBatch" data-id="{{item.id}}">
+            <image src="{{item.avatar}}" style="height: 106rpx;width: 106rpx;border-radius: 50%;" mode="aspectFill" />
+            <view class="f_left">
+              <view class="flex f_l_r_top">
+                <view class="flex ffff">
+                  <text class="tag">{{item.nickName}}</text>
+                  <text class="name">{{item.userName}}</text>
+                </view>
+                <text class="name">{{item.userPhone?item.userPhone:''}}</text>
+              </view>
+              <text class="gray_tag">{{item.type==0?'创建者':item.type==1?'管理员':''}}</text>
+            </view>
+            <image wx:if="{{isbatch}}" src="{{show.includes(isSelectList,item.id)?'/assets/images/aSelect.svg':'/assets/images/select.svg'}}" mode="aspectFill" style="width: 36rpx;height: 36rpx;margin-left: 10rpx;" />
+          </view>
+          <view slot="right" class="slotRight">
+            <view bind:tap="open" data-name="showOverlay" data-selectTeam="{{item}}" class="baseSwipe edit btn_text">编辑</view>
+            <view bind:tap="open" data-name="showDialog" data-selectTeam="{{item}}" class="baseSwipe delete btn_text">移除</view>
+          </view>
+        </van-swipe-cell>
+        <!-- 部门列表 -->
+        <van-swipe-cell wx:for="{{departmentList}}" disabled="{{ isAdmin }}" wx:key="id" bind:close="onClose" class="box item" right-width="{{ 125 }}" async-close>
+          <view class="left" bind:tap="jumpD" data-url="/pages/department/department?id={{item.value}}&teamId={{teamId}}&name={{item.name}}&isAdmin={{isAdmin}}">
+            <image src="/assets/images/departmentIcon.svg" style="height: 106rpx;width: 106rpx;border-radius: 50%;" mode="aspectFill" />
+            <text class="tag">{{item.name}}</text>
+          </view>
+          <view slot="right" class="slotRight">
+            <view bind:tap="openD" data-name="showDOverlay" data-selectDepartment="{{item}}" class="baseSwipe edit btn_text" data-type="{{0}}">编辑</view>
+            <view bind:tap="openD" data-name="showDDialog" data-selectDepartment="{{item}}" class="baseSwipe delete btn_text">移除</view>
+          </view>
+        </van-swipe-cell>
+      </view>
+    </van-tab>
+    <van-tab title="打卡提现设置" name="tixian" wx:if="{{!isAdmin}}">
+      <view class="tixian-wrapper">
+        <view class="swiper disppd">
+          <view class="box top">
+            <view class="flex t_top">
+              <text class="title">{{teamInfo.team.name}}</text>
+            </view>
+            <view class="flex t_bottom">
+              <view class="t_b_left">
+                <image src="{{teamInfo.avatar}}" style="height:86rpx;width:86rpx;border-radius: 50%;" mode="aspectFill" />
+                <text class="coin">{{teamInfo.healthyCoin}}</text>
+                <text class="nomal_text">健康币</text>
+                <image src="/assets/images/black-rightArrow.svg" mode="aspectFill" style="height: 20rpx;width: 10rpx;" />
+              </view>
+              <!-- <view class="flex t_b_right">
+          <text class="title">提现记录</text>
+          <image src="/assets/images/black-rightArrow.svg" style="width:11rpx;height:20rpx;" mode="aspectFill" />
+        </view> -->
+            </view>
+          </view>
+          <view class="tag">
+            <view class="tags"></view>
+            <text class="title fw500">扫码打卡规则</text>
+          </view>
+          <view class="flex box">
+            <view class="flex gap">
+              <image src="/assets/images/clock.svg" mode="aspectFill" class="icon" />
+              <text class="box_title fw500">设置打卡时长</text>
+            </view>
+            <view class="flex box_right">
+              <view class="flex gap1">
+                <input value="{{hour}}" data-type="hour" bindinput="change" class="input box_title" type="number" />
+                <text class="title">时</text>
+              </view>
+              <view class="flex gap1">
+                <input value="{{minute}}" data-type="minute" bindinput="change" class="input box_title" type="number" />
+                <text class="title">分</text>
+              </view>
+            </view>
+          </view>
+          <view class="flex box">
+            <view class="flex gap">
+              <image src="/assets/images/jifenduihuan 2.svg" mode="aspectFill" class="icon" />
+              <text class="box_title">设置每次打卡可得健康币数量</text>
+            </view>
+            <view class="flex box_right">
+              <view class="flex gap1">
+                <input value="{{scanCodeHealthyCoin}}" data-type="scanCodeHealthyCoin" bindinput="change" class="input box_title" type="number" />
+                <text class="title">币</text>
+              </view>
+            </view>
+          </view>
+          <view class="tag">
+            <view class="tags"></view>
+            <text class="title fw500">步数打卡规则</text>
+          </view>
+          <view class="flex box">
+            <view class="flex gap" data-type="stepsOpen" bind:tap="changeRadio">
+              <view class="radio {{!stepsOpen && 'activeRadio'}}">
+                <image wx:if="{{!stepsOpen}}" src="/assets/images/chose.svg" mode="aspectFill" style="height: 20rpx;width: 20rpx;" />
+              </view>
+              <text class="title">行走步数列入打卡</text>
+            </view>
+          </view>
+          <view wx:if="{{!stepsOpen}}" class="flex box">
+            <view class="flex gap">
+              <image src="/assets/images/zuji 2.svg" mode="aspectFill" class="icon" />
+              <text class="box_title">目标步数</text>
+            </view>
+            <view class="flex box_right">
+              <view class="flex gap1">
+                <input value="{{targetSteps}}" data-type="targetSteps" bindinput="change" class="input box_title" type="number" />
+              </view>
+            </view>
+          </view>
+          <view wx:if="{{!stepsOpen}}" class="flex box">
+            <view class="flex gap">
+              <image src="/assets/images/jifenduihuan 2.svg" mode="aspectFill" class="icon" />
+              <text class="box_title">设置每次打卡可得健康币数量</text>
+            </view>
+            <view class="flex box_right">
+              <view class="flex gap1">
+                <input value="{{stepsHealthyCoin}}" data-type="stepsHealthyCoin" bindinput="change" class="input box_title" type="number" />
+                <text class="title">币</text>
+              </view>
+            </view>
+          </view>
+          <view class="tag">
+            <view class="tags"></view>
+            <text class="title fw500">提现规则</text>
+          </view>
+          <view class="flex box">
+            <view class="flex gap">
+              <image src="/assets/images/jifen 2.svg" mode="aspectFill" class="icon" />
+              <text class="box_title">最低提现金额</text>
+            </view>
+            <view class="flex box_right">
+              <view class="flex gap1">
+                <input value="{{lowestWithdrawalMoney}}" data-type="lowestWithdrawalMoney" bindinput="change" class="input box_title" type="number" />
+                <text class="title">元</text>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view bind:tap="update" class="flex" style="justify-content: center;margin-top:15rpx;">
+          <view class="btn">确认修改</view>
+        </view>
+      </view>
+    </van-tab>
+    <van-tab title="充值记录">
+      <view class="picker">
+        <view class="picker_item" data-name="showPopup" bind:tap="open">
+          <text class="picker_title">{{selectItemInfo.text}}</text>
+          <view class="base down"></view>
+        </view>
+        <view class="picker_item" data-name="showPopup1" bind:tap="open">
+          <text class="picker_title">时间</text>
+          <view class="base down"></view>
+        </view>
+      </view>
+      <view class="middle">
+        <text class="gray-coin">充值总金额：¥{{totalAmount}}</text>
+      </view>
+      <scroll-view class="swiperchongzhi" scroll-y bindscrolltolower='onScroll'>
+        <view wx:for="{{list}}" wx:key="index" class="box list">
+          <view class="flex">
+            <text class="orderNo">{{item.orderNo}}</text>
+            <view class="flex">
+              <text class="danwei">￥</text>
+              <view class="title">{{item.amount/100}}</view>
+            </view>
+          </view>
+          <view class="flex">
+            <text class="title">{{item.teamName}}</text>
+            <text class="title">健康币：{{item.amount/100 + item.giveAmount/100}}</text>
+          </view>
+          <view class="flex">
+            <text wx:if="{{item.refundRemark}}" class="orderNo">退款原因：{{item.refundRemark}}</text>
+          </view>
+          <view class="flex l_bottom">
+            <text>{{item.createTime}}</text>
+            <text>操作人：{{item.nickName}}{{item.phone}}</text>
+          </view>
+          <view class="flex" style="justify-content:flex-end;padding-top:10rpx;">
+            <text style="color:{{item.status==1?'#AAAAAA':item.status==2?'#11AF21':item.status==3?'#AAAAAA':item.status==4?'已退款':'rgba(217, 0, 27, 0.99)'}};" class="title">{{item.status==1?'待支付':item.status==2?'已支付':item.status==3?'已取消':item.status==4?'已退款':''}}</text>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="Btn" bind:tap="exportrecord" data-types="{{3}}">
+        <view class="btn">导出记录</view>
+      </view>
+    </van-tab>
+    <van-tab title="打卡记录">
+      <view class="bc csv">
+        <view class="picker">
+          <view class="picker_item" data-type="status" bind:tap="showPicker">
+            <text class="picker_title">打卡类型</text>
+            <view class="base down"></view>
+          </view>
+          <view class="picker_item" data-type="time" bind:tap="showTime">
+            <text class="picker_title">打卡时间</text>
+            <view class="base down"></view>
+          </view>
+        </view>
+        <view class="warning">
+          <image src="/assets/images/orangeWarning.svg" style="height:34rpx;width:34rpx" mode="aspectFill" />
+          <text wx:if="{{type!='place'}}" class="warning_text">打卡成功：{{checkCount.totalNum}}次，获得健康币总数：{{checkCount.totalHealthCoin || 0}}枚</text>
+          <text wx:else class="warning_text">打卡次数：{{total}}次</text>
+        </view>
+        <scroll-view bindscrolltolower="reachbottoms" class="swipers" scroll-y show-scrollbar="{{false}}" enhanced>
+          <view wx:for="{{listData}}" wx:key="index" class="c_info">
+            <view class="info_top LRP30">
+              <view class="i_t_left">
+                <image src="/assets/images/Sclock.svg" style="height: 66rpx;width: 52rpx;" mode="aspectFill" />
+                <text class="i_t_l_text">打卡成功！</text>
+              </view>
+              <!-- <view class="i_t_right" data-name="showPopup" bind:tap="showComponent" data-info="{{item}}">
+                <image src="/assets/images/wechat.svg" mode="aspectFill" style="height: 32rpx;width: 38rpx;"></image>
+                <text>分享</text>
+              </view> -->
+            </view>
+            <view class="info_middle MLR30">
+              <view class="i_m_text">
+                <text class="gray_label">打卡人</text>
+                <view class="i_m_left flex">
+                  <image src="{{item.avatar}}" style="height: 62rpx;width: 62rpx;border-radius:62rpx;" mode="" />
+                  <text class="left-text" style="font-weight: 500;">{{item.nickname}}</text>
+                </view>
+              </view>
+              <view class="i_m_text">
+                <text class="gray_label">打卡类型</text>
+                <text class="left-text">{{item.checkInMethod==1?'场地打卡':'扫码打卡'}}</text>
+              </view>
+              <view class="i_m_text">
+                <text class="gray_label">打卡场地</text>
+                <text class="left-text">{{item.placeName}}</text>
+              </view>
+              <view class="i_m_text">
+                <text class="gray_label">打卡地址</text>
+                <view class="i_m_left flex">
+                  <text class="left-text">{{item.placeAddress}}</text>
+                  <image src="/assets/images/xiala.svg" style="height: 20rpx;width: 10rpx;" mode="" />
+                </view>
+              </view>
+              <view class="i_m_text">
+                <text class="gray_label">打卡时间</text>
+                <text class="left-text">{{item.startTime}}</text>
+              </view>
+            </view>
+            <text class="active_middle LRP30">共获得{{item.healthCoin}}枚健康币</text>
+            <view class="info_footer">
+              <view class="f_title LRP30">
+                <text class="max_left">团体</text>
+                <text class="max_middle">打卡排名</text>
+                <text class="max_last">获币数</text>
+              </view>
+              <view class="flex activeItem" wx:for="{{item.teamData}}" wx:for-item="items" wx:for-index="indexs" wx:key="index">
+                <view class="max_left">{{items.teamName}}</view>
+                <text class="max_middle">{{items.rank}}</text>
+                <text class="max_last">+{{items.healthCoin}}币</text>
+              </view>
+            </view>
+          </view>
+        </scroll-view>
+        <view class="Btn" bind:tap="exportrecord" data-types="{{1}}">
+          <view class="btn">导出记录</view>
+        </view>
+        <van-popup position="bottom" round show="{{ showPicker }}" bind:close="onClosed" data-name="showPicker">
+          <van-picker show-toolbar columns="{{ columns }}" bind:confirm="onConfirm" cancel-button-text="" />
+        </van-popup>
+        <van-popup position="bottom" round show="{{ showPopup11}}" bind:close="onClosed" data-name="showPopup11">
+          <view>
+            <view class="pickerTime flex">
+              <text class="p_avtiveText" bind:tap="onClosed" data-name="showPopup11" data-name="showPopup11">取消</text>
+              <text class="p_text">选择时间</text>
+              <text class="p_avtiveText" bind:tap="comfrimDate" bind:tap="comfrimPicker">确定</text>
+            </view>
+            <van-datetime-picker show-toolbar="{{false}}" type="{{dateTypes}}" data-field="startTimes" value="{{startTimes}}" min-date="{{ minDate }}" bind:input="onInputs" formatter="{{ forma }}" />
+            <van-datetime-picker show-toolbar="{{false}}" type="{{dateTypes}}" data-field="endTimes" value="{{endTimes}}" min-date="{{ minDate }}" bind:input="onInputs" formatter="{{ forma }}" />
+          </view>
+        </van-popup>
+      </view>
+    </van-tab>
+    <!-- 打卡提现页面结束 -->
+    <!-- 提现记录-->
+    <van-tab title="提现记录">
+      <view class="bc csvd">
+        <view class="boxShadow">
+          <view class="m_top">
+            <picker value="{{time}}" mode="date" fields="month" bindchange="changedate">
+              <view class="same">
+                <text class="grayText">{{start}}</text>
+                <image src="/assets/images/gray-rightArrow.svg" mode="aspectFill" class="rightIcon down" />
+              </view>
+            </picker>
+            <van-search placeholder-style="font-size:26rpx" clearable="{{false}}" bind:change="search" bind:chan left-icon='' bind:change="search" bind:search="comfrimsearch" shape="round" bind:clear="onCancel" value="{{keywords}}" placeholder="请输入用户昵称、手机号" use-action-slot>
+              <view slot="action" bind:tap="comfrimsearch" style="position:absolute;right:42rpx;top:57rpx;z-index:1;">
+                <image src="/assets/images/search.svg" mode="aspectFit" style="width:38rpx;height:38rpx;" />
+              </view>
+            </van-search>
+          </view>
+          <view bind:tap="changeTab" class="m_bottom">
+            <view wx:for="{{tabList}}" wx:key="index" data-id="{{item.id}}" class="item text {{active == item.id && 'active'}}">{{item.title}}</view>
+            <view class="bLine" style="transform: translateX({{256 * active}}rpx)"></view>
+          </view>
+        </view>
+        <scroll-view bindscrolltolower="reachbottomsd" class="swipers" scroll-y show-scrollbar="{{false}}" enhanced>
+          <view wx:for="{{tixianlist}}" wx:key="index" class="list boxShadow" style="background-color:#F3FFF8;">
+            <view class="flex">
+              <view class="text">
+                {{item.nickName}}{{item.phone}} {{item.remark}}
+              </view>
+              <view class="text">{{item.numType==1?'+'+item.coinNum:'-'+item.coinNum}}</view>
+            </view>
+            <view class="flex" style="padding-top:12rpx;">
+              <text class="grayTime">{{item.createTime}}</text>
+
+            </view>
+          </view>
+          <view wx:if="{{tixianlist.length==0}}" class="empty-img" style="text-align:center;">
+            <image src="/assets/images/empty.png" />
+            <view style="color:#B2B2B2">暂无数据</view>
+          </view>
+        </scroll-view>
+        <view class="Btn" bind:tap="exportrecord" data-types="{{2}}">
+          <view class="btn">导出记录</view>
+        </view>
+      </view>
+    </van-tab>
+    <van-tab wx:if="{{teamInfo.type != 2 && isUserAuth === '是'}}" title="申请审核">
+      <view class="swiper">
+        <view wx:for="{{applyList}}" wx:key="id" class="box item">
+          <view class="left flex">
+            <view class="l_left flex">
+              <image src="{{item.avatar}}" style="height: 106rpx;width: 106rpx;border-radius: 50%;" mode="aspectFill" />
+              <view class="f_l_r_top">
+                <view class="flex ffff">
+                  <text class="tag">{{item.nickName}}</text>
+                  <text class="name">{{item.userName}}</text>
+                </view>
+                <text class="gray_tag">{{item.userPhone}}</text>
+              </view>
+            </view>
+            <view bind:tap="open" data-applyItem="{{item}}" data-name="showDialog" class="sbtn sbtn_text">审核</view>
+          </view>
+        </view>
+      </view>
+    </van-tab>
+    <van-tab wx:if="{{teamInfo.type == 0}}" title="团体管理">
+      <view class="swiper" wx:if="{{!changeFlag}}">
+        <view class="flex transfer" bind:tap="changeTeam">
+          <text class="title">创建者管理权转让</text>
+          <image src="/assets/images/gray-rightArrow.svg" class="gray_right" mode="aspectFill" />
+        </view>
+        <view class="flex transfer" bind:tap="jump" data-url="/pages/groupAdmin/groupAdmin?teamId={{teamId}}">
+          <text class="title">团体管理员</text>
+          <image src="/assets/images/gray-rightArrow.svg" class="gray_right" mode="aspectFill" />
+        </view>
+      </view>
+      <view wx:else>
+        <view class="search">
+          <van-search value="{{ keyword }}" bind:search="onSearch" bind:clear="onCancel" shape="round" background="#fff" placeholder="请输入姓名、昵称、手机号搜索" left-icon='' right-icon='search' placeholder-style="font-size: 30rpx;color:#CCC;" />
+        </view>
+        <view class="swiper {{changeFlag && 'active41'}}">
+          <view wx:for="{{teamUserLists}}" wx:key="id" class="box item">
+            <view class="left flex" data-name="{{item.userName}}" data-index="{{index}}" bind:tap="choseMember">
+              <view class="l_left flex">
+                <image src="{{item.avatar}}" style="height: 106rpx;width: 106rpx;border-radius: 50%;" mode="aspectFill" />
+                <view class="f_l_r_top">
+                  <view class="flex ffff">
+                    <text class="tag">{{item.nickName}}</text>
+                    <text class="name">{{item.userName}}</text>
+                  </view>
+                  <text class="gray_tag">{{item.userPhone}}</text>
+                </view>
+              </view>
+              <view class="radio {{index === selectRadio && 'activeRadio'}}">
+                <image wx:if="{{index === selectRadio}}" src="/assets/images/chose.svg" mode="aspectFill" style="height: 20rpx;width: 20rpx;" />
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </van-tab>
+  </van-tabs>
+  <van-overlay show="{{ showOverlays}}" bind:click="onCloselays" data-name="flag" lock-scroll="{{false}}">
+    <view class="overlay">
+      <view class="box_item" catch:tap="v">
+        <view class="p-title">
+          <text class="p-text" style="white-space:nowrap;">{{types==1?'打卡记录':types==2?'提现记录':'充值记录'}}导出到邮箱</text>
+          <image bind:tap="closeemail" data-name="showOverlays" src="/assets/images/close.png" class="p-close" mode="aspectFill" />
+        </view>
+        <view class="o_content">
+          <text class="o_text">接收邮箱：</text>
+          <input class="o_input" value="{{email}}" type="text" placeholder="请输入" data-name="email" bindinput="getacceptEmail" />
+        </view>
+        <view class="footer" style="height:115rpx;">
+          <view class="f_input" bind:tap="getSaveTeamApplicationRecord" data-name="showOverlays">确定</view>
+        </view>
+      </view>
+    </view>
+  </van-overlay>
+  <view wx:if="{{activeTitle!='打卡提现设置' && activeTitle!='打卡记录' && activeTitle!='充值记录' && ((isAdmin && active == 1) || !isAdmin || (active == 4 && !changeFlag))}}" class="Btn" bind:tap="btn">
+    <view wx:if="{{!isbatch}}" style="width:{{activeTitle=='成员管理' && !isAdmin?'315rpx':'630rpx'}}" class="btn">{{active == 0?'保存':activeTitle == '成员管理'?'邀请成员':activeTitle == '申请审核'?'一键审核':activeTitle == '团体管理'?'解散该团体':''}}</view>
+    <view catch:tap="goaudit" wx:if="{{activeTitle=='成员管理' && !isAdmin && !isbatch}}" style="width:315rpx;margin-left:40rpx;" class="btn dx">
+      申请审核
+      <view class="badge" wx:if="{{consTodal>0}}">{{consTodal}}</view>
+    </view>
+    <view wx:if="{{isbatch}}" class="btn" style="width: 452rpx;" catch:tap="openBatch">批量编辑</view>
+    <view wx:if="{{isbatch}}" class="allSelect" catch:tap="selectBatch" data-id="all">
+      <text class="selectText">全选</text>
+      <image src="{{show.includes(isSelectList,'all')?'/assets/images/aSelect.svg':'/assets/images/select.svg'}}" mode="aspectFill" style="height:36rpx;width:36rpx;" />
+    </view>
+  </view>
+  <!-- 充值记录 -->
+  <van-popup show="{{ showPopup }}" z-index="{{100}}" position="bottom" round data-name="showPopup" bind:close="onClose">
+    <!-- 切换团体 -->
+    <van-picker toolbar-class="pTab" show-toolbar title="切换团体" columns="{{ columns }}" bind:confirm="confirm" bind:cancel="onClose" data-name="showPopup" />
+  </van-popup>
+  <van-popup position="bottom" round show="{{ showPopup1 }}" bind:close="onClose" data-name="showPopup1">
+    <view>
+      <view class="pickerTime flex">
+        <text class="p_avtiveText" bind:tap="onClose" data-name="showPopup1">取消</text>
+        <text class="p_text">选择时间</text>
+        <text class="p_avtiveText" bind:tap="comfrimDate" data-name="showPopup1">确定</text>
+      </view>
+      <van-datetime-picker show-toolbar="{{false}}" type="date" data-field="startTime" value="{{ startTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ forma }}" />
+      <van-datetime-picker show-toolbar="{{false}}" type="date" data-field="endTime" value="{{ endTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:input="onInput" formatter="{{ forma }}" />
+    </view>
+  </van-popup>
+  <!-- 编辑成员信息 -->
+  <van-overlay show="{{ showOverlay }}">
+    <view class="overlay">
+      <view class="box_item">
+        <view class="p-title">
+          <text class="p-text">编辑成员信息</text>
+        </view>
+        <view class="o_content">
+          <text class="o_text">成员姓名：</text>
+          <input class="o_input" value="{{editName}}" data-type="editName" type="text" placeholder="请输入" bindinput="changeInput" />
+          <text class="o_text">手机号码：</text>
+          <input class="o_input" value="{{editPhone}}" data-type="editPhone" type="text" placeholder="请输入" bindinput="changeInput" />
+          <block wx:if="{{!isAdmin}}">
+            <text class="o_text">部门：</text>
+            <van-field disabled custom-class="field1" value="{{ departmentName }}" clearable icon="arrow-down" placeholder="请选择" bind:click-icon="onDepartmentClickIcon" bind:click-input="onDepartmentClickIcon" placeholder-style="font-size:34rpx;color:#CCC;">
+            </van-field>
+          </block>
+        </view>
+        <view class="footer">
+          <view class="f_base cancle" bind:tap="onClose" data-name="showOverlay">取消</view>
+          <view class="f_line"></view>
+          <view class="f_base comfirm" bind:tap="getUpdateTeamUser" data-name="showOverlay">确认</view>
+        </view>
+      </view>
+    </view>
+  </van-overlay>
+  <!-- 新增和编辑部门信息 -->
+  <van-overlay show="{{ showDOverlay }}">
+    <view class="overlay">
+      <view class="box_item">
+        <view class="p-title">
+          <text class="p-text">{{isAddD?'新增':'编辑'}}部门</text>
+        </view>
+        <view class="o_content">
+          <text class="o_text">部门名称：</text>
+          <input class="o_input" value="{{editDName}}" data-type="editDName" type="text" placeholder="请输入" bindinput="changeInput" />
+        </view>
+        <view class="footer">
+          <view class="f_base cancle" bind:tap="onClose" data-name="showDOverlay">取消</view>
+          <view class="f_line"></view>
+          <view class="f_base comfirm" bind:tap="getUpdateDepartment" data-name="showDOverlay">确认</view>
+        </view>
+      </view>
+    </view>
+  </van-overlay>
+  <!-- 批量编辑部门 -->
+  <van-overlay show="{{ showDOverlay1 }}">
+    <view class="overlay">
+      <view class="box_item">
+        <view class="p-title">
+          <text class="p-text">批量编辑部门</text>
+        </view>
+        <view class="o_content">
+          <text class="o_text">部门：</text>
+          <van-field disabled custom-class="field1" value="{{ departmentName }}" clearable icon="arrow-down" placeholder="请选择" bind:click-icon="onDepartmentClickIcon" bind:click-input="onDepartmentClickIcon" placeholder-style="font-size:34rpx;color:#CCC;">
+          </van-field>
+        </view>
+        <view class="footer">
+          <view class="f_base cancle" bind:tap="onClose" data-name="showDOverlay1">取消</view>
+          <view class="f_line"></view>
+          <view class="f_base comfirm" bind:tap="getMoreUpdateDepartment" data-name="showDOverlay1">确认</view>
+        </view>
+      </view>
+    </view>
+  </van-overlay>
+  <!-- 基础信息 -->
+  <van-popup close-on-click-overlay position="bottom" round show="{{ showAreaPicker }}" bind:close="onClose" data-name="showAreaPicker" z-index="{{9999}}"> 
+    <van-picker id="myPicker" toolbar-class="p_title" show-toolbar cancel-button-text="重置" title="{{pickertype=='audit'?'进团是否审核':pickertype=='status'?'团体类型':pickertype=='department' || pickertype=='department1'?'部门':'地区'}}" columns="{{ areaColumns }}" bind:confirm="onAreaConfirm" bind:change="onAreaChange" data-name="showAreaPicker" data-reset="reset" bind:cancel="onClose" />
+  </van-popup>
+  <!-- 弹出框 -->
+  <van-dialog custom-class="{{active == 4 && 'active4d'}}" use-slot use-title-slot show="{{ showDialog }}" showConfirmButton showCancelButton cancelButtonText="{{activeTitle == '申请审核'?'驳回':'取消'}}" confirmButtonText="{{activeTitle == '申请审核'?'通过':'确定'}}" width="540rpx" bind:cancel="onClose" bind:confirm="dialogConfirm" bin data-name="showDialog" confirm-button-class="dialogBtn d_v_btn" cancle-button-class="dialogBtn"> 
+    <view wx:if="{{activeTitle != '团体管理' }}" slot="title">{{activeTitle == '成员管理' && selectTeam.type == 0?'请先转让创建者管理权，再退出!':active == 1 ?'确认要删除吗':activeTitle == '申请审核'?'审核':''}}</view>
+    <view wx:else slot="title">确定选择“{{tearnuserName}}”为新创建者，你将自动放弃创建者身份</view>
+    <view wx:if="{{activeTitle == '申请审核' && teamInfo.team.isMultiDepartment == 1}}" class="aContent"> 
+      <text class="o_text">部门名称：</text>
+      <van-field disabled custom-class="field1" value="{{ departmentName1 }}" clearable icon="arrow-down" placeholder="请选择" bind:click-icon="onClickIcon" data-pickertype="department1" bind:click-input="onClickIcon" placeholder-style="font-size:34rpx;color:#CCC;"> 
+      </van-field>
+    </view>
+    <view wx:if="{{activeTitle == '申请审核'}}" class="d_content">
+      是否审核通过
+    </view>
+  </van-dialog>
+  <!-- 部门弹窗 -->
+  <van-dialog use-slot use-title-slot show="{{ showDDialog }}" showConfirmButton showCancelButton confirmButtonText="确定" width="540rpx" bind:close="onClose" bind:confirm="dialogDConfirm" bin data-name="showDDialog" confirm-button-class="dialogBtn d_v_btn" cancle-button-class="dialogBtn">
+    <view slot="title">确定要删除{{editDName}}吗？</view>
+  </van-dialog>
+  <!-- 选中部门 -->
+  <van-popup z-index="{{2001}}" close-on-click-overlay position="bottom" round show="{{ showDepartmentPicker }}" bind:close="onClose" data-name="showDepartmentPicker">
+    <van-picker id="myPicker" toolbar-class="p_title" show-toolbar cancel-button-text="重置" title="请选择部门" columns="{{ departmentList }}" bind:confirm="onDConfirm" data-name="showDepartmentPicker" bind:cancel="onClose" />
+  </van-popup>
+</view>

@@ -1,0 +1,40 @@
+<!--pages/login/login.wxml-->
+<!-- login.wxml -->
+<view class="container-wrapper">
+  <van-nav-bar bind:click-left="goBack">
+      <image src="/assets/images/logo.png" class="img" mode="aspectFit" slot="left"></image>
+      <text slot="title" class="navText" style="color:#333333;font-size:37rpx;">登录</text>
+    </van-nav-bar>
+    <image src="/assets/images/header.png" mode="aspectFill" class="backgroundImage"></image>
+  <!-- 顶部图片和Logo -->
+  <view class="header">
+    <image src="{{src}}" mode="aspectFill" class="background-image"></image>
+    <!-- <image src="/assets/images/logo.png" mode="aspectFit" class="logo"></image>  -->
+  </view>
+
+  <!-- 表单区域 -->
+  <view class="content">
+    <view class="form-wrapper">
+      <!-- 手机号输入 -->
+      <!-- <view class="form-item">
+        <view class="number">
+          <view class="country-code">+86</view>
+          <input class="input" data-type="phone" placeholder="请输入需要绑定的手机号码" placeholder-class="placeholder-style" bindinput="inputChange" />
+        </view> -->
+        <!-- 验证码输入 -->
+        <!-- <view class="code">
+          <view class="country">验证码</view>
+          <input class="input" data-type="code" placeholder="输入验证码" placeholder-class="placeholder-style" bindinput="inputChange" data-name="code" />
+          <view class="get-code-btn" bindtap="getVerificationCode">{{isCounting ? countdown + '秒后再获取' : '获取验证码'}}</view>
+        </view>
+      </view> -->
+      <!-- 确认登录按钮 -->
+      <!-- <view class="login" bindtap="submit">确认登录</view> -->
+      <!-- 手机快捷登录按钮 -->
+      <view wx:if="{{(!isSuccess || c) && phone}}" class="login" bindtap="quickLogin">手机快捷登录</view>
+      <!-- <view  class="login" bindtap="quickLogin">手机快捷登录</view> -->
+      <button wx:if="{{isSuccess && !phone}}" class="bind-btn" open-type="getPhoneNumber" bindgetphonenumber="getThePhoneNumber">一键授权绑定手机</button>
+      <view data-type="cancel" class="grayBtn" bindtap="goBack">取消登录</view>
+    </view>
+  </view>
+</view> 

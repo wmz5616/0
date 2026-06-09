@@ -1,0 +1,22 @@
+<!--pages/map/map.wxml-->
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">选择位置</text>
+  </van-nav-bar>
+  <van-search bind:change="getva" value="{{ keyword }}" bind:search="onSearch" bind:clear="onCancel" shape="round" background="#fff" placeholder="请输入地点" left-icon='' placeholder-style="font-size: 30rpx;color:#CCC;" custom-class="ssearch" use-right-icon-slot>
+    <image catch:tap="onSearch" slot="right-icon" src="/assets/images/search.svg" mode="aspectFit" style="width:40rpx;height:40rpx;" />
+  </van-search>
+  <!-- <view class="box">
+    <view class="item"></view>
+  </view> -->
+  <view class="swiper">
+    <map class="map" longitude="{{longitude}}" latitude="{{latitude}}" markers="{{markers}}" scale='16' bindcallouttap="selectLocation">
+    </map>
+  </view>
+  <view class="Btn" bind:tap="submitAddress">
+    <view class="btn">确定</view>
+  </view>
+</view>

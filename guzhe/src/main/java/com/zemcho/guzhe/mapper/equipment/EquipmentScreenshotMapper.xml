@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.guzhe.mapper.equipment.EquipmentScreenshotMapper">
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `equipment_screenshot`
+        (
+            equipment_id,
+            serial_number,
+            screenshot_url,
+            screenshot_status,
+            fail_reason,
+            create_time,
+            update_time
+        )
+        VALUES
+            (
+                #{data.equipmentId},
+                #{data.serialNumber},
+                #{data.screenshotUrl},
+                #{data.screenshotStatus},
+                #{data.failReason},
+                #{data.createTime},
+                #{data.updateTime}
+            )
+    </insert>
+
+    <select id="selectById" resultType="com.zemcho.guzhe.entity.equipment.EquipmentScreenshot">
+        SELECT *
+        FROM `equipment_screenshot`
+        WHERE id = #{id}
+        LIMIT 1
+    </select>
+
+    <select id="selectLatestByEquipmentId" resultType="com.zemcho.guzhe.entity.equipment.EquipmentScreenshot">
+        SELECT *
+        FROM `equipment_screenshot`
+        WHERE equipment_id = #{equipmentId}
+        ORDER BY id DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectLatestSuccessByEquipmentId" resultType="com.zemcho.guzhe.entity.equipment.EquipmentScreenshot">
+        SELECT *
+        FROM `equipment_screenshot`
+        WHERE equipment_id = #{equipmentId}
+          AND screenshot_url IS NOT NULL
+          AND screenshot_url != ''
+        ORDER BY update_time DESC
+        LIMIT 1
+    </select>
+
+    <update id="update">
+        UPDATE `equipment_screenshot`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.screenshotUrl != null">screenshot_url = #{data.screenshotUrl},</if>
+            <if test="data.screenshotStatus != null">screenshot_status = #{data.screenshotStatus},</if>
+            <if test="data.failReason != null">fail_reason = #{data.failReason},</if>
+            update_time = NOW(),
+        </trim>
+        WHERE id = #{data.id}
+    </update>
+</mapper>

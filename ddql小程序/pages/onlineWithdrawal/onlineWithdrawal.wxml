@@ -1,0 +1,212 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">在线提现</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <view class="box top">
+      <view class="flex t_top ">
+        <text class="title">{{teamInfo.team.name}}</text>
+        <view class="Btn" bind:tap="open" data-name="showPopup" data-showPopupType="{{1}}">
+          <text class="">切换团体</text>
+          <image src="/assets/images/transform.svg" style="width: 31rpx;height: 24rpx;" mode="aspectFill" />
+        </view>
+      </view>
+      <view class="flex t_bottom">
+        <view class="t_b_left">
+          <image src="{{teamInfo.avatar}}" style="height:86rpx;width:86rpx;border-radius:86rpx;" mode="aspectFill" />
+          <text class="coin">{{healthCoin}}</text>
+          <text class="nomal_text">健康币</text>
+          <image src="/assets/images/black-rightArrow.svg" mode="aspectFill" style="height: 20rpx;width: 10rpx;" />
+        </view>
+        <view class="flex t_b_right" bind:tap="goti">
+          <text class="title">提现记录</text>
+          <image src="/assets/images/black-rightArrow.svg" style="width:11rpx;height:20rpx;" mode="aspectFill" />
+        </view>
+      </view>
+    </view>
+    <view class="box middle">
+      <view class="m_top">
+        <image src="/assets/images/waller.svg" style="width:34rpx;height: 36rpx;" mode="aspectFill" />
+        <text class="title">提现金额（可提现￥{{healthCoin}}元）</text>
+      </view>
+      <view class="m_bottom">
+        <text>￥</text>
+        <input value="{{amount}}" bind:input="getAmount" type="digit" placeholder="请输入需要提现的金额" placeholder-style="font-size: 32rpx;color:#ccc;font-weight:400;" />
+      </view>
+    </view>
+    <view class="box bottom">
+      <text class="title">提现说明：</text>
+      <view class="waring">
+        <image src="/assets/images/orangeWarning.svg" style="width: 34rpx;height: 34rpx;" mode="aspectFill" />
+        <text>提现规则：1健康币可提现1元</text>
+      </view>
+      <view class="textList" wx:for="{{withdrawalInstruction}}" wx:key="index">
+        {{item}}
+      </view>
+    </view>
+    <view bind:tap="withdrawal" class="btn">立即提现</view>
+  </view>
+  <!-- 弹出框 -->
+  <van-dialog use-slot use-title-slot show="{{ showDialog }}" showConfirmButton confirmButtonText="去分享" width="540rpx" bind:close="onClose" data-name="showDialog" confirm-button-class="dialogBtn d_v_btn">
+    <!-- <text slot="title">分享到朋友圈</text>
+    <view class="d_content">分享到朋友圈立即提现</view> -->
+    <!-- 提现成功 -->
+    <view class="content">
+      <image class="image" slot="title" src="/assets/images/tixain_success.png" style="width:264rpx;height: 219rpx;" mode="aspectFill" />
+      <text class="num">{{amount}}</text>
+      <text class="danwei">元</text>
+    </view>
+  </van-dialog>
+  <!-- 自定义弹出层 -->
+  <van-popup show="{{ showPopup }}" z-index="{{100}}" position="bottom" round data-name="showPopup" bind:close="onClose">
+    <!-- 分享 -->
+    <view wx:if="{{!showPopupType}}">
+      <view class="p-title p-title1">
+        <text class="p-text">分享</text>
+        <image bind:tap="onClose" data-name="showPopup" class="p-close" src="/assets/images/close.png" mode="" />
+      </view>
+      <view class="p-connent">
+        <!-- <image mode="aspectFit" src="{{imgUrl}}" /> -->
+        <view class="box share" id="my-canvas">
+          <view class="p_img my_draw_canvas">
+            <image data-type="image" data-url="/assets/images/logo.png" src="/assets/images/logo.png" class="p-logo my_draw_canvas" mode="aspectFit" data-top="{{0}}" data-left="{{0}}" />
+            <image data-top="{{80}}" data-left="{{80}}" data-type="image" data-url="/assets/images/p_code.png" src="/assets/images/p_code.png" class="p-code" mode="aspectFit" />
+          </view>
+          <view class="pic">
+            <image src="{{withdrawalPictureList.length!=0?withdrawalPictureList[withdrawalUrl]:'/assets/images/shareImage.png'}}" style="height: 270rpx;width: 630rpx;" mode="aspectFill" />
+          </view>
+          <view class="p_bottom">
+            <view class="p_b_left">
+              <text class="title">{{teamInfo.team.name}}</text>
+              <view class="t_b_left">
+                <image src="{{teamInfo.avatar}}" style="height:86rpx;width:86rpx;border-radius:86rpx;" mode="aspectFill" />
+                <text class="coin">{{teamInfo.team.healthyCoin}}</text>
+                <text class="nomal_text">健康币</text>
+                <image src="/assets/images/black-rightArrow.svg" mode="aspectFill" style="height: 20rpx;width: 10rpx;" />
+              </view>
+            </view>
+            <view class="p_line"></view>
+            <view class="p_b_right">
+              <view class="m_top">
+                <image src="/assets/images/waller.svg" style="width:34rpx;height: 36rpx;" mode="aspectFill" />
+                <text class="title">提现金额</text>
+              </view>
+              <view class="m_bottom">
+                <text>￥</text>
+                <text class="blod">{{amount}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="p_btn" bind:tap="shareLine">
+          <view class="Bbtn avtiveBtn">
+            <image src="/assets/images/white-pyq.svg" mode="aspectFill" style="height: 36rpx;width:36rpx;"></image>
+            <text>分享提现</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- 切换团体 -->
+    <view wx:else>
+      <view class="p-title flex">
+        <text class="p_avtiveText" bind:tap="onClose" data-name="showPopup">取消</text>
+        <text class="p-text">切换团体</text>
+        <text class="p_avtiveText" bind:tap="switchteam" data-name="showPopup">确定</text>
+      </view>
+      <view class="p_connent">
+        <picker-view indicator-style="height: 50px;" style="width: 100%; height: 582rpx;" value="{{0}}" bindchange="bindChange">
+          <picker-view-column>
+            <view wx:for="{{teamList}}" wx:key="id" class="flex p_item">
+              <text class="title">{{item.team.name}}</text>
+              <view class="flex" style="gap: 10rpx;">
+                <text class="p_i_text">{{item.healthyCoin}}</text>
+                <view class="circle {{item.team.type == 0?'blue':item.team.type == 1?'green':item.team.type == 2?'red':'purple'}}"></view>
+              </view>
+            </view>
+          </picker-view-column>
+        </picker-view>
+      </view>
+      <!-- <view class="p-title flex">
+        <text class="p_avtiveText" bind:tap="onClose" data-name="showPopup">取消</text>
+        <text class="p-text">切换团体</text>
+        <text class="p_avtiveText" bind:tap="onClose" data-name="showPopup">确定</text>
+      </view>
+      <view class="p_connent">
+        <view wx:for="{{teamList}}" wx:key="index" class="flex p_item" data-info="{{item}}" bind:tap="switchteam">
+          <text class="title">{{item.team.name}}</text>
+          <view class="flex" style="gap: 10rpx;">
+            <text class="p_i_text">{{item.team.healthyCoin}}</text>
+            <view class="circle {{item.team.type==0?'green':item.team.type==1?'orange':item.team.type==2?'blue':'brown'}}"></view>
+          </view>
+        </view>
+      </view> -->
+    </view>
+  </van-popup>
+  <van-popup show="{{ showPopup2}}" position="bottom" round data-name="showPopup2" bind:close="onClose" custom-class="pop">
+    <view class="p-title">
+      <text class="p-text">分享</text>
+      <image bind:tap="onClose" data-name="showPopup2" class="p-close" src="/assets/images/close.png" mode="" />
+    </view>
+    <view class="share-wrapper" style="padding:30rpx;">
+      <view style="color:#04C0D9;font-weight:bold;font-size:42rpx;padding-top:40rpx;">分享到微信朋友圈操作指引</view>
+      <view style="height:268rpx;border:1rpx solid #5DD5DE;border-radius:18rpx;margin-top:30rpx;padding-left:30rpx;">
+        <view class="step-one" style="display:flex;margin-top:60rpx;margin-bottom:30rpx;align-items:center;">
+          <view style="background-image: linear-gradient(192deg, #5DD5DE 0%, #4EACD3 84%);width:200rpx;height:60rpx;color:#fff;text-align:center;font-weight:bold;border-radius:26rpx;line-height:60rpx;">STEP 01</view>
+          <view style="color:#333333;font-weight:bold;padding-left:30rpx;">点击右上角“...”</view>
+        </view>
+        <view class="step-two" style="display:flex;align-items:center;">
+          <view style="background-image: linear-gradient(192deg, #5DD5DE 0%, #4EACD3 84%);width:200rpx;height:60rpx;color:#fff;text-align:center;font-weight:bold;border-radius:26rpx;line-height:60rpx;">STEP 02</view>
+          <view style="color:#333333;font-weight:bold;padding-left:30rpx;">选择分享到朋友圈</view>
+          <image src="/assets/images/timeline.svg" mode="aspectFit" style="height:45rpx;width:45rpx;padding-left:15rpx;" />
+        </view>
+      </view>
+    </view>
+  </van-popup>
+</view>
+<canvas canvas-id="myCanvas" class="myCanvas" style="position:absolute;top:-99999rpx;width:{{1200}}px;height:1100px;"></canvas>
+<view class=" share my_canvas" id="my-canvas" style="position:absolute;top:-9999rpx;height:1100px;width:{{1200}}px;position:relative;">
+  <view class="my_draw_canvas">
+    <image style="height:1100px;width:{{1200}}px;position:absolute;" data-type="image" data-url="/assets/images/transfff.png" src="/assets/images/transfff.png" class="my_draw_canvas" data-top="{{0}}" data-left="{{0}}" />
+  </view>
+  <view class="my_draw_canvas">
+    <image style="height:140px;width:400px;" data-type="image" data-url="/assets/images/logo.png" src="/assets/images/logo.png" class="my_draw_canvas" mode="aspectFit" data-top="{{-20}}" data-left="{{0}}" />
+    <image style="height:240px;width:240px;" data-top="{{20}}" data-type="image" data-url="/assets/images/p_code.png" src="/assets/images/p_code.png" class="my_draw_canvas" mode="aspectFit" data-left="{{522}}"/>
+  </view>
+  <view class="my_draw_canvas">
+    <image style="height:550px;width:{{1200}}px;" data-top="{{30}}" data-left="{{0}}" data-type="image" data-url="{{withdrawalPictureList.length!=0?csdUrl:'/assets/images/shareImage.png'}}" src="{{withdrawalPictureList.length!=0?csdUrl:'/assets/images/shareImage.png'}}"  class="my_draw_canvas" mode="aspectFit" />
+  </view>
+  <view class="my_draw_canvas">
+    <text data-top="{{48}}" style="font-size:60px;font-weight:bold;" class="headerTitle my_draw_canvas" data-type="text" data-text="{{teamInfo.team.name}}"></text>
+  </view>
+  <view class="my_draw_canvas">
+    <text data-left="{{610-(amountLength*12)}}" data-top="{{162}}" style="font-size:60px;font-weight:bold;" class="headerTitle my_draw_canvas" data-type="text" data-text="运动提现福利"></text>
+    <text data-left="{{1026-(amountLength*12)}}" data-top="{{160}}" style="font-size:60px;font-weight:bold;" class="headerTitle my_draw_canvas" data-type="text" data-text="￥{{amount}}"></text>
+  </view>
+  <view class="my_draw_canvas">
+    <image style="height:135px;width:135px;border-radius:100rpx;" data-top="{{136}}"  data-type="image" data-url="{{avatar}}" src="{{avatar}}" class="my_draw_canvas" mode="aspectFit" />
+    <text data-left="{{28}}" data-top="{{95}}" style="font-size:60px;font-weight:bold;" class="headerTitle my_draw_canvas" data-type="text" data-text="{{teamInfo.team.healthyCoin}}健康币"></text>
+  </view>
+  <view class="p_bottom">
+    <view class="p_b_left">
+      <text class="title">{{teamInfo.team.name}}</text>
+      <view class="t_b_left">
+        <image src="{{teamInfo.avatar}}" style="height:86rpx;width:86rpx;" mode="aspectFill" />
+        <text class="coin">{{teamInfo.team.healthyCoin}}</text>
+        <text class="nomal_text">健康币</text>
+        <image src="/assets/images/black-rightArrow.svg" mode="aspectFill" style="height: 20rpx;width: 10rpx;" />
+      </view>
+    </view>
+    <view class="p_line"></view>
+    <view class="p_b_right">
+      <view class="m_top">
+        <image src="/assets/images/waller.svg" style="width:34rpx;height: 36rpx;" mode="aspectFill" />
+        <text class="title">提现金额</text>
+      </view>
+      <view class="m_bottom">
+        <text>￥</text>
+        <text class="blod">{{amount}}</text>
+      </view>
+    </view>
+  </view>
+</view>

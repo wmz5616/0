@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.team.TeamUserMapper">
+
+    <insert id="insert">
+        insert into team_user(team_id, user_id, type, department_id, user_name, user_phone, healthy_coin, join_type, status,
+                              create_time, update_time)
+        values (#{data.teamId}, #{data.userId}, #{data.type}, #{data.departmentId}, #{data.userName}, #{data.userPhone}, #{data.healthyCoin},
+                #{data.joinType}, #{data.status}, #{data.createTime}, #{data.updateTime})
+    </insert>
+
+    <update id="update">
+        update team_user
+        <set>
+            <if test="data.type != null">
+                type = #{data.type},
+            </if>
+            <!-- department_id 特殊处理：显式传入则更新（包括设为null） -->
+            department_id = #{data.departmentId},
+            <if test="data.userName != null">
+                user_name = #{data.userName},
+            </if>
+            <if test="data.userPhone != null">
+                user_phone = #{data.userPhone},
+            </if>
+            <if test="data.healthyCoin != null">
+                healthy_coin = #{data.healthyCoin},
+            </if>
+            <if test="data.joinType != null">
+                join_type = #{data.joinType},
+            </if>
+            <if test="data.status != null">
+                status = #{data.status},
+            </if>
+        </set>
+        where id = #{data.id}
+            and delete_time is null
+    </update>
+
+    <select id="ifExist" resultType="java.lang.Boolean">
+        SELECT COUNT(*)
+        FROM `team_user`
+        WHERE team_id = #{teamId}
+          AND user_id = #{userId}
+        <if test="isCheckDeleted != null and isCheckDeleted == true">
+            AND delete_time is null
+        </if>
+    </select>
+
+    <delete id="delete">
+        UPDATE `team_user`
+        SET delete_time = NOW()
+        <where>
+            <if test="teamId != null">
+                and team_id = #{teamId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            and delete_time is null
+        </where>
+    </delete>
+
+    <delete id="deleteByIds" parameterType="java.util.List">
+        UPDATE `team_user`
+        SET delete_time = NOW()
+        where id in
+        <foreach collection="deleteIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and delete_time is null
+    </delete>
+
+    <delete id="deleteByTeamId">
+        UPDATE `team_user`
+        SET delete_time = NOW()
+        where team_id = #{teamId}
+        and delete_time is null
+    </delete>
+
+    <delete id="restoreById">
+        UPDATE `team_user`
+        SET delete_time = null
+        where id = #{id}
+    </delete>
+
+<!--    deptID为空 - 查询全部成员 dept = 0 - 查询直属成员 detp = !0 查询某个部门成员-->
+    <select id="selectList" resultType="com.zemcho.ddql.controller.team.vo.TeamUserVo">
+        select tu.id as id, tu.team_id as teamId, tu.user_id as userId, cu.avatar as avatar, cu.nickname as nickName,
+        tu.user_name as userName, tu.user_phone as userPhone, tu.department_id as departmentId, td.name as departmentName,
+        tu.healthy_coin as healthyCoin, tu.join_type as joinType,
+        tu.status as status,tu.type as type,tu.delete_time
+        from team_user as tu
+        left join cas_user as cu on tu.user_id = cu.id
+        left join team_department as td on tu.department_id = td.id and td.delete_time is null
+        <where>
+            <if test="param.teamId != null">
+                and tu.team_id = #{param.teamId}
+            </if>
+            <if test="param.userName != null">
+                and tu.user_name like concat('%', #{param.userName}, '%')
+            </if>
+            <if test="param.userPhone != null">
+                and tu.user_phone like concat('%', #{param.userPhone}, '%')
+            </if>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND (tu.user_name LIKE CONCAT('%',#{param.keyword},'%') OR tu.user_phone LIKE CONCAT('%',#{param.keyword},'%') OR cu.nickname LIKE CONCAT('%',#{param.keyword},'%'))
+            </if>
+            <if test="param.type != null">
+                and tu.type = #{param.type}
+            </if>
+            <if test="param.status != null">
+                and tu.status = #{param.status}
+            </if>
+            <if test="param.departmentId != null and param.departmentId != 0">
+                and tu.department_id = #{param.departmentId}
+            </if>
+            <if test="param.departmentId != null and param.departmentId == 0">
+                and tu.department_id IS NULL
+             </if>
+            and tu.delete_time is null
+        </where>
+        order by tu.id desc
+    </select>
+
+    <select id="selectByTeamIdAndUserId" resultType="com.zemcho.ddql.entity.team.TeamUser">
+        select * from `team_user`
+                 where team_id = #{teamId}
+                   and user_id = #{userId}
+                <if test="isCheckDeleted != null and isCheckDeleted == true">
+                    AND delete_time is null
+                </if>
+    </select>
+
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(*)
+        from team_user
+        <where>
+            <if test="teamId != null">
+                and team_id = #{teamId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+            AND delete_time is null
+        </where>
+    </select>
+
+    <select id="selectListByUserId" resultType="com.zemcho.ddql.controller.team.vo.TeamUserVo">
+        select tu.id as id, tu.team_id as teamId, tu.user_id as userId, cu.avatar as avatar, cu.nickname as nickName,
+        tu.user_name as userName, tu.user_phone as userPhone, tu.department_id as departmentId, td.name as departmentName,
+        tu.healthy_coin as healthyCoin, tu.join_type as joinType,
+        tu.status as status,tu.type as type,tu.delete_time
+        from team_user as tu
+        join cas_user as cu on tu.user_id = cu.id
+        left join team_department as td on tu.department_id = td.id and td.delete_time is null
+        <where>
+            <if test="userId != null">
+                and tu.user_id = #{userId}
+            </if>
+            <if test="isCheckDeleted != null and isCheckDeleted == true">
+                AND tu.delete_time is null
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByUserIdAndStatus" resultType="com.zemcho.ddql.entity.team.TeamUser">
+        select * from team_user
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            AND delete_time is null
+        </where>
+    </select>
+
+    <update id="incCoin">
+        UPDATE team_user
+        SET
+            `healthy_coin` = `healthy_coin` + ${healthCoin}
+        WHERE team_id = #{teamId}
+            AND user_id = #{userId}
+    </update>
+
+    <update id="decCoin">
+        UPDATE team_user
+        SET
+            `healthy_coin` = `healthy_coin` - ${healthCoin}
+        WHERE team_id = #{teamId}
+          AND user_id = #{userId}
+    </update>
+
+    <update id="updateStatusByIds">
+        UPDATE `team_user`
+        SET status = #{status}
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND delete_time is null
+    </update>
+
+    <select id="selectById" resultType="com.zemcho.ddql.entity.team.TeamUser">
+        select * from team_user
+        WHERE id = #{id}
+          AND delete_time is null
+    </select>
+
+    <select id="selectByIds" resultType="com.zemcho.ddql.entity.team.TeamUser">
+        select * from team_user
+        WHERE id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND delete_time is null
+    </select>
+
+    <select id="ifExistInDepartment" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM `team_user`
+        WHERE department_id = #{departmentId}
+        AND delete_time is null
+    </select>
+
+    <update id="clearDepartmentIdByTeamId">
+        UPDATE `team_user`
+        SET department_id = NULL
+        WHERE team_id = #{teamId}
+        AND delete_time is null
+    </update>
+
+    <update id="updateDepartmentByIds">
+        UPDATE `team_user`
+        SET department_id = #{departmentId}
+        WHERE team_id = #{teamId}
+          AND id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+          AND delete_time is null
+    </update>
+
+    <select id="selectByPhone" resultType="com.zemcho.ddql.entity.team.TeamUser">
+        select * from team_user
+        WHERE user_phone = #{phone}
+          AND delete_time is null
+    </select>
+</mapper>

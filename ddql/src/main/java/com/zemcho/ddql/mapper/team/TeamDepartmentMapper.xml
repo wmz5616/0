@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zemcho.ddql.mapper.team.TeamDepartmentMapper">
+
+    <!-- 基础列 -->
+    <sql id="Base_Column_List">
+        id, team_id, name, sort, status, create_time, update_time, delete_time
+    </sql>
+
+    <!-- 插入部门 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="department.id">
+        INSERT INTO team_department (team_id, name, sort, status, create_time, update_time)
+        VALUES (#{department.teamId}, #{department.name}, #{department.sort}, #{department.status}, NOW(), NOW())
+    </insert>
+
+    <!-- 更新部门 -->
+    <update id="update">
+        UPDATE team_department
+        <set>
+            <if test="department.name != null">name = #{department.name},</if>
+            <if test="department.sort != null">sort = #{department.sort},</if>
+            <if test="department.status != null">status = #{department.status},</if>
+            update_time = NOW()
+        </set>
+        WHERE id = #{department.id} AND delete_time IS NULL
+    </update>
+
+    <delete id="deleteByTeamId">
+        UPDATE team_department
+        SET delete_time = NOW(), update_time = NOW()
+        WHERE team_id = #{teamId} AND delete_time IS NULL
+    </delete>
+
+    <!-- 根据ID查询部门 -->
+    <select id="selectById" resultType="com.zemcho.ddql.entity.team.TeamDepartment">
+        SELECT <include refid="Base_Column_List"/>
+        FROM team_department
+        WHERE id = #{id} AND delete_time IS NULL
+    </select>
+
+    <!-- 根据团队ID查询所有部门列表 -->
+    <select id="selectByTeamId" resultType="com.zemcho.ddql.entity.team.TeamDepartment">
+        SELECT td.id, td.team_id, td.name, td.sort, td.status, td.create_time, td.update_time, td.delete_time,
+               (SELECT COUNT(*) FROM team_user tu WHERE tu.department_id = td.id AND tu.delete_time IS NULL) AS count
+        FROM team_department td
+        WHERE td.team_id = #{teamId} AND td.delete_time IS NULL
+        ORDER BY td.sort ASC, td.id ASC
+    </select>
+
+    <!-- 根据团队ID查询启用的部门列表 -->
+    <select id="selectActiveByTeamId" resultType="com.zemcho.ddql.entity.team.TeamDepartment">
+        SELECT td.id, td.team_id, td.name, td.sort, td.status, td.create_time, td.update_time, td.delete_time,
+               (SELECT COUNT(*) FROM team_user tu WHERE tu.department_id = td.id AND tu.delete_time IS NULL) AS count
+        FROM team_department td
+        WHERE td.team_id = #{teamId} AND td.status = 1 AND td.delete_time IS NULL
+        ORDER BY td.sort ASC, td.id ASC
+    </select>
+
+    <!-- 根据ID删除部门（软删除） -->
+    <update id="deleteById">
+        UPDATE team_department
+        SET delete_time = #{deleteTime}, update_time = NOW()
+        WHERE id = #{id} AND delete_time IS NULL
+    </update>
+
+    <!-- 根据团队ID统计部门数量 -->
+    <select id="countByTeamId" resultType="int">
+        SELECT COUNT(*)
+        FROM team_department
+        WHERE team_id = #{teamId} AND delete_time IS NULL
+    </select>
+
+    <!-- 查询团队下最大的排序值 -->
+    <select id="selectMaxSortByTeamId" resultType="java.lang.Integer">
+        SELECT MAX(sort)
+        FROM team_department
+        WHERE team_id = #{teamId} AND delete_time IS NULL
+    </select>
+
+    <!--  查询团队是否多部门管理  -->
+    <select id="ifMultiDepartment" resultType="java.lang.Integer">
+        SELECT is_multi_department
+        FROM team
+        WHERE id = #{teamId} AND delete_time IS NULL
+    </select>
+
+</mapper>

@@ -1,0 +1,164 @@
+.bc {
+  height: 100vh;
+  background-color: rgba(249, 249, 249, 0.979);
+  position: relative;
+  overflow: hidden;
+}
+
+.LRP30 {
+  padding: 0 30rpx;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tab .van-tabs__line {
+  width: 50% !important;
+}
+
+.swiper {
+  width: 100%;
+  height: calc(100vh - 180rpx);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+  overflow-y: auto;
+}
+.msg{
+  height: calc(100vh - 382rpx);
+}
+
+.list {
+  margin: 30rpx 30rpx 0rpx 30rpx;
+  padding: 30rpx;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.ll{
+  display: flex;
+  gap: 21rpx;
+}
+
+.iconList{
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ld{
+  height: 45rpx;
+  width: 35rpx;
+}
+
+.rp{
+  position: absolute;
+  right: 0rpx;
+  top: 34%;
+  border-radius: 50%;
+  height: 8rpx;
+  width: 8rpx;
+}
+
+.l_left {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.gap34 {
+  gap: 34rpx;
+}
+
+.title {
+  font-size: 34rpx;
+  color: #333333;
+  line-height: 51rpx;
+  font-weight: 400;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 限制显示行数 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rightIcon {
+  height: 28rpx;
+  width: 14rpx;
+  flex-shrink: 0;
+}
+
+.grayTime {
+  font-size: 28rpx;
+  color: #8B8B8D;
+  line-height: 28rpx;
+  font-weight: 400;
+}
+
+.zd {
+  height: 37rpx;
+  width: 52rpx;
+  background-color: #FFD591;
+  position: absolute;
+  right: 7rpx;
+  top: 15rpx;
+  transform: rotate(45deg);
+  font-size: 26rpx;
+  color: #333333;
+  font-weight: 400;
+}
+
+.zd::before, .zd::after{
+  content: '';
+  height: 1rpx;
+  border: 10rpx solid #FFD591;
+  position: absolute;
+  transform: rotate(-45deg);
+}
+
+.zd::before{
+  left: -26rpx;
+  top: 10rpx;
+  border-color: #FFD591 transparent transparent transparent;
+  border-width: 28rpx;
+}
+
+.zd::after{
+  right: -26rpx;
+  top: 11rpx;
+  border-color: transparent #FFD591 transparent transparent;
+  border-width: 26rpx;
+}
+
+
+.Btn1 {
+  padding: 0rpx 60rpx 30rpx 60rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.btn1 {
+  background-image: linear-gradient(192deg, #5DD5DE 0%, #4EACD3 84%);
+  border-radius: 46rpx;
+  width: 100%;
+  padding: 22rpx 0rpx;
+  box-sizing: border-box;
+  font-size: 32rpx;
+  color: #FFFFFF;
+  line-height: 48rpx;
+  font-weight: 400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.empty{
+  width: 100%;
+  display: flex;
+  padding-top: 30rpx;
+  justify-content: center;  
+}

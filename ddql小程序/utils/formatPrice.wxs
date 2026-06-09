@@ -1,0 +1,23 @@
+var formatPrice = function (item) {
+  if (!item) return '';
+  var exchangeAmount = item.exchangeAmount || 0;
+  var payAmount = item.payAmount || 0;
+  var payWay = item.payWay || 0;
+  
+  var totalCoin = exchangeAmount;
+  var totalCashStr = (payAmount / 100).toFixed(2);
+  var totalCashNum = parseFloat(totalCashStr); // Remove trailing zeros
+  
+  if (payWay === 0) {
+    return totalCoin + '金币';
+  } else if (payWay === 2) {
+    return totalCashNum + '元';
+  } else if (payWay === 1) {
+    return totalCoin + '金币+' + totalCashNum + '元';
+  }
+  return totalCoin + '金币';
+}
+
+module.exports = {
+  formatPrice: formatPrice
+};

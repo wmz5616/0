@@ -1,0 +1,109 @@
+.bc {
+  height: 100vh;
+  background-color: rgba(249, 249, 249, 0.979);
+  position: relative;
+  overflow: hidden;
+}
+
+.LRP30 {
+  padding: 0 30rpx;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.swiper {
+  width: 100%;
+  height: calc(100vh - 180rpx);
+  padding: 30rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+  overflow-y: auto;
+}
+
+/* 表单区域 */
+.form-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+/* 表单项 */
+.form-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding-left: 20rpx;
+  padding-right: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  height: 197rpx;
+  width: 650rpx;
+}
+
+.number {
+  display: flex;
+  align-items: center;
+}
+
+.code {
+  display: flex;
+  align-items: center;
+  border-top: 1rpx solid #E5E5E5;
+}
+
+/* 手机号区域 */
+.country-code {
+  color: #333;
+  margin-right: 55rpx;
+  font-size: 34rpx;
+}
+
+.country {
+  color: #333;
+  margin-right: 20rpx;
+  font-size: 34rpx;
+}
+
+/* 输入框 */
+.input {
+  flex: 1;
+  height: 80rpx;
+  font-size: 34rpx;
+}
+
+/* 验证码按钮 */
+.get-code-btn {
+  color: #6070FB;
+  border-left: 1rpx solid #E5E5E5;
+  height: 100%;
+  line-height: 97rpx;
+  padding-left: 14rpx;
+  font-size: 32rpx;
+}
+
+/* 主要按钮 */
+.login {
+  background-image: linear-gradient(167deg, #8153FC 0%, #6070FB 82%);
+  border-radius: 46rpx;
+  width: 630rpx;
+  height: 90rpx;
+  margin: 0 auto;
+  color: #ffff;
+  line-height: 90rpx;
+  text-align: center;
+  font-size: 32rpx;
+  margin-top: 30rpx;
+}
+
+/* 占位符样式 */
+.placeholder-style {
+  color: #999;
+}

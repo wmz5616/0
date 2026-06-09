@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zemcho.ddql.mapper.order.ExchangeOrderMapper">
+    <sql id="field">
+        order_no,
+        user_id,
+        phone,
+        nick_name,
+        product_id,
+        product_no,
+        cover_image,
+        product_name,
+        specification,
+        unit,
+        is_virtual,
+        deadline,
+        single_amount,
+        num,
+        remark,
+        pay_way,
+        amount,
+        cash_amount,
+        up_order_id,
+        status,
+        express_status,
+        create_time,
+        pay_time
+    </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO `exchange_order`(
+        <include refid="field"></include>
+        )VALUES (
+        #{data.orderNo},
+        #{data.userId},
+        #{data.phone},
+        #{data.nickName},
+        #{data.productId},
+        #{data.productNo},
+        #{data.coverImage},
+        #{data.productName},
+        #{data.specification},
+        #{data.unit},
+        #{data.isVirtual},
+        #{data.deadline},
+        #{data.singleAmount},
+        #{data.num},
+        #{data.remark},
+        #{data.payWay},
+        #{data.amount},
+        #{data.cashAmount},
+        #{data.upOrderId},
+        #{data.status},
+        #{data.expressStatus},
+        #{data.createTime},
+        #{data.payTime}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `exchange_order`
+        SET
+        <trim suffixOverrides=",">
+            <if test="data.payWay != null">pay_way = #{data.payWay},</if>
+            <if test="data.amount != null">amount = #{data.amount},</if>
+            <if test="data.cashAmount != null">cash_amount = #{data.cashAmount},</if>
+            <if test="data.upOrderId != null">up_order_id = #{data.upOrderId},</if>
+            <if test="data.status != null">status = #{data.status},</if>
+            <if test="data.payTime != null">pay_time = #{data.payTime},</if>
+            <if test="data.expressCompanyName != null">express_company_name = #{data.expressCompanyName},</if>
+            <if test="data.expressCompanyCode != null">express_company_code = #{data.expressCompanyCode},</if>
+            <if test="data.expressNo != null">express_no = #{data.expressNo},</if>
+            <if test="data.expressStatus != null">express_status = #{data.expressStatus},</if>
+            <if test="data.refundAmount !=null">refund_amount = #{data.refundAmount},</if>
+            <if test="data.refundCashAmount !=null">refund_cash_amount = #{data.refundCashAmount},</if>
+            <if test="data.refundTime !=null">refund_time = #{data.refundTime},</if>
+            <if test="data.refundRemark !=null">refund_remark = #{data.refundRemark},</if>
+            <if test="data.divideStatus != null">divide_status = #{data.divideStatus},</if>
+            <if test="data.divideAmount != null">divide_amount = #{data.divideAmount},</if>
+            <if test="data.divideTime != null">divide_time = #{data.divideTime},</if>
+            <if test="data.updateTime != null">update_time = #{data.updateTime},</if>
+        </trim>
+        WHERE id = #{data.id}
+    </update>
+
+    <select id="selectById" resultType="com.zemcho.ddql.entity.order.ExchangeOrder">
+        SELECT *
+        FROM `exchange_order`
+        WHERE `id` = #{id}
+    </select>
+
+    <select id="selectByOrderNo" resultType="com.zemcho.ddql.entity.order.ExchangeOrder">
+        SELECT *
+        FROM `exchange_order`
+        WHERE `order_no` = #{orderNo}
+    </select>
+
+    <select id="selectLists" resultType="com.zemcho.ddql.entity.order.ExchangeOrder">
+        SELECT *
+        FROM `exchange_order`
+        <where>
+            <if test="param.searchField1 != null">AND user_id = #{param.searchField1}</if>
+            <if test="param.searchField2 != null">AND product_id = #{param.searchField2}</if>
+            <if test="param.searchIntStatus != null">AND `status` = #{param.searchIntStatus}</if>
+            <if test="param.searchField3 != null">AND `express_status` = #{param.searchField3}</if>
+            <if test="param.searchField4 != null">AND `divide_status` = #{param.searchField4}</if>
+            <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+                AND `order_no` LIKE CONCAT('%', #{param.searchStrField1}, '%')
+            </if>
+            <if test="param.searchStrField2 != null and param.searchStrField2 != ''">
+                AND `product_name` LIKE CONCAT('%', #{param.searchStrField2}, '%')
+            </if>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND (phone LIKE CONCAT('%',#{param.keyword},'%') OR nick_name LIKE CONCAT('%',#{param.keyword},'%'))
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+            <if test="param.limitTime != null">
+                AND create_time &lt;= #{param.limitTime}
+            </if>
+        </where>
+        ORDER BY `id` desc
+    </select>
+
+    <select id="selectCount" resultType="com.zemcho.ddql.controller.order.vo.ExchangeOrderCountVo">
+        SELECT count(1) AS order_num, sum(amount) AS total_amount, sum(refund_amount) AS total_refund_amount, sum(num) AS total_num
+        FROM `exchange_order`
+        <where>
+            <if test="param.searchField1 != null">AND user_id = #{param.searchField1}</if>
+            <if test="param.searchField2 != null">AND product_id = #{param.searchField2}</if>
+            <if test="param.searchStatusList != null and param.searchStatusList.size() > 0">
+                AND `status` IN
+                <foreach collection="param.searchStatusList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="param.searchIntStatus != null">AND `status` = #{param.searchIntStatus}</if>
+            <if test="param.searchField3 != null">AND `express_status` = #{param.searchField3}</if>
+            <if test="param.searchStrField1 != null and param.searchStrField1 != ''">
+                AND `order_no` LIKE CONCAT('%', #{param.searchStrField1}, '%')
+            </if>
+            <if test="param.searchStrField2 != null and param.searchStrField2 != ''">
+                AND `product_name` LIKE CONCAT('%', #{param.searchStrField2}, '%')
+            </if>
+            <if test="param.keyword != null and param.keyword != ''">
+                AND (phone LIKE CONCAT('%',#{param.keyword},'%') OR nick_name LIKE CONCAT('%',#{param.keyword},'%'))
+            </if>
+            <if test="param.startTime != null and param.endTime != null">
+                AND `create_time` BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectOrderListForReconciliation" resultType="com.zemcho.ddql.entity.order.ExchangeOrder">
+        SELECT * FROM exchange_order
+        WHERE (pay_time &gt;= #{startTime} AND pay_time &lt;= #{endTime})
+           OR (refund_time &gt;= #{startTime} AND refund_time &lt;= #{endTime})
+    </select>
+
+<!--    <select id="selectByOrderNo" resultType="com.zemcho.ddql.entity.order.ExchangeOrder">-->
+<!--        SELECT *-->
+<!--        FROM `exchange_order`-->
+<!--        WHERE `order_no` = #{orderNo}-->
+<!--    </select>-->
+</mapper>

@@ -1,0 +1,18 @@
+<!--pages/imgManageMent/imgManageMent.wxml-->
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">{{shopName}}-{{imgType==2?'合同照片':'海报管理'}}</text>
+  </van-nav-bar>
+  <view class="swiper {{isIOS?'h336':''}}">
+    <view class="box Cflex">
+      <view class="title">{{imgType==2?'合同照片':'海报管理'}}（最多可上传6张图片）</view>
+      <van-uploader multiple="{{true}}" image-fit="aspectFill" file-list="{{ bannerList }}" deletable max-count="6" use-before-read preview-file bind:before-read="beforeRead" upload-icon="plus" bind:after-read="afterRead" bind:delete="deleteRead" data-type="bannerList" />
+    </view>
+  </view>
+  <view bind:tap="submit" class="Btn1 {{isIOS?'isIOS':''}}">
+    <view class="btn1">保存</view>
+  </view>
+</view>

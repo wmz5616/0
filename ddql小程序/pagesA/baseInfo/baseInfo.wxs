@@ -1,0 +1,36 @@
+var teamStatus = ['企事业单位', '政府部门', '家庭', '朋友']
+var show = {
+  showZiZhi: function (type) {
+    if (!teamStatus || !type) return false;
+
+    var index = teamStatus.indexOf(type);
+    return index === 0 || index === 1;
+  },
+  includes: function (arr, searchElement, fromIndex = 0) {
+    // 处理 fromIndex 为负数的情况
+    var startIndex = fromIndex >= 0 ? fromIndex : Math.max(0, arr.length + fromIndex);
+
+    // 特殊处理 NaN
+    if (searchElement !== searchElement) { // 判断是否是 NaN
+      for (var i = startIndex; i < arr.length; i++) {
+        if (arr[i] !== arr[i]) { // 判断 arr[i] 是否是 NaN
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // 普通情况
+    for (var i = startIndex; i < arr.length; i++) {
+      if (arr[i] === searchElement) {
+        return true;
+      }
+    }
+
+    return false;
+  },
+}
+module.exports = {
+  showZiZhi: show.showZiZhi,
+  includes: show.includes,
+}

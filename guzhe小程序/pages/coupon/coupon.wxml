@@ -1,0 +1,59 @@
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <view slot="left" class="backLeft">
+      <image src="/assets/images/arrow-back.svg" class="arrowBack" mode="aspectFill"></image>
+    </view>
+    <text slot="title" class="navText">查看券码</text>
+  </van-nav-bar>
+  <view class="p30 g30 swiper">
+    <view class="sTop">
+      <view class="Rflex g20 p30 cTop">
+        <image wx:if="{{isexpired}}" src="/assets/images/yiguoqi.svg" mode="aspectFill" class="Icon" />
+        <image wx:elif="{{ticketInfo.status == 3}}" src="/assets/images/Verified.svg" mode="aspectFill" class="Icon" />
+        <image src="{{orderInfo.coverImage}}" mode="aspectFilt" class="Img" />
+        <view class="Cflex g10" style="align-items: flex-start;">
+          <text class="title">{{orderInfo.productName}}</text>
+          <text class="time">有效期至{{expiredTime}}</text>
+        </view>
+      </view>
+      <view class="asdd">
+        <view class="left-ctrile"></view>
+        <view class="right-ctrile"></view>
+      </view>
+      <view class="Cflex g10 p30 cBottom">
+        <canvas canvas-id="qrcodeCanvas" style="width: 343rpx; height: 342rpx; position: absolute;top: -9999rpx;"></canvas>
+        <image wx:if="{{ticketInfo.status != 3 && !isexpired}}" src="{{qrCodeImage}}" mode="aspectFit" style="width: 343rpx; height: 342rpx;" />
+        <view style="position: relative;">
+          <text bind:tap="copyText" class="code">{{ticketInfo.ticket}}</text>
+          <view wx:if="{{ticketInfo.status == 3 || isexpired}}" class="underline"></view>
+        </view>
+      </view>
+    </view>
+    <view class="couponList">
+      <view wx:for="{{ticketList}}" wx:key="index" style="display: flex;flex-direction: column;gap: 30rpx;">
+        <view wx:if="{{item.id == ticketInfo.id && !item.isexpired}}" class="flex baseItem activeItem">
+          <view class="left">
+            <text class="listText">{{item.ticket}}</text>
+            <text class="listText f28">{{orderInfo.productName}}</text>
+          </view>
+          <view class="right purple">
+            <image src="/assets/images/purpleCode.svg" mode="aspectFill" class="iconImg" />
+          </view>
+        </view>
+        <view wx:elif="{{item.status != 3 && !item.isexpired}}" class="flex baseItem selectItem" data-id="{{item.id}}" bind:tap="changeTicket">
+          <view class="left">
+            <text class="listText">{{item.ticket}}</text>
+            <text class="listText f28">{{orderInfo.productName}}</text>
+          </view>
+          <view class="right orange">
+            <image src="/assets/images/orangeCode.svg" mode="aspectFill" class="iconImg" />
+          </view>
+        </view>
+        <view wx:else class="flex baseItem pud46" data-id="{{item.id}}" bind:tap="changeTicket">
+          <view class="listText gray grayText1">{{item.ticket}}</view>
+          <text class="listText gray">{{isexpired?'已过期':'已核销'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

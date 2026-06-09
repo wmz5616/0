@@ -1,0 +1,84 @@
+<wxs module="show" src="./createGroup.wxs"></wxs>
+<view class="bc">
+  <van-nav-bar bind:click-left="goBack">
+    <image src="/assets/images/arrow-back.svg" class="img" mode="aspectFill" slot="left"></image>
+    <text slot="title" class="navText">我的团体</text>
+  </van-nav-bar>
+  <view class="swiper">
+    <view style="display: flex;flex-direction: column;gap: 30rpx;width: 100%;">
+      <van-cell-group>
+        <van-field custom-class="field border-field" model:value="{{ name }}" clearable placeholder="请输入团体名称" placeholder-style="font-size:34rpx;color:#CCC;">
+          <view slot="label" class="label">
+            <text class="title require">团体名称：</text>
+          </view>
+        </van-field>
+        <van-field disabled custom-class="field border-field" value="{{ type }}" clearable icon="arrow-down" placeholder="请选择" bind:click-icon="onClickIcon" bind:click-input="onClickIcon" data-pickertype="status" placeholder-style="font-size:34rpx;color:#CCC;">
+          <view slot="label" class="label">
+            <text class="title require">团体类型：</text>
+          </view>
+        </van-field>
+        <van-field disabled custom-class="field border-field" value="{{ region }}" clearable icon="arrow-down" placeholder="地请选择所在地区" bind:click-icon="onClickIcon" bind:click-input="onClickIcon" data-pickertype="area" placeholder-style="font-size:34rpx;color:#CCC;">
+          <view slot="label" class="label">
+            <text class="title require">地区：</text>
+          </view>
+        </van-field>
+        <van-field custom-class="field border-field" model:value="{{ address }}" clearable placeholder="请输入" placeholder-style="font-size:34rpx;color:#CCC;">
+          <view slot="label" class="label">
+            <text class="title">详细地址：</text>
+          </view>
+        </van-field>
+        <van-field custom-class="field border-field" model:value="{{ contactPerson }}" clearable placeholder="请输入" placeholder-style="font-size:34rpx;color:#CCC;">
+          <view slot="label" class="label">
+            <text class="title require">联系人名称：</text>
+          </view>
+        </van-field>
+        <van-field type="number" custom-class="field border-field" model:value="{{ contactPhone }}" clearable placeholder="请输入" bind:click-icon="onClickIcon" placeholder-style="font-size:34rpx;color:#CCC;">
+          <view slot="label" class="label">
+            <text class="title require">联系人电话：</text>
+          </view>
+        </van-field>
+        <van-field custom-class="field border-field" model:value="{{ contactEmail }}" clearable placeholder="请输入" placeholder-style="font-size:34rpx;color:#CCC;">
+          <view slot="label" class="label">
+            <text class="title">邮箱：</text>
+          </view>
+        </van-field>
+        <van-field custom-class="field" use-input-slot>
+          <view slot="label" class="label">
+            <text class="title require">进团是否审核：</text>
+          </view>
+          <van-radio-group slot="input" value="{{ isUserAuth }}" data-type="isUserAuth" bind:change="onRadioChange" direction="horizontal" style="width: 100%; display: flex; justify-content: flex-start; gap: 40rpx;">
+            <van-radio name="是">是</van-radio>
+            <van-radio name="否">否</van-radio>
+          </van-radio-group>
+        </van-field>
+        <van-field custom-class="field border-field" model:value="{{ checkInNumLimit }}" clearable placeholder="请输入" placeholder-style="font-size:34rpx;color:#CCC;" use-button-slot>
+          <view slot="label" class="label">
+            <text class="title">每月打卡次数要求：</text>
+          </view>
+          <text slot="button" style="color:#333; font-size:30rpx; margin-left:20rpx;">次</text>
+        </van-field>
+        <van-field wx:if="{{show.showZiZhi(type)}}" custom-class="field" use-input-slot>
+          <view slot="label" class="label">
+            <text class="title require">是否多部门管理：</text>
+          </view>
+          <van-radio-group slot="input" value="{{ isMultiDepartment }}" data-type="isMultiDepartment" bind:change="onRadioChange" direction="horizontal" style="width: 100%; display: flex; justify-content: flex-start; gap: 40rpx;">
+            <van-radio name="是">是</van-radio>
+            <van-radio name="否">否</van-radio>
+          </van-radio-group>
+        </van-field>
+      </van-cell-group>
+      <!-- <view wx:if="{{show.showZiZhi(type)}}" class="box flex" bind:tap="jump" data-url="/pages/qualificationVerify/qualificationVerify">
+        <text class="l_text">资质认证</text>
+        <view class="l_right">
+          <text class="l_text red">未认证</text>
+          <image src="/assets/images/gray-rightArrow.svg" mode="aspectFill" style="height:28rpx;width:16rpx;" />
+        </view>
+      </view> -->
+    </view>
+    <view class="btn" bind:tap="getAddTeams">创建</view>
+  </view>
+  <!-- 基础信息 -->
+  <van-popup close-on-click-overlay position="bottom" round show="{{ showAreaPicker }}" bind:close="onClose" data-name="showAreaPicker">
+    <van-picker id="myPicker" toolbar-class="p_title" cancel-button-text="重置" show-toolbar title="{{pickertype=='audit'?'进团是否审核':pickertype=='status'?'团体类型':pickertype=='multiDept'?'是否多部门管理':'地区'}}" columns="{{ columns }}" bind:confirm="onConfirm" bind:cancel="onClose" data-name="showAreaPicker" data-reset="reset" bind:change="onAreaChange" />
+  </van-popup>
+</view>
